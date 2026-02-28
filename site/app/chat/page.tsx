@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Send, Loader2, Bot, User, Share, Copy, RefreshCcw, Paperclip, Mic, ArrowUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,7 +12,7 @@ type Message = {
     content: string;
 };
 
-export default function ChatPage() {
+function ChatInterface() {
     const searchParams = useSearchParams();
     const agentName = searchParams.get("agent") || "guide";
 
@@ -254,5 +254,17 @@ export default function ChatPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function ChatPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex h-screen items-center justify-center bg-[#0a0c0b] text-primary">
+                Loading Chat Interface...
+            </div>
+        }>
+            <ChatInterface />
+        </Suspense>
     );
 }
