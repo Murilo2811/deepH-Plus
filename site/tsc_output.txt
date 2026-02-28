@@ -1,0 +1,12 @@
+
+> deeph-site@0.1.0 typecheck
+> tsc --noEmit
+
+app/chat/page.tsx(14,23): error TS2339: Property 'input' does not exist on type 'UseChatHelpers<UIMessage<unknown, UIDataTypes, UITools>>'.
+app/chat/page.tsx(14,30): error TS2339: Property 'handleInputChange' does not exist on type 'UseChatHelpers<UIMessage<unknown, UIDataTypes, UITools>>'.
+app/chat/page.tsx(14,49): error TS2339: Property 'handleSubmit' does not exist on type 'UseChatHelpers<UIMessage<unknown, UIDataTypes, UITools>>'.
+app/chat/page.tsx(14,63): error TS2339: Property 'isLoading' does not exist on type 'UseChatHelpers<UIMessage<unknown, UIDataTypes, UITools>>'.
+app/chat/page.tsx(14,74): error TS2339: Property 'reload' does not exist on type 'UseChatHelpers<UIMessage<unknown, UIDataTypes, UITools>>'.
+app/chat/page.tsx(15,9): error TS2353: Object literal may only specify known properties, and 'api' does not exist in type 'UseChatOptions<UIMessage<unknown, UIDataTypes, UITools>>'.
+app/chat/page.tsx(107,47): error TS2322: Type '{ children: any; className: string; }' is not assignable to type 'IntrinsicAttributes & Readonly<Options>'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & Readonly<Options>'.

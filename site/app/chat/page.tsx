@@ -2,20 +2,78 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { useChat } from "@ai-sdk/react";
 import { Send, Loader2, Bot, User, Share, Copy, RefreshCcw, Paperclip, Mic, ArrowUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Markdown from "react-markdown";
+
+type Message = {
+    id: string;
+    role: "user" | "assistant" | "system";
+    content: string;
+};
 
 export default function ChatPage() {
     const searchParams = useSearchParams();
     const agentName = searchParams.get("agent") || "guide";
 
-    const { messages, input, handleInputChange, handleSubmit, isLoading, reload } = useChat({
-        api: "/api/chat/stream",
-        body: { agent: agentName },
-        id: agentName,
-    });
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [input, setInput] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value);
+
+    const handleSubmit = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        if (!input.trim() || isLoading) return;
+
+        const userMsg = input;
+        setInput("");
+
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: "user", content: userMsg }]);
+        setIsLoading(true);
+
+        try {
+            const res = await fetch("/api/chat/stream", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ agent: agentName, message: userMsg })
+            });
+
+            if (!res.ok) throw new Error("Erro na comunicação");
+            if (!res.body) return;
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            const assistantId = "msg-" + Date.now();
+
+            setMessages(prev => [...prev, { id: assistantId, role: "assistant", content: "" }]);
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value);
+                const lines = chunk.split("\n");
+
+                for (const line of lines) {
+                    if (line.startsWith("data:")) {
+                        try {
+                            const data = JSON.parse(line.slice(5));
+                            if (data.text) {
+                                setMessages(prev => prev.map(m => m.id === assistantId ? { ...m, content: m.content + data.text } : m));
+                            }
+                        } catch (e) { }
+                    }
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const reload = () => { /* Regenerar última msg (opcional no stub) */ };
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -64,7 +122,7 @@ export default function ChatPage() {
                 )}
 
                 <AnimatePresence initial={false}>
-                    {messages.map((m, index) => (
+                    {messages.map((m: any, index: number) => (
                         <motion.div
                             key={m.id}
                             initial={{ opacity: 0, y: 10 }}
@@ -74,8 +132,8 @@ export default function ChatPage() {
                         >
                             {/* Avatar */}
                             <div className={`w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center border ${m.role === 'user'
-                                    ? 'bg-slate-800 border-slate-700'
-                                    : 'bg-primary/10 border-primary/20'
+                                ? 'bg-slate-800 border-slate-700'
+                                : 'bg-primary/10 border-primary/20'
                                 }`}>
                                 {m.role === 'user' ? (
                                     <User className="w-5 h-5 text-slate-300" />
@@ -101,12 +159,14 @@ export default function ChatPage() {
                                 </div>
 
                                 <div className={`p-5 text-[15px] leading-relaxed max-w-[85vw] md:max-w-2xl overflow-hidden ${m.role === 'user'
-                                        ? 'bg-primary text-background-dark rounded-xl rounded-tr-none shadow-[0_4px_20px_rgba(15,240,146,0.15)] font-medium'
-                                        : 'glass dark:bg-primary/5 rounded-xl rounded-tl-none border border-primary/10 text-slate-200'
+                                    ? 'bg-primary text-background-dark rounded-xl rounded-tr-none shadow-[0_4px_20px_rgba(15,240,146,0.15)] font-medium'
+                                    : 'glass dark:bg-primary/5 rounded-xl rounded-tl-none border border-primary/10 text-slate-200'
                                     }`}>
-                                    <Markdown className={`prose prose-sm overflow-hidden ${m.role === 'user' ? 'prose-invert prose-p:text-background-dark max-w-none' : 'dark:prose-invert max-w-none prose-pre:bg-background-dark/50 prose-pre:border prose-pre:border-primary/20 text-slate-200 prose-p:text-slate-200 prose-a:text-primary'} break-words whitespace-pre-wrap`}>
-                                        {m.content}
-                                    </Markdown>
+                                    <div className={`prose prose-sm overflow-hidden ${m.role === 'user' ? 'prose-invert prose-p:text-background-dark max-w-none' : 'dark:prose-invert max-w-none prose-pre:bg-background-dark/50 prose-pre:border prose-pre:border-primary/20 text-slate-200 prose-p:text-slate-200 prose-a:text-primary'} break-words whitespace-pre-wrap`}>
+                                        <Markdown>
+                                            {m.content}
+                                        </Markdown>
+                                    </div>
                                 </div>
 
                                 {m.role === 'assistant' && index === messages.length - 1 && (
