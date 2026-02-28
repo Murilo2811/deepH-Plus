@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  output: 'export',
   webpack: (config, { dev, isServer }) => {
     if (dev) {
       // Keep dev cache in memory only. This avoids flaky filesystem pack cache
