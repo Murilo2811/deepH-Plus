@@ -10,99 +10,63 @@ const config: Config = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter', 'system-ui', 'sans-serif'],
+                sans: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
+                display: ['Space Grotesk', 'sans-serif'],
                 mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
             },
             borderRadius: {
-                lg: '0.25rem', // Sharp geometry as per frontend-specialist
-                md: 'calc(var(--radius) - 2px)',
-                sm: 'calc(var(--radius) - 4px)'
+                DEFAULT: "0.125rem",
+                sm: "0.125rem",
+                md: "0.25rem",
+                lg: "0.5rem",
+                xl: "0.75rem",
+                "2xl": "1rem",
+                full: "9999px"
             },
             colors: {
-                brand: {
-                    DEFAULT: '#10b981', // Emerald
-                    hover: '#059669',
-                    light: '#34d399',
-                    subtle: 'rgba(16, 185, 129, 0.15)',
-                },
-                neutral: {
-                    bg1: 'hsl(240, 6%, 4%)', // Extremely dark/cool
-                    bg2: 'hsl(240, 6%, 7%)',
-                    bg3: 'hsl(240, 5%, 10%)',
-                    bg4: 'hsl(240, 5%, 14%)',
-                    bg5: 'hsl(240, 4%, 18%)',
-                    bg6: 'hsl(240, 4%, 22%)',
-                },
-                text: {
-                    primary: '#FFFFFF',
-                    secondary: '#A1A1AA',
-                    muted: '#71717A',
-                },
-                status: {
-                    success: '#10B981',
-                    warning: '#F59E0B',
-                    error: '#EF4444',
-                    info: '#3B82F6',
-                },
-                background: 'hsl(var(--background))',
-                foreground: 'hsl(var(--foreground))',
-                card: {
-                    DEFAULT: 'hsl(var(--card))',
-                    foreground: 'hsl(var(--card-foreground))'
-                },
-                popover: {
-                    DEFAULT: 'hsl(var(--popover))',
-                    foreground: 'hsl(var(--popover-foreground))'
-                },
                 primary: {
-                    DEFAULT: 'hsl(var(--primary))',
-                    foreground: 'hsl(var(--primary-foreground))'
+                    DEFAULT: "#0ff092",
+                    hover: "rgba(15, 240, 146, 0.9)",
                 },
-                secondary: {
-                    DEFAULT: 'hsl(var(--secondary))',
-                    foreground: 'hsl(var(--secondary-foreground))'
+                "background-light": "#f5f8f7",
+                "background-dark": "#0a0c0b",
+                "surface-dark": "#141a17",
+                "accent-emerald": "#0ff092",
+                "slate-panel": "#152a24",
+                "border-accent": "#326755",
+
+                // Keep UI generic colors for compatibility if needed
+                neutral: {
+                    bg1: '#0a0c0b',
+                    bg2: '#141a17',
+                    bg3: '#1a221e',
                 },
-                muted: {
-                    DEFAULT: 'hsl(var(--muted))',
-                    foreground: 'hsl(var(--muted-foreground))'
-                },
-                accent: {
-                    DEFAULT: 'hsl(var(--accent))',
-                    foreground: 'hsl(var(--accent-foreground))'
-                },
-                destructive: {
-                    DEFAULT: 'hsl(var(--destructive))',
-                    foreground: 'hsl(var(--destructive-foreground))'
+                brand: {
+                    DEFAULT: '#0ff092',
+                    hover: '#0ea367',
+                    foreground: '#0a0c0b'
                 },
                 border: {
-                    subtle: 'hsla(0, 0%, 100%, 0.04)',
-                    DEFAULT: 'hsla(0, 0%, 100%, 0.08)',
-                    strong: 'hsla(0, 0%, 100%, 0.15)',
+                    DEFAULT: 'rgba(15, 240, 146, 0.1)',
                 },
-                input: 'hsl(var(--input))',
-                ring: 'hsl(var(--ring))',
+                text: {
+                    primary: '#f1f5f9', // slate-100
+                    secondary: '#94a3b8', // slate-400
+                    muted: '#64748b', // slate-500
+                }
             },
             animation: {
                 'fade-in': 'fadeIn 0.3s ease-out',
-                'slide-up': 'slideUp 0.3s ease-out',
-                'slide-down': 'slideDown 0.3s ease-out',
+                'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
             },
             keyframes: {
                 fadeIn: {
                     '0%': { opacity: '0' },
                     '100%': { opacity: '1' },
-                },
-                slideUp: {
-                    '0%': { opacity: '0', transform: 'translateY(10px)' },
-                    '100%': { opacity: '1', transform: 'translateY(0)' },
-                },
-                slideDown: {
-                    '0%': { opacity: '0', transform: 'translateY(-10px)' },
-                    '100%': { opacity: '1', transform: 'translateY(0)' },
-                },
+                }
             },
         }
     },
-    plugins: [require("tailwindcss-animate")],
+    plugins: [require("tailwindcss-animate"), require("@tailwindcss/forms")({ strategy: 'class' })],
 }
 export default config;

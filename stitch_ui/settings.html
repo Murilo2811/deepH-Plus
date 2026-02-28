@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Platform Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#0fb86f",
+                "background-light": "#f6f8f7",
+                "background-dark": "#10221a",
+                "surface-dark": "#162e24",
+                "surface-light": "#ffffff",
+              },
+              fontFamily: {
+                "display": ["Space Grotesk", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col antialiased selection:bg-primary/30">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-50 flex items-center justify-between px-4 py-3 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-primary/10">
+<button class="flex items-center justify-center p-2 text-slate-900 dark:text-slate-100 rounded hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined !text-[24px]">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">Platform Settings</h1>
+<button class="flex items-center justify-center p-2 text-slate-900 dark:text-slate-100 rounded hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined !text-[24px]">more_vert</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col p-4 gap-6 max-w-lg mx-auto w-full">
+<!-- User Profile Card -->
+<section class="flex flex-col gap-4">
+<div class="relative overflow-hidden rounded-lg bg-white dark:bg-surface-dark border border-slate-200 dark:border-primary/10 p-5 shadow-sm">
+<!-- Background decorative elements -->
+<div class="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 rounded-full bg-primary/10 blur-xl"></div>
+<div class="flex flex-col items-center sm:flex-row sm:items-start gap-5 relative z-10">
+<div class="relative group">
+<div class="w-24 h-24 rounded-lg bg-cover bg-center border-2 border-primary/20" data-alt="Profile picture of user Alex Chen" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDyAjDxLxwurcqfAV-vOLCGzaXN352CPPLCM3pxX-FMXGvLUD63t4sdt2I99d4V03YNSdkBgno7CMd_zvr91PbtKXKwUKIHKr7XSVPHCu6gvE3KJ7kiPuUQ4NuNcseYoILWL5YyrEZLkqRsDiH3EBTr7wqy81-k0DpQL6QoY0mW2If_17mXG0nHVnjU7KWpjHIusEE04iK8JigEMKoXUHitKQwDesza0LNn8iHMp6FzDaA3Zs-CPptvPsfd3zp9bdq0PuRi1b4XyF8');">
+</div>
+<button aria-label="Change photo" class="absolute bottom-[-6px] right-[-6px] bg-primary text-white p-1.5 rounded-full shadow-lg hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined !text-[16px] font-bold">edit</span>
+</button>
+</div>
+<div class="flex flex-col items-center sm:items-start text-center sm:text-left flex-1">
+<h2 class="text-xl font-bold text-slate-900 dark:text-slate-100">Alex Chen</h2>
+<p class="text-primary font-medium text-sm mt-0.5">Senior Developer</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">admin@platform.io</p>
+<div class="flex gap-2 mt-4 w-full sm:w-auto">
+<button class="flex-1 sm:flex-none items-center justify-center px-4 py-2 bg-primary hover:bg-primary/90 text-white text-sm font-bold rounded transition-colors shadow-lg shadow-primary/20">
+                                Edit Profile
+                            </button>
+<button class="flex-1 sm:flex-none items-center justify-center px-4 py-2 bg-slate-100 dark:bg-primary/10 text-slate-700 dark:text-primary hover:bg-slate-200 dark:hover:bg-primary/20 text-sm font-bold rounded transition-colors">
+                                Share
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Appearance Section -->
+<section>
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1 mb-3">Appearance</h3>
+<div class="flex flex-col gap-px rounded-lg overflow-hidden border border-slate-200 dark:border-primary/10 bg-slate-200 dark:bg-primary/10">
+<!-- Dark Mode Toggle -->
+<div class="flex items-center justify-between p-4 bg-white dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-[#1a362b] transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center w-10 h-10 rounded bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">dark_mode</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-medium text-slate-900 dark:text-slate-100">Dark Mode</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Adjust screen brightness</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Compact View Toggle -->
+<div class="flex items-center justify-between p-4 bg-white dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-[#1a362b] transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center w-10 h-10 rounded bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">compress</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-medium text-slate-900 dark:text-slate-100">Compact View</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Minimize spacing in lists</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- High Contrast Toggle -->
+<div class="flex items-center justify-between p-4 bg-white dark:bg-surface-dark hover:bg-slate-50 dark:hover:bg-[#1a362b] transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center w-10 h-10 rounded bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">contrast</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-medium text-slate-900 dark:text-slate-100">High Contrast</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Increase visual distinction</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- System Notifications Section -->
+<section>
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1 mb-3">System Notifications</h3>
+<div class="flex flex-col gap-3">
+<!-- Notification Item 1 -->
+<div class="flex items-start gap-4 p-4 rounded-lg bg-white dark:bg-surface-dark border border-slate-200 dark:border-primary/10 shadow-sm hover:border-primary/30 transition-colors">
+<div class="flex-shrink-0 text-primary mt-1">
+<span class="material-symbols-outlined">notifications_active</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-base font-bold text-slate-900 dark:text-slate-100">Push Notifications</h4>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<p class="text-sm text-slate-500 dark:text-slate-400">Receive real-time alerts for system updates and mentions.</p>
+</div>
+</div>
+<!-- Notification Item 2 -->
+<div class="flex items-start gap-4 p-4 rounded-lg bg-white dark:bg-surface-dark border border-slate-200 dark:border-primary/10 shadow-sm hover:border-primary/30 transition-colors">
+<div class="flex-shrink-0 text-primary mt-1">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-base font-bold text-slate-900 dark:text-slate-100">Email Digest</h4>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<p class="text-sm text-slate-500 dark:text-slate-400">Receive a daily summary of platform activity at 9:00 AM.</p>
+</div>
+</div>
+<!-- Notification Item 3 -->
+<div class="flex items-start gap-4 p-4 rounded-lg bg-white dark:bg-surface-dark border border-slate-200 dark:border-primary/10 shadow-sm hover:border-primary/30 transition-colors">
+<div class="flex-shrink-0 text-primary mt-1">
+<span class="material-symbols-outlined">security_update</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-base font-bold text-slate-900 dark:text-slate-100">Security Alerts</h4>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<p class="text-sm text-slate-500 dark:text-slate-400">Immediate notifications for login attempts and password changes.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Danger Zone -->
+<section class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+<button class="w-full flex items-center justify-center gap-2 p-4 rounded border border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-bold">Log Out</span>
+</button>
+<p class="text-center text-xs text-slate-400 dark:text-slate-600 mt-4">Version 2.4.0 (Build 394)</p>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Phone style) -->
+<nav class="sticky bottom-0 z-50 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-lg border-t border-primary/10 px-6 py-3 pb-6 flex justify-between items-center text-xs font-medium">
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">dashboard</span>
+<span>Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">analytics</span>
+<span>Stats</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-[24px] filled font-variation-settings-'FILL':1">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">person</span>
+<span>Profile</span>
+</a>
+</nav>
+</body></html>

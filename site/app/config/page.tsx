@@ -2,11 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { fetchConfig, saveConfig } from "@/lib/api";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Settings, Save, KeyRound } from "lucide-react";
-import { motion } from "framer-motion";
+import { Copy, Plus, Save, Key, Shield, AlertTriangle, CloudRain, Cpu, Activity, Info, Network } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 export default function ConfigPage() {
     const [config, setConfig] = useState<any>(null);
@@ -21,16 +19,16 @@ export default function ConfigPage() {
         }).catch(console.error);
     }, []);
 
-    const handleSave = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSave = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
         setSaving(true);
         setMsg("");
         try {
             await saveConfig(config);
-            setMsg("Configurações salvas e aplicadas.");
+            setMsg("Configurations deployed successfully.");
             setTimeout(() => setMsg(""), 3500);
         } catch (err) {
-            setMsg("Erro ao salvar o arquivo.");
+            setMsg("Failed to synchronize with core config.");
         } finally {
             setSaving(false);
         }
@@ -47,75 +45,114 @@ export default function ConfigPage() {
     };
 
     if (loading) return (
-        <div className="animate-pulse flex flex-col gap-6 max-w-2xl mt-10">
-            <div className="h-10 w-48 bg-neutral-bg3 rounded-sm" />
-            <div className="h-64 w-full bg-neutral-bg2 rounded-sm" />
+        <div className="flex-1 w-full max-w-3xl mx-auto p-4 flex flex-col gap-6 animate-pulse mt-10">
+            <div className="h-10 w-48 bg-surface-dark rounded border border-border-accent/30" />
+            <div className="grid grid-cols-2 gap-3">
+                <div className="h-24 bg-surface-dark rounded border border-border-accent/30" />
+                <div className="h-24 bg-surface-dark rounded border border-border-accent/30" />
+            </div>
+            <div className="h-32 bg-surface-dark rounded border border-border-accent/30" />
         </div>
     );
 
-    const providers = ["deepseek", "openai", "anthropic", "xai"];
+    const providers = [
+        { id: "deepseek", title: "DeepSeek", model: "DeepSeek Chat", icon: Cpu, badge: "Primary" },
+        { id: "openai", title: "OpenAI", model: "GPT-4 Models", icon: Activity, badge: "Active" },
+        { id: "anthropic", title: "Anthropic", model: "Claude Familia", icon: Network, badge: "Standby" },
+    ];
 
     return (
         <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-8 max-w-3xl pb-20"
+            className="flex-1 w-full max-w-3xl mx-auto p-6 flex flex-col gap-8 pb-32"
         >
-            <div className="flex items-center gap-4 pb-6 border-b border-border/50">
-                <div className="w-12 h-12 rounded-sm bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
-                    <Settings className="w-6 h-6" />
+            <div className="flex flex-col gap-2 pt-2">
+                <h2 className="text-3xl font-bold tracking-tight text-white font-display">System Configuration</h2>
+                <p className="text-slate-400 text-sm leading-relaxed max-w-xl">
+                    Gerencie suas credenciais para os provedores de inteligência artificial. Essas chaves autorizam o deepH a executar ações no modelo. <strong className="text-primary font-medium tracking-wide">Mantidas apenas localmente.</strong>
+                </p>
+            </div>
+
+            {/* KPI / Usage Summary (Visual Interest Mock) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-surface-dark border border-border-accent/50 p-5 rounded-xl flex flex-col gap-1 shadow-sm relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
+                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Inferences</span>
+                    <span className="text-2xl font-bold text-white mt-1">2,410</span>
+                    <span className="text-xs text-primary flex items-center gap-1 mt-2">
+                        <Activity className="w-3.5 h-3.5" /> Normal rate
+                    </span>
                 </div>
-                <div>
-                    <h1 className="text-3xl font-semibold tracking-tight text-text-primary">Configurações Globais</h1>
-                    <p className="text-text-secondary mt-1">Gerenciamento de chaves de API e preferências do runtime.</p>
+                <div className="bg-surface-dark border border-border-accent/50 p-5 rounded-xl flex flex-col gap-1 shadow-sm relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
+                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Local Config Size</span>
+                    <span className="text-2xl font-bold text-white mt-1">4.2 KB</span>
+                    <span className="text-xs text-slate-500 mt-2">Stored at <code className="text-primary/70">config.json</code></span>
                 </div>
             </div>
 
-            <form onSubmit={handleSave} className="space-y-6">
-                <Card className="glass-card bg-neutral-bg1/40">
-                    <CardHeader className="pb-4">
-                        <CardTitle className="text-lg flex items-center gap-2 text-text-primary">
-                            <KeyRound className="w-5 h-5 text-text-muted" />
-                            Credenciais de API (Providers)
-                        </CardTitle>
-                        <CardDescription className="text-text-secondary">
-                            As chaves inseridas abaixo são salvas exclusivamente no seu disco local <span className="font-mono text-zinc-400 bg-neutral-bg3 px-1 rounded">config.json</span>.
-                            Nunca as compartilharemos com serviços externos além dos próprios provedores que você utilizar.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6 pt-2">
-                        {providers.map(provider => (
-                            <div key={provider} className="grid grid-cols-1 md:grid-cols-[120px_1fr] gap-4 md:items-center">
-                                <Label className="text-text-secondary font-medium tracking-wide uppercase text-xs">
-                                    {provider}
-                                </Label>
-                                <Input
-                                    type="password"
-                                    placeholder={`sk-... (${provider} api key)`}
-                                    value={config?.providers?.[provider]?.api_key || ""}
-                                    onChange={e => handleProviderChange(provider, 'api_key', e.target.value)}
-                                    className="glass-input font-mono text-sm w-full"
-                                />
+            <form className="flex flex-col gap-4">
+                <h3 className="text-lg font-bold text-white font-display flex items-center gap-2 mb-2">
+                    <Key className="w-5 h-5 text-primary" /> Active Keys
+                </h3>
+
+                <div className="flex flex-col gap-4">
+                    {providers.map(provider => {
+                        const Icon = provider.icon;
+                        const defaultVal = config?.providers?.[provider.id]?.api_key || "";
+
+                        return (
+                            <div key={provider.id} className="group relative overflow-hidden rounded-xl bg-surface-dark border border-border-accent/50 p-5 shadow-sm hover:border-primary/50 transition-colors">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-black border border-border-accent/50 text-white shadow-[0_0_10px_rgba(15,240,146,0.05)]">
+                                            <Icon className="w-5 h-5 text-primary" />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-base text-white leading-tight font-display">{provider.title}</h3>
+                                            <span className="text-[11px] text-slate-400 uppercase tracking-widest">{provider.model}</span>
+                                        </div>
+                                    </div>
+                                    <span className="inline-flex items-center rounded bg-primary/10 px-2 py-1 text-[10px] font-bold tracking-widest text-primary ring-1 ring-inset ring-primary/20 uppercase">
+                                        {provider.badge}
+                                    </span>
+                                </div>
+
+                                <div className="bg-black/40 rounded border border-border-accent/30 p-2 flex items-center justify-between gap-2 mb-4 group-hover:bg-black/60 transition-colors focus-within:border-primary/50">
+                                    <input
+                                        type="password"
+                                        placeholder={`sk-proj...${provider.id}...`}
+                                        value={defaultVal}
+                                        onChange={(e) => handleProviderChange(provider.id, 'api_key', e.target.value)}
+                                        className="text-sm font-mono text-slate-300 truncate w-full bg-transparent border-none focus:ring-0 focus:outline-none px-2"
+                                    />
+                                    <button type="button" className="text-slate-500 hover:text-primary transition-colors p-1" title="Paste/Replace">
+                                        <Copy className="w-4 h-4" />
+                                    </button>
+                                </div>
                             </div>
-                        ))}
-                    </CardContent>
+                        )
+                    })}
+                </div>
 
-                    <div className="h-px bg-border/50 w-full" />
+                <div className="h-px bg-border-accent/30 w-full my-6"></div>
 
-                    <CardFooter className="bg-neutral-bg2/30 py-5 flex items-center justify-between rounded-b-md">
-                        <span className={`text-sm font-medium transition-opacity ${msg.includes("Erro") ? "text-status-error" : "text-brand"} ${msg ? "opacity-100" : "opacity-0"}`}>
-                            {msg || "Placeholder"}
-                        </span>
-                        <button
-                            type="submit"
-                            disabled={saving}
-                            className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-sm text-sm font-semibold transition-all duration-200 bg-brand text-brand-foreground hover:bg-brand-hover hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] disabled:opacity-50"
-                        >
-                            <Save className="w-4 h-4" />
-                            {saving ? "Registrando no disco..." : "Salvar Configuração"}
-                        </button>
-                    </CardFooter>
-                </Card>
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <span className={`text-sm font-bold tracking-wide transition-all ${msg.includes("Failed") ? "text-red-400" : "text-primary bg-primary/10 px-3 py-1.5 rounded"} ${msg ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}>
+                        {msg || "Placeholder"}
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={handleSave}
+                        disabled={saving}
+                        className="w-full sm:w-auto h-12 flex items-center justify-center gap-2 px-8 bg-primary hover:bg-primary/90 text-background-dark font-bold rounded-xl shadow-[0_0_20px_rgba(15,240,146,0.2)] hover:shadow-[0_0_30px_rgba(15,240,146,0.4)] transition-all active:scale-[0.98] disabled:opacity-50"
+                    >
+                        <Save className="w-5 h-5" />
+                        <span>{saving ? "Deploying Schema..." : "Save Settings"}</span>
+                    </button>
+                </div>
             </form>
         </motion.div>
     );

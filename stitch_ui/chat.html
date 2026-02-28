@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Chat Interface Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0ff092",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#0a0c0b",
+                        "surface-dark": "#141a17",
+                        "accent-emerald": "#0ff092",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .glass-emerald {
+            background: rgba(15, 240, 146, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-display">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between px-6 py-4 border-b border-primary/10 bg-background-light dark:bg-background-dark sticky top-0 z-10">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded bg-primary/10">
+<span class="material-symbols-outlined text-primary text-2xl">grid_view</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight">Emerald AI</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500">search</span>
+</button>
+<div class="w-10 h-10 rounded-full border border-primary/20 bg-cover bg-center" data-alt="User profile picture with minimalist abstract background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCQ10azBkiO-sozkhiBY1nYiC6CHF5qVuJwnnXji1gZfpPCaGOhWEjQAb19xPvkPXq-66nW9m1rNpnMWwRalouBpqR6CzXRej9bfa_1lE221bGvdRoBPtQprTVd9h-R9l5VJrAPag2MEFAOMHQIQn1Ur6VHHkVamb6-MLgAKNJRVYsafBxXf8HGcyJT_prwzYZYoBcyOfWISCs50AsMnbEd1e-8aIERALNtN7MAdGJZ2fQbujTUKvOy8k67--fiIrmM7tHh2pKgdgU')"></div>
+</div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<!-- Sidebar - Agent List -->
+<aside class="w-20 md:w-24 border-r border-primary/10 flex flex-col items-center py-6 gap-6 bg-background-light dark:bg-background-dark/50">
+<div class="relative group cursor-pointer">
+<div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-[0_0_15px_rgba(15,240,146,0.3)]">
+<span class="material-symbols-outlined text-background-dark font-bold">bolt</span>
+</div>
+<div class="absolute -right-1 -top-1 w-3 h-3 bg-primary rounded-full border-2 border-background-dark"></div>
+</div>
+<div class="w-12 h-12 rounded-xl border border-primary/20 hover:border-primary/50 transition-all flex items-center justify-center cursor-pointer group">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors">smart_toy</span>
+</div>
+<div class="w-12 h-12 rounded-xl border border-primary/10 hover:border-primary/50 transition-all flex items-center justify-center cursor-pointer group">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors">auto_awesome</span>
+</div>
+<div class="w-12 h-12 rounded-xl border border-primary/10 hover:border-primary/50 transition-all flex items-center justify-center cursor-pointer group">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors">database</span>
+</div>
+<div class="mt-auto">
+<button class="w-12 h-12 rounded-xl border border-dashed border-primary/30 flex items-center justify-center hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-primary/60">add</span>
+</button>
+</div>
+</aside>
+<!-- Chat Container -->
+<section class="flex-1 flex flex-col relative bg-background-light dark:bg-[#0a0c0b]">
+<!-- Chat Messages Area -->
+<div class="flex-1 overflow-y-auto p-6 space-y-8">
+<!-- Date Header -->
+<div class="flex justify-center">
+<span class="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-primary/40 px-3 py-1 bg-primary/5 rounded">Today</span>
+</div>
+<!-- AI Message -->
+<div class="flex gap-4 max-w-3xl">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex-shrink-0 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary text-xl">temp_preferences_custom</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold text-primary">Emerald Core</span>
+<span class="text-[10px] text-slate-500 uppercase tracking-wider">Assistant</span>
+</div>
+<div class="glass dark:bg-primary/5 p-5 rounded-xl rounded-tl-none border border-primary/10">
+<p class="text-[15px] leading-relaxed text-slate-700 dark:text-slate-200">
+                                Welcome back. I've analyzed the latest performance metrics for your workspace. There is a noticeable efficiency gain in the neural processing layer. How would you like to proceed with the next deployment?
+                            </p>
+</div>
+<div class="flex gap-4 mt-1">
+<button class="flex items-center gap-1.5 text-xs text-slate-500 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">content_copy</span> Copy
+                            </button>
+<button class="flex items-center gap-1.5 text-xs text-slate-500 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">refresh</span> Regenerate
+                            </button>
+</div>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex gap-4 max-w-3xl ml-auto flex-row-reverse">
+<div class="w-10 h-10 rounded-lg bg-slate-800 flex-shrink-0 flex items-center justify-center overflow-hidden border border-slate-700">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close up of a minimalist digital user avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDidMIklQw7foKopMCEij2l1BERzTK-gAOhtC612qs8uVPeN89p32URhQK4AqV86i04ep5O2TJbLbFisEZ6bCbROWHsv6rf33irQHWBD5EDi-FxcZbOTpYw94w8trNGRx-CsIekPpd9p7Vl0KzyKjRARZxXxd6RDMK3NxuUhsLJfJtwJT_Vf3Ztt3pa-a3DTZ8CE4Znte01OelJzG0PRjjBGO3cD58QeD7Oe8UXUcMUGG5Qq0MzRGksddzlxP0RsHjTqnx5SBmHcrk"/>
+</div>
+<div class="flex flex-col gap-2 items-end">
+<div class="flex items-center gap-2">
+<span class="text-[10px] text-slate-500 uppercase tracking-wider">You</span>
+<span class="text-sm font-bold">Admin</span>
+</div>
+<div class="bg-primary text-background-dark p-5 rounded-xl rounded-tr-none shadow-[0_4px_20px_rgba(15,240,146,0.15)]">
+<p class="text-[15px] font-medium leading-relaxed">
+                                Let's review the deployment logs for the last 24 hours and flag any anomalies in the latency spikes.
+                            </p>
+</div>
+</div>
+</div>
+<!-- AI Message with List/Code block style -->
+<div class="flex gap-4 max-w-3xl">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex-shrink-0 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary text-xl">temp_preferences_custom</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold text-primary">Emerald Core</span>
+<span class="text-[10px] text-slate-500 uppercase tracking-wider">Assistant</span>
+</div>
+<div class="glass dark:bg-primary/5 p-5 rounded-xl rounded-tl-none border border-primary/10">
+<p class="text-[15px] leading-relaxed text-slate-700 dark:text-slate-200 mb-4">
+                                Understood. Here is the summary of the identified anomalies in the deployment logs:
+                            </p>
+<div class="space-y-3 bg-background-dark/40 p-4 rounded-lg border border-primary/5">
+<div class="flex items-center gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+<p class="text-sm text-slate-300">04:12 UTC - Node-76 responded with 450ms latency (15% deviation)</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+<p class="text-sm text-slate-300">11:05 UTC - Intermittent handshake failures on gateway-alpha</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+<p class="text-sm text-slate-300">18:44 UTC - Database query timeout during scheduled maintenance</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-6 bg-background-light dark:bg-background-dark/80 backdrop-blur-md">
+<div class="max-w-4xl mx-auto relative">
+<div class="flex items-end gap-3 p-4 bg-slate-100 dark:bg-surface-dark border border-slate-200 dark:border-primary/10 rounded-xl">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">attach_file</span>
+</button>
+<textarea class="flex-1 bg-transparent border-none focus:ring-0 text-slate-800 dark:text-slate-100 placeholder-slate-500 text-[15px] resize-none py-2 min-h-[44px] max-h-32" placeholder="Message Emerald AI..."></textarea>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">mic</span>
+</button>
+<button class="bg-primary text-background-dark w-10 h-10 rounded flex items-center justify-center shadow-[0_0_15px_rgba(15,240,146,0.2)] hover:scale-105 transition-transform active:scale-95">
+<span class="material-symbols-outlined font-bold">arrow_upward</span>
+</button>
+</div>
+</div>
+<p class="text-[10px] text-center mt-3 text-slate-500 uppercase tracking-widest font-medium">
+                        System Status: Optimal | Encrypted Session
+                    </p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Mobile Nav (Styled based on the provided component) -->
+<nav class="flex border-t border-primary/10 bg-background-light dark:bg-surface-dark px-4 pb-6 pt-3 md:hidden">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined fill-1">chat_bubble</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">group</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">history</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">settings</span>
+</a>
+</nav>
+</body></html>

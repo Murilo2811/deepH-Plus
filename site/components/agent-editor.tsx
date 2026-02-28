@@ -3,16 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Agent, createOrUpdateAgent, fetchSkills, fetchProviders } from "@/lib/api";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Save, ChevronLeft, Command } from "lucide-react";
+import { Settings2, Terminal, Blocks, ChevronLeft, Save, Loader2, Code2 } from "lucide-react";
 import Link from "next/link";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
     const router = useRouter();
@@ -29,7 +23,6 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
 
     const [allSkills, setAllSkills] = useState<{ name: string, description: string }[]>([]);
     const [allProviders, setAllProviders] = useState<string[]>([]);
-
     const [yamlStr, setYamlStr] = useState("");
 
     useEffect(() => {
@@ -54,7 +47,7 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
             }
             setYamlStr(lines.join("\n"));
         }
-    }, [mode]);
+    }, [mode, name, description, provider, model, selectedSkills, systemPrompt]);
 
     const toggleSkill = (s: string) => {
         setSelectedSkills(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
@@ -62,7 +55,7 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
 
     const handleSave = async () => {
         if (!name.trim()) {
-            setError("O nome do agente é obrigatório.");
+            setError("Agent Name is required.");
             return;
         }
 
@@ -81,7 +74,7 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
             await createOrUpdateAgent(ag);
             router.push("/");
         } catch (err: any) {
-            setError(err.message || "Erro ao salvar");
+            setError(err.message || "Error saving");
         } finally {
             setSaving(false);
         }
@@ -89,150 +82,181 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-6 max-w-4xl"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex-1 w-full max-w-4xl mx-auto pb-24 px-6 pt-6"
         >
-            <div className="flex items-center justify-between pb-6 border-b border-border/50">
-                <div className="flex items-center gap-4">
-                    <Link href="/">
-                        <button className="flex items-center justify-center w-10 h-10 rounded-sm bg-neutral-bg1 border border-border text-text-secondary hover:text-text-primary hover:bg-neutral-bg2 transition-all">
-                            <ChevronLeft className="w-5 h-5" />
-                        </button>
-                    </Link>
-                    <div>
-                        <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
-                            {initialAgent ? `Editar ${initialAgent.name}` : "Novo Agente"}
-                        </h1>
-                        <p className="text-sm text-text-muted mt-1">Configuração estrutural e comportamental</p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-4">
-                    {error && <span className="text-sm text-status-error font-medium">{error}</span>}
-                    <button
-                        onClick={handleSave}
-                        disabled={saving}
-                        className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm text-sm font-semibold transition-all duration-200 bg-brand hover:bg-brand-hover text-brand-foreground shadow-sm disabled:opacity-50"
-                    >
-                        <Save className="w-4 h-4" />
-                        {saving ? "Registrando..." : "Salvar Agente"}
+            <div className="flex items-center gap-4 mb-8 pb-4 border-b border-border-accent/30">
+                <Link href="/">
+                    <button className="text-primary flex size-10 shrink-0 items-center justify-center cursor-pointer hover:bg-primary/10 rounded-full transition-colors">
+                        <ChevronLeft className="w-5 h-5" />
                     </button>
+                </Link>
+                <div className="flex-1">
+                    <h1 className="text-slate-100 text-2xl font-bold font-display leading-tight tracking-tight">
+                        {initialAgent ? `Edit Agent: ${initialAgent.name}` : "Agent Configuration Panel"}
+                    </h1>
                 </div>
+                <Tabs value={mode} onValueChange={(v) => setMode(v as any)} className="bg-slate-panel rounded p-1 border border-border-accent">
+                    <TabsList className="bg-transparent h-8">
+                        <TabsTrigger value="visual" className="data-[state=active]:bg-background-dark data-[state=active]:text-primary text-slate-400 text-xs">Visual</TabsTrigger>
+                        <TabsTrigger value="yaml" className="data-[state=active]:bg-background-dark data-[state=active]:text-primary text-slate-400 text-xs">YAML</TabsTrigger>
+                    </TabsList>
+                </Tabs>
             </div>
 
-            <Tabs value={mode} onValueChange={(v) => setMode(v as any)}>
-                <TabsList className="bg-neutral-bg2 border border-border p-1 rounded-sm">
-                    <TabsTrigger value="visual" className="data-[state=active]:bg-neutral-bg3 data-[state=active]:text-text-primary text-text-secondary rounded-sm px-4">Visual</TabsTrigger>
-                    <TabsTrigger value="yaml" className="data-[state=active]:bg-neutral-bg3 data-[state=active]:text-text-primary text-text-secondary rounded-sm px-4 font-mono text-xs">YAML</TabsTrigger>
-                </TabsList>
+            {error && (
+                <div className="mb-4 p-4 rounded bg-red-500/10 border border-red-500/50 text-red-400 text-sm">
+                    {error}
+                </div>
+            )}
 
-                <Card className="mt-6 glass-card p-8 bg-neutral-bg1/40">
-                    <TabsContent value="visual" className="m-0 space-y-8">
+            <AnimatePresence mode="wait">
+                {mode === "visual" ? (
+                    <motion.div key="visual" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        {/* General Info */}
+                        <section className="mb-8">
+                            <div className="flex items-center gap-2 mb-4">
+                                <Settings2 className="text-primary w-5 h-5" />
+                                <h2 className="text-slate-100 text-xl font-bold tracking-tight font-display">General Information</h2>
+                            </div>
+                            <div className="space-y-4">
+                                <label className="flex flex-col w-full">
+                                    <p className="text-slate-300 text-sm font-medium pb-1.5 px-1">Agent Name</p>
+                                    <input
+                                        type="text"
+                                        disabled={!!initialAgent}
+                                        value={name}
+                                        onChange={e => setName(e.target.value)}
+                                        className="form-input flex w-full rounded border-border-accent bg-slate-panel focus:ring-1 focus:ring-primary focus:border-primary text-slate-100 h-12 px-4 placeholder:text-slate-500 disabled:opacity-50"
+                                        placeholder="e.g. Research Assistant"
+                                    />
+                                </label>
+                                <label className="flex flex-col w-full">
+                                    <p className="text-slate-300 text-sm font-medium pb-1.5 px-1">Description</p>
+                                    <input
+                                        type="text"
+                                        value={description}
+                                        onChange={e => setDescription(e.target.value)}
+                                        className="form-input flex w-full rounded border-border-accent bg-slate-panel focus:ring-1 focus:ring-primary focus:border-primary text-slate-100 h-12 px-4 placeholder:text-slate-500"
+                                        placeholder="Short description of the agent's purpose"
+                                    />
+                                </label>
+                            </div>
+                        </section>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="space-y-3">
-                                <Label className="text-text-secondary font-medium">Name</Label>
-                                <Input
-                                    placeholder="ex: security-auditor"
-                                    value={name} onChange={e => setName(e.target.value)}
-                                    disabled={!!initialAgent}
-                                    className="glass-input h-11"
+                        {/* System Prompt */}
+                        <section className="mb-8">
+                            <div className="flex items-center gap-2 mb-4">
+                                <Terminal className="text-primary w-5 h-5" />
+                                <h2 className="text-slate-100 text-xl font-bold tracking-tight font-display">System Prompt</h2>
+                            </div>
+                            <label className="flex flex-col w-full">
+                                <textarea
+                                    value={systemPrompt}
+                                    onChange={e => setSystemPrompt(e.target.value)}
+                                    className="form-textarea flex w-full min-h-[180px] rounded border-border-accent bg-slate-panel focus:ring-1 focus:ring-primary focus:border-primary text-slate-100 p-4 font-mono text-sm leading-relaxed placeholder:text-slate-500"
+                                    placeholder="Enter core instructions for the AI behavior..."
                                 />
-                            </div>
-                            <div className="space-y-3">
-                                <Label className="text-text-secondary font-medium">Description</Label>
-                                <Input
-                                    placeholder="O que este agente faz?"
-                                    value={description} onChange={e => setDescription(e.target.value)}
-                                    className="glass-input h-11"
+                            </label>
+                        </section>
+
+                        {/* LLM Routing */}
+                        <section className="grid grid-cols-2 gap-4 mb-8">
+                            <label className="flex flex-col">
+                                <p className="text-slate-300 text-sm font-medium pb-1.5 px-1">Provider</p>
+                                <div className="relative">
+                                    <select
+                                        value={provider}
+                                        onChange={e => setProvider(e.target.value)}
+                                        className="form-select w-full rounded border-border-accent bg-slate-panel focus:ring-1 focus:ring-primary focus:border-primary text-slate-100 h-12 px-4 appearance-none"
+                                    >
+                                        <option value="deepseek">DeepSeek</option>
+                                        <option value="openai">OpenAI</option>
+                                        <option value="anthropic">Anthropic</option>
+                                        <option value="local">Local (Ollama)</option>
+                                    </select>
+                                </div>
+                            </label>
+                            <label className="flex flex-col">
+                                <p className="text-slate-300 text-sm font-medium pb-1.5 px-1">Model</p>
+                                <input
+                                    type="text"
+                                    value={model}
+                                    onChange={e => setModel(e.target.value)}
+                                    className="form-input flex w-full rounded border-border-accent bg-slate-panel focus:ring-1 focus:ring-primary focus:border-primary text-slate-100 h-12 px-4 placeholder:text-slate-500"
+                                    placeholder="e.g. gpt-4o, deepseek-chat"
                                 />
+                            </label>
+                        </section>
+
+                        {/* Skills */}
+                        <section className="mb-0">
+                            <div className="flex items-center gap-2 mb-4">
+                                <Blocks className="text-primary w-5 h-5" />
+                                <h2 className="text-slate-100 text-xl font-bold tracking-tight font-display">Skills & Capabilities</h2>
                             </div>
-                        </div>
-
-                        <div className="h-px bg-border/50" />
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="space-y-3">
-                                <Label className="text-text-secondary font-medium">Provider</Label>
-                                <Select value={provider} onValueChange={setProvider}>
-                                    <SelectTrigger className="glass-input h-11"><SelectValue /></SelectTrigger>
-                                    <SelectContent className="bg-neutral-bg2 border-border text-text-primary">
-                                        {allProviders.map(p => (
-                                            <SelectItem key={p} value={p} className="focus:bg-neutral-bg3 focus:text-brand">{p}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-3">
-                                <Label className="text-text-secondary font-medium">Model</Label>
-                                <Input
-                                    placeholder="ex: deepseek-chat"
-                                    value={model} onChange={e => setModel(e.target.value)}
-                                    className="glass-input h-11"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="h-px bg-border/50" />
-
-                        <div className="space-y-3">
-                            <Label className="text-text-secondary font-medium">System Prompt</Label>
-                            <Textarea
-                                placeholder="Defina o comportamento e restrições do agente..."
-                                className="min-h-[180px] glass-input font-mono text-[13px] leading-relaxed p-4 resize-y"
-                                value={systemPrompt}
-                                onChange={e => setSystemPrompt(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="h-px bg-border/50" />
-
-                        <div className="space-y-4">
-                            <Label className="text-text-secondary font-medium flex items-center gap-2">
-                                Skills
-                                <span className="bg-neutral-bg3 text-text-muted text-[10px] px-2 py-0.5 rounded-sm">{selectedSkills.length} ativas</span>
-                            </Label>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <div className="grid grid-cols-2 gap-3">
                                 {allSkills.map(skill => {
                                     const isSelected = selectedSkills.includes(skill.name);
                                     return (
-                                        <div
-                                            key={skill.name}
-                                            onClick={() => toggleSkill(skill.name)}
-                                            className={`cursor-pointer border rounded-sm p-4 text-sm transition-all flex flex-col gap-2 ${isSelected
-                                                    ? 'bg-brand/5 border-brand/40 text-brand'
-                                                    : 'bg-neutral-bg2/50 border-border hover:border-text-muted text-text-secondary'
-                                                }`}
-                                        >
-                                            <span className="font-semibold flex items-center gap-2 line-clamp-1 font-mono text-[13px]">
-                                                <Command className={`w-3.5 h-3.5 ${isSelected ? 'text-brand' : 'text-text-muted'}`} />
-                                                {skill.name}
-                                            </span>
-                                            <span className={`text-[12px] line-clamp-2 leading-relaxed ${isSelected ? 'text-brand/70' : 'text-text-muted'}`}>
-                                                {skill.description}
-                                            </span>
+                                        <div key={skill.name} className="relative">
+                                            <input
+                                                type="checkbox"
+                                                className="hidden peer"
+                                                id={`skill-${skill.name}`}
+                                                checked={isSelected}
+                                                onChange={() => toggleSkill(skill.name)}
+                                            />
+                                            <label
+                                                htmlFor={`skill-${skill.name}`}
+                                                className={`flex items-center gap-3 p-3 rounded cursor-pointer transition-all duration-200 border ${isSelected ? 'bg-primary/20 border-primary shadow-[0_0_15px_rgba(16,183,127,0.3)]' : 'border-border-accent/50 bg-slate-panel/40 hover:bg-slate-panel/80'
+                                                    }`}
+                                            >
+                                                <Code2 className={`w-5 h-5 ${isSelected ? 'text-primary' : 'text-slate-400'}`} />
+                                                <div className="flex flex-col">
+                                                    <span className={`text-sm font-medium ${isSelected ? 'text-slate-100' : 'text-slate-300'}`}>{skill.name}</span>
+                                                    <span className="text-[10px] text-slate-500 line-clamp-1">{skill.description}</span>
+                                                </div>
+                                            </label>
                                         </div>
                                     )
                                 })}
                             </div>
-                        </div>
-                    </TabsContent>
-
-                    <TabsContent value="yaml" className="m-0 space-y-4">
-                        <div className="space-y-3">
-                            <Label className="text-text-secondary font-medium flex justify-between">
-                                <span className="flex items-center gap-2"><Command className="w-3.5 h-3.5" /> Source Preview (Read-only)</span>
-                            </Label>
-                            <Textarea
+                        </section>
+                    </motion.div>
+                ) : (
+                    <motion.div key="yaml" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        <div className="space-y-4">
+                            <textarea
                                 value={yamlStr}
                                 readOnly
-                                className="min-h-[400px] bg-neutral-bg1 border border-border text-brand font-mono text-[13px] leading-relaxed p-5 rounded-sm"
+                                className="w-full min-h-[400px] rounded border border-border-accent bg-slate-panel text-primary p-4 font-mono text-[13px] leading-relaxed resize-y focus:outline-none"
                             />
-                            <p className="text-xs text-text-muted">Nesta versão as edições diretas pelo YAML estão desativadas. Use a aba Visual.</p>
+                            <p className="text-xs text-slate-500 text-center">Para alterar este conteúdo, volte para a aba Visual.</p>
                         </div>
-                    </TabsContent>
-                </Card>
-            </Tabs>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Bottom Actions Fixed Footer */}
+            <div className="fixed bottom-0 left-0 md:left-24 right-0 p-4 border-t border-primary/10 bg-background-dark/80 backdrop-blur-xl flex justify-end gap-4 z-40">
+                <div className="max-w-4xl w-full flex gap-4 mx-auto">
+                    <Link href="/" className="flex-1">
+                        <button className="w-full h-12 rounded border border-border-accent text-slate-300 font-bold hover:bg-slate-panel transition-colors">
+                            Cancel
+                        </button>
+                    </Link>
+                    <button
+                        onClick={handleSave}
+                        disabled={saving}
+                        className="flex-[2] h-12 rounded bg-primary text-background-dark font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                        {saving ? "Deploying..." : "Deploy Agent"}
+                    </button>
+                </div>
+            </div>
         </motion.div>
     );
 }

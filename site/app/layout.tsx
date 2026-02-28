@@ -17,25 +17,25 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="min-h-screen text-text-primary flex overflow-hidden antialiased bg-neutral-bg1">
+      <body className="bg-background-dark text-slate-100 min-h-screen flex flex-col font-display antialiased">
+        <AppHeader />
 
-        {/* Ambient glow minimalista */}
-        <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-          <div className="absolute top-0 left-[20%] w-[600px] h-[300px] rounded-full opacity-[0.03] bg-brand blur-3xl" />
-        </div>
+        <main className="flex flex-1 overflow-hidden">
+          <AppSidebar />
 
-        <AppSidebar />
-
-        <div className="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
-          <AppHeader />
-          <main className="flex-1 overflow-y-auto w-full relative">
-            <div className="max-w-6xl mx-auto w-full px-6 py-8 md:px-10 md:py-12">
-              <div className="animate-in">
-                {children}
-              </div>
+          <section className="flex-1 flex flex-col relative bg-background-dark overflow-y-auto">
+            {/* Decorative Gradient Background Element based on stitched html */}
+            <div className="fixed top-0 left-0 -z-10 w-full h-full overflow-hidden pointer-events-none">
+              <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full"></div>
+              <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[100px] rounded-full"></div>
             </div>
-          </main>
-        </div>
+
+            <div className="animate-in w-full h-full">
+              {children}
+            </div>
+          </section>
+        </main>
+
       </body>
     </html>
   );

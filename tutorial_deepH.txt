@@ -1,60 +1,62 @@
 ==============================================================
-         TUTORIAL COMPLETO DO deepH
+         TUTORIAL COMPLETO DO deepH Plus
          Guia Passo a Passo para Iniciantes
 ==============================================================
 
-Autor: Equipe deepH
-Versão: 2.0 — Fevereiro de 2026
+Autor: Equipe deepH Pçus
+Versão: 3.0 — Fevereiro de 2026 (UI Premium)
 
 ==============================================================
 ANTES DE COMEÇAR: LEIA ISTO!
 ==============================================================
 
-Este tutorial foi escrito para quem nunca usou o deepH antes.
+Este tutorial foi escrito para quem nunca usou o deepH Plus antes.
 Não precisa ser especialista em computadores.
 
 Sempre que você ver um texto assim:
   [CAIXA DE DESTAQUE] → É uma dica ou aviso importante.
 
 E quando ver uma linha como:
-  .\deeph.exe ini
-essa é uma instrução que você deve digitar no computador.
+  .\deeph.exe ui
+essa é uma instrução que você pode digitar no computador para
+iniciar ferramentas manuais, caso não queira usar o atalho.
 
 Vamos começar!
 
 
 ==============================================================
-O QUE É O deepH?
+O QUE É O deepH Plus?
 ==============================================================
 
-O deepH é o seu "escritório de assistentes virtuais" pessoal.
-Imagine que você contratou vários ajudantes que moram dentro
+O deepH Plus é o seu "escritório de assistentes virtuais" pessoal,
+agora com uma interface moderna, premium, escura (Dark Theme) e
+muito intuitiva baseada em conceitos de design avançados.
+
+Imagine que você tem vários "Agentes" que moram dentro
 do seu computador. Cada um desses ajudantes tem um nome,
-uma especialidade, e ferramentas para usar.
+uma especialidade e habilidades (skills).
 
 Você pode pedir para eles:
-  - Responder perguntas
-  - Analisar textos e documentos
-  - Criar conteúdo (textos, roteiros, e-mails)
-  - Resolver problemas complexos
-  - E muito mais!
+  - Responder perguntas complexas
+  - Analisar textos e documentos (com a skill de arquivo)
+  - Pesquisar na internet
+  - Resolver problemas lógicos e escrever códigos
 
-A GRANDE NOVIDADE: agora o deepH tem uma TELA VISUAL, como
-qualquer outro site ou aplicativo. Você não precisa saber
-digitar comandos para usar!
+A GRANDE NOVIDADE: A nova versão possui uma Dashboard Visual
+interativa, com relatórios em tempo real (Sparklines) e um Chat
+com layout sofisticado. Tudo rodando localmente na sua máquina.
 
 
 ==============================================================
-PARTE 1: ABRINDO O deepH PELA PRIMEIRA VEZ
+PARTE 1: ABRINDO O deepH Plus PELA PRIMEIRA VEZ
 ==============================================================
 
 Siga estes passos na ordem. São simples!
 
 --------------------------------------------------------------
-PASSO 1 — Encontre a pasta do deepH
+PASSO 1 — Encontre a pasta do deepH Plus
 
-Abra o "Explorador de Arquivos" do Windows. É aquela pastinha
-amarela que aparece na barra de tarefas (barra do rodapé).
+Abra o "Explorador de Arquivos" do Windows. 
 
 Navegue até a seguinte pasta:
   C:\Users\BOSS\deepH
@@ -65,377 +67,147 @@ de endereços no topo do Explorador e cole o caminho acima.
 --------------------------------------------------------------
 PASSO 2 — Procure o arquivo start_ui.bat
 
-Dentro da pasta "deepH", você vai encontrar vários arquivos.
+Dentro da pasta, você vai encontrar vários arquivos.
 Procure um com o nome exato:
 
   start_ui.bat
 
-O ícone dele parece uma engrenagem ou um papel com listras
-pretas e brancas.
-
 --------------------------------------------------------------
 PASSO 3 — Abra o Painel dando dois cliques
 
-Dê um DUPLO CLIQUE no arquivo start_ui.bat.
+Dê um DUPLO CLIQUE em start_ui.bat.
 
 O que vai acontecer:
-  1. Uma janela preta (chamada de "terminal") vai abrir.
-     Você vai ver algumas letras correndo nela. Normal!
-  2. Em seguida, o seu navegador de internet (Chrome, Edge,
-     Firefox) vai abrir automaticamente.
-  3. A tela do PAINEL DEEPH vai aparecer pronta para usar.
+  1. Uma janela preta (terminal) vai abrir e iniciar o motor em Go.
+  2. Em seguida, o seu navegador (Chrome, Edge etc) vai abrir
+     automaticamente na página http://localhost:7730.
+  3. A elegante TELA DO PAINEL DEEPH PLUS vai carregar, exibindo
+     um visual moderno com tons verdes neon (Neural Link Active).
 
 [AVISO IMPORTANTE]: Não feche a janela preta! Ela é o
-"motor" que faz o painel funcionar. Se fechar, o painel
-para de responder. Minimize apenas se precisar.
+cérebro (back-end). Se fechar, o painel Front-end para de responder.
+Pode minimizá-la tranquilamente.
 
 
 ==============================================================
-PARTE 2: CONHECENDO O PAINEL VISUAL DO deepH
+PARTE 2: CONHECENDO O NOVO PAINEL VISUAL
 ==============================================================
 
-Quando o painel abrir no navegador, você vai ver uma tela
-escura com um menu do lado esquerdo. Veja abaixo o que cada
-parte faz:
+--------------------------------------------------------------
+2.1 — A BARRA LATERAL ESQUERDA (Navegação Rápida)
+
+Nela você encontra botões minimalistas usando ícones:
+  - QUADRADOS (Dashboard) → Volta à tela inicial com todos os agentes.
+  - SINAL DE + (Add)      → Cria um novo agente rapidamente.
+  - ENGRENAGEM (Settings) → Gerencia suas configurações e API Keys.
 
 --------------------------------------------------------------
-2.1 — A BARRA LATERAL (menu vertical à esquerda)
+2.2 — TELA INICIAL (DASHBOARD)
 
-Nela você encontra as seções principais:
-  1. Início (Home)          → Veja todos os seus agentes
-  2. Conversas (Chat)       → Onde você fala com os agentes
-  3. Configurações          → Onde você ajusta o deepH
-
---------------------------------------------------------------
-2.2 — TELA INICIAL: OS SEUS AGENTES
-
-A primeira tela que você vê é o "Dashboard" (painel de início).
-Lá aparecem CARTÕES, um para cada agente que você tem.
+A primeira tela que você vê é o Dashboard. 
+Lá aparecem CARTÕES translúcidos e vívidos de agentes.
 
 Cada cartão mostra:
-  - O NOME do agente (ex: "guide", "analista")
-  - A DESCRIÇÃO: o que ele foi ensinado a fazer
-  - O CÉREBRO que ele usa (ex: DeepSeek, OpenAI)
-  - Dois botões:
-      [Conversar]  → Abre o chat com esse agente
-      [Engrenagem] → Abre o editor para alterar o agente
-
-Se for a sua primeira vez, você já vai ver o agente padrão
-chamado "guide". Ele está pronto para ser usado!
+  - O NOME do agente e seu Provedor (ex: DeepSeek ou OpenAI)
+  - A DESCRIÇÃO: o que ele faz.
+  - SINAIS DE ATIVIDADE: Você verá pílulas coloridas informando
+    se a API está ativa.
+  - Clicar num Cartão abre a tela de Chat.
+  - Clicar na ferramenta perto do nome dele abre as Configurações (Editor).
 
 
 ==============================================================
-PARTE 3: CONFIGURANDO AS CHAVES DE API (PASSO ESSENCIAL)
+PARTE 3: CONFIGURANDO AS CHAVES DE API
 ==============================================================
 
-Para o deepH "pensar de verdade", ele precisa de uma chave
-de acesso de um serviço de inteligência artificial.
-
-Pense assim: é como ativar um serviço de streaming. Você
-precisa de uma conta e de um código de acesso.
-
-Os serviços compatíveis com o deepH são:
-  - DeepSeek  (barato e muito bom para uso geral)
-  - OpenAI    (o mesmo por trás do ChatGPT)
-  - Anthropic (empresa que faz o Claude)
+Para o deepH Plus ter Inteligência, ele precisa de uma chave 
+de acesso aos cérebros de IA da nuvem (ou um local).
 
 --------------------------------------------------------------
-PASSO 1 — Crie uma conta no serviço desejado
+PASSO 1 — Acesse a Engrenagem (Settings)
 
-  Para o DeepSeek (recomendado para começar):
-  1. Acesse: https://platform.deepseek.com
-  2. Clique em "Sign Up" (Cadastrar)
-  3. Crie sua conta gratuitamente
-  4. Vá em "API Keys" no menu
-  5. Clique em "Create API Key"
-  6. Copie o código que aparecer (começa com "sk-...")
-
-[DICA]: Guarde esse código em algum lugar seguro! Ele é como
-a senha do seu ajudante digital.
+No menu esquerdo, clique no ícone de engrenagem.
+A tela de "System Configuration" vai aparecer com seus KPI (Estatísticas
+simuladas) e os "Active Keys".
 
 --------------------------------------------------------------
-PASSO 2 — Cole a chave no painel do deepH
+PASSO 2 — Cole as chaves nos cards de segurança
 
-  1. No Painel do deepH, clique em "Configurações" no menu
-     lateral esquerdo.
-  2. Você vai ver campos para as diferentes chaves.
-  3. No campo "DeepSeek", cole o código copiado (sk-...).
-  4. Clique no botão "Salvar".
+Você verá Provedores já listados em layouts sofisticados:
+  - DeepSeek (Principal)
+  - OpenAI (Ativo)
+  - Anthropic (Em espera)
 
-[SEGURANÇA]: Sua chave fica salva APENAS no seu computador.
-Ela nunca é enviada para a internet separadamente.
-
-Pronto! O deepH agora sabe usar a inteligência real.
-
-
-==============================================================
-PARTE 4: CONVERSANDO COM UM AGENTE
-==============================================================
-
-Agora vem a parte mais divertida: falar com seus assistentes!
+Nos campos escuros de input (sk-proj...), cole sua chave respectiva.
+Exemplo: crie uma chave no platform.deepseek.com e cole no campo
+do DeepSeek.
 
 --------------------------------------------------------------
-PASSO A PASSO PARA INICIAR UMA CONVERSA
+PASSO 3 — Salve e Confirme
 
-  1. Na tela inicial, encontre o cartão do agente "guide"
-     (ou qualquer outro que você tenha).
-  2. Clique no botão verde "Conversar".
-  3. Uma tela de chat vai abrir, parecida com o WhatsApp.
-  4. No campo de texto na PARTE DE BAIXO da tela, escreva
-     a sua pergunta ou pedido.
-  5. Aperte ENTER ou clique no botão de envio (seta verde).
-  6. O agente vai começar a responder em tempo real!
-
---------------------------------------------------------------
-EXEMPLOS DE PEDIDOS QUE VOCÊ PODE FAZER:
-
-  "Me explique o que é inteligência artificial em palavras simples."
-  "Escreva um e-mail formal pedindo um orçamento para reformas."
-  "Analise o seguinte texto e me diga os pontos principais: [cole seu texto aqui]"
-  "Me ajude a criar um cardápio para a semana com comidas saudáveis."
-  "Resuma a seguinte notícia em 3 pontos: [cole a notícia aqui]"
-
-[DICA DE USO]: Quanto mais detalhes você der no seu pedido,
-melhor será a resposta do agente. Em vez de dizer "escreva
-algo sobre viagem", diga "escreva um roteiro de 5 dias
-para uma viagem a família com crianças pequenas ao Rio de
-Janeiro, com foco em locais gratuitos ou baratos."
-
---------------------------------------------------------------
-DURANTE A CONVERSA
-
-Você pode continuar fazendo perguntas em sequência, como
-numa conversa normal. O agente "lembra" do que foi dito
-naquela sessão.
-
-Para iniciar um assunto completamente novo, basta fechar
-a aba do chat e abrir uma conversa nova pelo botão
-"Conversar" novamente.
+Clique em "Save Settings" no botão verde neon brilhante no final.
+Ele gravará tudo localmente no seu arquivo escondido `config.json`.
+A chave NUNCA é enviada para ninguém a não ser a central do modelo!
 
 
 ==============================================================
-PARTE 5: CRIANDO O SEU PRÓPRIO AGENTE
+PARTE 4: CONVERSANDO COM SEUS AGENTES (O CHAT)
 ==============================================================
 
-Quer criar um assistente com características especiais?
-Por exemplo, um agente que:
-  - Sempre responde em português simples
-  - Foca só em assuntos de saúde e nutrição
-  - Age como um advogado para dar orientações legais
-
-Tudo isso é possível criando um agente personalizado!
-
---------------------------------------------------------------
-PASSO 1 — Acesse o criador de agentes
-
-  No menu lateral, clique em "Novo Agente" (ou no botão + 
-  que aparece perto dos cartões de agentes).
-
---------------------------------------------------------------
-PASSO 2 — Preencha as informações básicas
-
-  NOME: Escolha um nome sem espaços ou acentos.
-        Exemplo: "doutor_saude" ou "assistente_juridico"
-        
-  DESCRIÇÃO: Explique brevemente o que ele faz.
-        Exemplo: "Agente especializado em saúde e bem-estar."
-
-  PROVIDER (Cérebro): Selecione qual empresa de IA vai usar.
-        Para quem configurou o DeepSeek, escolha "deepseek".
-
-  MODEL (Modelo): Deixe como "deepseek-chat" para uso geral.
-
---------------------------------------------------------------
-PASSO 3 — Escreva as instruções do agente (System Prompt)
-
-Esta é a parte mais importante! É aqui que você "ensina"
-o seu agente a se comportar do jeito que você quer.
-
-Escreva no campo "System Prompt" as regras do seu agente.
-Quanto mais detalhadas as regras, melhor o comportamento.
-
-Exemplos de System Prompt:
-
-  PARA UM AGENTE EDUCATIVO:
-  "Você é um professor muito paciente e amigável.
-   Sempre explique as coisas usando exemplos do dia a dia.
-   Nunca use jargões técnicos sem explicar o significado.
-   Responda sempre em português do Brasil simples."
-
-  PARA UM AGENTE DE SAÚDE:
-  "Você é um assistente de saúde e bem-estar.
-   Dê orientações gerais sobre alimentação saudável, exercícios
-   e qualidade de vida. Sempre recomende a consulta com um
-   profissional de saúde para diagnósticos específicos.
-   Responda de forma empática e encorajadora."
-
-  PARA UM AGENTE DE NEGÓCIOS:
-  "Você é um consultor de negócios experiente.
-   Ajude com estratégias de vendas, marketing e gestão.
-   Seja objetivo e direto. Use linguagem profissional mas
-   acessível. Sugira sempre exemplos práticos."
-
---------------------------------------------------------------
-PASSO 4 — Salve o agente
-
-  Clique no botão "Salvar Agente" no canto superior direito.
-
-  Pronto! Seu agente aparecerá na tela inicial e estará
-  pronto para conversar imediatamente.
+1. Volte na tela inicial (clicando no primeiro botão do menu).
+2. Clique no seu agente desejado (ex: "guide").
+3. A nova janela de chat se abrirá simulando um "Neural Link".
+4. Abaixo, você tem uma barra translúcida. Digite como em mensageiros.
+5. Aperte a Seta Para Cima (Enviar) ou pressione Enter.
+6. A resposta vai jorrar magicamente na tela em tempo real,
+   com destaques visuais ricos e formatação atraente!
 
 
 ==============================================================
-PARTE 6: EDITANDO UM AGENTE EXISTENTE
+PARTE 5: O EDITOR DE AGENTES DE ALTA PERFORMANCE
 ==============================================================
 
-Quer alterar um agente que já existe? Fácil!
+Apertando em "+ " na barra lateral ou na engrenagem de um agente
+específico na Dashboard, você abre o EDITOR DE AGENTE.
 
-  1. Na tela inicial, encontre o cartão do agente desejado.
-  2. Clique no ícone de ENGRENAGEM no canto do cartão.
-  3. A tela de edição vai abrir, igual ao criador.
-  4. Faça as alterações que quiser no System Prompt ou em
-     outras configurações.
-  5. Clique em "Salvar Agente".
+Ele permite ajustar o agente de 2 formas: VISUAL ou YAML!
+(Na nova versão, a tab do YAML é exibida de forma segura.)
 
-[DICA]: Experimente! Não existe "errar" um agente. Se não
-ficou bom, edite de novo quantas vezes precisar.
+No Visual você pode:
+- Mudar Nome, Descrição e o System Prompt (Regras dele).
+- Escolher qual Modelo e Provider ele responde (OpenAI, DeepSeek, Ollama).
+- Clicar nos cards em grade para ATIVAR SKILLS (ex: "Code Interpreter", 
+  "Web Search", "Memory"). As skills selecionadas brilham em verde!
 
-
-==============================================================
-PARTE 7: PARA USUÁRIOS AVANÇADOS — USANDO O TERMINAL
-==============================================================
-
-Se você é um usuário mais experiente, pode usar o terminal
-(tela preta de comandos) para ter acesso a funcionalidades
-extras e mais controle.
-
---------------------------------------------------------------
-COMO ABRIR O TERMINAL
-
-  1. Aperte a tecla Windows + R ao mesmo tempo.
-  2. Digite: powershell
-  3. Aperte ENTER.
-  4. Na janela que abrir, navegue até a pasta do deepH:
-  
-  cd C:\Users\BOSS\deepH
-
---------------------------------------------------------------
-TABELA DE COMANDOS ÚTEIS
-
-  COMANDO                                O QUE FAZ
-  -------                                ---------
-  .\deeph.exe ui                         Abre o Painel Visual
-  .\deeph.exe run AGENTE "mensagem"      Pergunta rápida sem abrir o chat
-  .\deeph.exe chat AGENTE                Bate-papo no terminal (modo texto)
-  .\deeph.exe trace AGENTE "mensagem"    Mostra o plano ANTES de executar
-  .\deeph.exe agent create NOME          Cria um agente em branco
-  .\deeph.exe validate                   Verifica se os arquivos estão OK
-  .\deeph.exe skill list                 Lista as habilidades disponíveis
-  .\deeph.exe skill add NOME             Instala uma nova habilidade
-
---------------------------------------------------------------
-USANDO AGENTES EM EQUIPE (MODO AVANÇADO)
-
-  Dois agentes trabalhando AO MESMO TEMPO (paralelo):
-    .\deeph.exe run "agente1+agente2" "Sua tarefa aqui"
-
-  Dois agentes em sequência (o resultado de um vai para o outro):
-    .\deeph.exe run "planejador>escritor" "Crie um plano de negócios"
-
-  Combinado (paralelo e sequência ao mesmo tempo):
-    .\deeph.exe run "pesquisador+leitor>redator>revisor" "Artigo sobre IA"
-
-  Neste último exemplo:
-    → pesquisador e leitor trabalham juntos ao mesmo tempo
-    → o resultado vai para o redator
-    → o revisor revisa o texto final
+Tudo que você trocar é gravado como mágica no arquivo .yaml local no disco.
+Clique em "Deploy Agent" (salvar).
 
 
 ==============================================================
-PARTE 8: SOLUCIONANDO PROBLEMAS COMUNS
+PARTE 6: MODO TERMINAL (AVANÇADO)
 ==============================================================
 
----
-PROBLEMA: O painel abriu mas não responde às minhas mensagens.
-SOLUÇÃO: Verifique se a janela preta (terminal) ainda está
-aberta. Se foi fechada, abra novamente o start_ui.bat.
+O DeepH Plus continua tendo o DNA robusto para desenvolvedores.
+Abra um Powershell na pasta e rande:
 
----
-PROBLEMA: O agente está dando respostas genéricas ou confusas.
-SOLUÇÃO: Edite o System Prompt do agente com instruções mais
-claras e específicas. Quanto mais detalhado, melhor.
+  .\deeph.exe run "agente1" "Sua tarefa aqui"
 
----
-PROBLEMA: Aparece um erro falando sobre "API Key" ou "chave".
-SOLUÇÃO: Vá em Configurações e certifique-se de que a sua
-chave de API foi colada corretamente (sem espaços extras
-no início ou no fim).
-
----
-PROBLEMA: A janela preta abre mas o navegador não abre.
-SOLUÇÃO: Abra o seu navegador manualmente e acesse:
-  http://localhost:7730
-
----
-PROBLEMA: O agente parece "lento" para responder.
-SOLUÇÃO: Isso é normal quando o serviço de IA está ocupado.
-Aguarde alguns segundos. Se não responder, tente novamente.
+Você também pode parear agentes para trabalharem juntos no terminal!
+Mas agora, você também pode curtir todo o fluxo via Navegador com luxo e estilo.
 
 
 ==============================================================
-GLOSSÁRIO: SIGNIFICADO DOS TERMOS TÉCNICOS
+SOLUCIONANDO PROBLEMAS
 ==============================================================
 
-  AGENTE          → Seu ajudante virtual. Pode ter qualquer
-                    especialidade que você quiser.
+PROBLEMA: "Failed to fetch"
+A janelinha preta fechou! Lembre-se, o backend Go precisa rodar para o UI funcionar. Abra o `start_ui.bat` de novo.
 
-  SYSTEM PROMPT   → As instruções que definem a personalidade 
-                    e comportamento do agente. Pense como as 
-                    "regras do jogo" que você cria para ele.
+PROBLEMA: Erro nas respostas do Chat.
+Pode ser que a API Key esteja vencida, incorreta ou sem limite de custos.
+Vá nas Configurações, revise as chaves gravadas.
 
-  SKILL           → Uma habilidade ou ferramenta que o agente
-                    pode usar (ex: ler arquivos, acessar internet).
-
-  PROVIDER        → A empresa que fornece a inteligência artificial
-                    (ex: DeepSeek, OpenAI, Anthropic).
-
-  MODEL           → O "modelo" ou "versão" do cérebro artificial.
-                    Exemplo: deepseek-chat, gpt-4, claude-3.
-
-  API KEY         → Uma chave de acesso (código) que o deepH usa
-                    para se conectar ao serviço de IA escolhido.
-
-  DASHBOARD       → O painel principal do deepH que você abre
-                    pelo navegador de internet.
-
-  TERMINAL        → A "tela preta" onde se digitam comandos.
-                    Opcional: a maioria dos usuários não precisa.
-
-  SESSÃO          → Uma conversa salva com histórico.
-                    Você pode retomar de onde parou.
-
-  WORKSPACE       → Seu "espaço de trabalho": a pasta do deepH
-                    com todos os seus agentes configurados.
-
-
+BOM TRABALHO E CUIDE BEM DOS SEUS AGENTES!
 ==============================================================
-RESUMO RÁPIDO PARA COMEÇAR EM 1 MINUTO
-==============================================================
-
-  1. Dê dois cliques em "start_ui.bat"
-  2. Espere o navegador abrir com o Painel
-  3. Vá em Configurações e cole sua chave de API (DeepSeek)
-  4. Clique em "Conversar" no agente "guide"
-  5. Digite o seu pedido e aperte Enter
-  6. Aproveite o seu assistente de IA pessoal!
-
-==============================================================
-
-Dúvidas? Releia a parte específica com calma.
-Pratique! Quanto mais você usar, mais natural vai ficando.
-
-Bom trabalho com seus novos assistentes virtuais! 😊
-
-==============================================================
-FIM DO TUTORIAL — deepH versão 2.0
+FIM DO TUTORIAL — deepH Plus versão 3.0
 ==============================================================
