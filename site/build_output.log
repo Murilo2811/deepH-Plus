@@ -1,0 +1,130 @@
+
+> deeph-site@0.1.0 prebuild
+> npm run clean
+
+
+> deeph-site@0.1.0 clean
+> node -e "const fs=require('fs'); for (const p of ['.next','.next-dev','tsconfig.tsbuildinfo']) fs.rmSync(p,{ recursive:true, force:true });"
+
+
+> deeph-site@0.1.0 build
+> next build
+
+   Ôû▓ Next.js 15.5.12
+
+   Creating an optimized production build ...
+
+warn - The `content` option in your Tailwind CSS configuration is missing or empty.
+warn - Configure your content sources or your generated CSS will be missing styles.
+warn - https://tailwindcss.com/docs/content-configuration
+<w> [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'Compilation/modules|C:\Users\BOSS\deepH\site\node_modules\next\dist\build\webpack\loaders\css-loader\src\index.js??ruleSet[1].rules[14].oneOf[10].use[2]!C:\Users\BOSS\deepH\site\node_modules\next\dist\build\webpack\loaders\postcss-loader\src\index.js??ruleSet[1].rules[14].oneOf[10].use[3]!C:\Users\BOSS\deepH\site\app\globals.css': No serializer registered for PostCSSSyntaxError
+<w> while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> PostCSSSyntaxError
+Failed to compile.
+
+./app/globals.css:1:1
+Syntax error: C:\Users\BOSS\deepH\site\app\globals.css The `bg-neutral-bg1` class does not exist. If `bg-neutral-bg1` is a custom class, make sure it is defined within a `@layer` directive.
+
+> 1 | @tailwind base;
+    | ^
+  2 | @tailwind components;
+  3 | @tailwind utilities;
+
+./app/globals.css
+Syntax error: C:\Users\BOSS\deepH\site\app\globals.css The `bg-neutral-bg1` class does not exist. If `bg-neutral-bg1` is a custom class, make sure it is defined within a `@layer` directive. (1:1)
+
+> 1 | @tailwind base;
+    | ^
+  2 | @tailwind components;
+  3 | @tailwind utilities;
+
+    at tryRunOrWebpackError (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:316119)
+    at __webpack_require_module__ (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:131532)
+    at __nested_webpack_require_161494__ (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:130967)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:131824
+    at symbolIterator (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14444)
+    at done (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14824)
+    at Hook.eval [as callAsync] (eval at create (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:14:9224), <anonymous>:15:1)
+    at Hook.CALL_ASYNC_DELEGATE [as _callAsync] (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:14:6378)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:130687
+    at symbolIterator (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14402)
+    at timesSync (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:5027)
+    at Object.eachLimit (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14208)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:130247
+    at symbolIterator (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14444)
+    at timesSync (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:5027)
+    at Object.eachLimit (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14208)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:129985
+    at symbolIterator (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14444)
+    at done (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14824)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:129496
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:110331
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:315955
+    at _done (eval at create (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:14:9224), <anonymous>:9:1)
+    at Hook.eval [as callAsync] (eval at create (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:14:9224), <anonymous>:39:22)
+    at Cache.store (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:16215)
+    at ItemCacheFacade.store (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:17460)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:110318
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:16080
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:15641
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:549074
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:16110
+    at eval (eval at create (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:14:9224), <anonymous>:30:1)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runNextTicks (node:internal/process/task_queues:68:3)
+    at process.processImmediate (node:internal/timers:472:9)
+-- inner error --
+Syntax error: C:\Users\BOSS\deepH\site\app\globals.css The `bg-neutral-bg1` class does not exist. If `bg-neutral-bg1` is a custom class, make sure it is defined within a `@layer` directive. (1:1)
+
+> 1 | @tailwind base;
+    | ^
+  2 | @tailwind components;
+  3 | @tailwind utilities;
+
+    at Object.<anonymous> (C:\Users\BOSS\deepH\site\node_modules\next\dist\build\webpack\loaders\css-loader\src\index.js??ruleSet[1].rules[14].oneOf[10].use[2]!C:\Users\BOSS\deepH\site\node_modules\next\dist\build\webpack\loaders\postcss-loader\src\index.js??ruleSet[1].rules[14].oneOf[10].use[3]!C:\Users\BOSS\deepH\site\app\globals.css:1:7)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:962717
+    at Hook.eval [as call] (eval at create (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:14:9002), <anonymous>:7:1)
+    at Hook.CALL_DELEGATE [as _call] (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:14:6272)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:131565
+    at tryRunOrWebpackError (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:316073)
+    at __webpack_require_module__ (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:131532)
+    at __nested_webpack_require_161494__ (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:130967)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:131824
+    at symbolIterator (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14444)
+    at done (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14824)
+    at Hook.eval [as callAsync] (eval at create (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:14:9224), <anonymous>:15:1)
+    at Hook.CALL_ASYNC_DELEGATE [as _callAsync] (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:14:6378)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:130687
+    at symbolIterator (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14402)
+    at timesSync (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:5027)
+    at Object.eachLimit (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14208)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:130247
+    at symbolIterator (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14444)
+    at timesSync (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:5027)
+    at Object.eachLimit (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14208)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:129985
+    at symbolIterator (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14444)
+    at done (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\neo-async\async.js:1:14824)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:129496
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:110331
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:315955
+    at _done (eval at create (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:14:9224), <anonymous>:9:1)
+    at Hook.eval [as callAsync] (eval at create (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:14:9224), <anonymous>:39:22)
+    at Cache.store (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:16215)
+    at ItemCacheFacade.store (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:17460)
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:110318
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:16080
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:15641
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:549074
+    at C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:29:16110
+    at eval (eval at create (C:\Users\BOSS\deepH\site\node_modules\next\dist\compiled\webpack\bundle5.js:14:9224), <anonymous>:30:1)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runNextTicks (node:internal/process/task_queues:68:3)
+    at process.processImmediate (node:internal/timers:472:9)
+
+Generated code for C:\Users\BOSS\deepH\site\node_modules\next\dist\build\webpack\loaders\css-loader\src\index.js??ruleSet[1].rules[14].oneOf[10].use[2]!C:\Users\BOSS\deepH\site\node_modules\next\dist\build\webpack\loaders\postcss-loader\src\index.js??ruleSet[1].rules[14].oneOf[10].use[3]!C:\Users\BOSS\deepH\site\app\globals.css
+
+Import trace for requested module:
+./app/globals.css
+
+
+> Build failed because of webpack errors

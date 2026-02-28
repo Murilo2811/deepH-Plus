@@ -17,20 +17,22 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="min-h-screen text-zinc-50 flex overflow-hidden antialiased" style={{ backgroundColor: '#080a0b', fontFamily: "'Inter', system-ui, sans-serif" }}>
-        {/* Ambient glow */}
+      <body className="min-h-screen text-text-primary flex overflow-hidden antialiased bg-neutral-bg1">
+
+        {/* Ambient glow minimalista */}
         <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full opacity-[0.04]"
-            style={{ background: 'radial-gradient(circle, #10b981, transparent 70%)' }} />
+          <div className="absolute top-0 left-[20%] w-[600px] h-[300px] rounded-full opacity-[0.03] bg-brand blur-3xl" />
         </div>
 
         <AppSidebar />
 
         <div className="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
           <AppHeader />
-          <main className="flex-1 overflow-y-auto p-6 md:p-8">
-            <div className="max-w-6xl mx-auto w-full">
-              {children}
+          <main className="flex-1 overflow-y-auto w-full relative">
+            <div className="max-w-6xl mx-auto w-full px-6 py-8 md:px-10 md:py-12">
+              <div className="animate-in">
+                {children}
+              </div>
             </div>
           </main>
         </div>

@@ -12,9 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Save, ChevronLeft, Command } from "lucide-react";
 import Link from "next/link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// A simple yaml parser just for demonstration if we wanted. 
-// For pure simplicity, we'll map fields manually in the Visual form, and if user uses YAML, we parse it naively or ask backend to parse.
-// Next.js standard doesn't have a built in yaml parser, so we will keep the YAML editor as basic string representation for now.
+import { motion } from "framer-motion";
 
 export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
     const router = useRouter();
@@ -32,7 +30,6 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
     const [allSkills, setAllSkills] = useState<{ name: string, description: string }[]>([]);
     const [allProviders, setAllProviders] = useState<string[]>([]);
 
-    // Basic YAML string representation
     const [yamlStr, setYamlStr] = useState("");
 
     useEffect(() => {
@@ -40,7 +37,6 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
         fetchProviders().then(setAllProviders).catch(console.error);
     }, []);
 
-    // Sync state to YAML when visual tab changes to yaml
     useEffect(() => {
         if (mode === "yaml") {
             const lines = [];
@@ -82,9 +78,6 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
                 skills: selectedSkills
             };
 
-            // If we are in yaml mode, we would parse yaml here. For now we assume visual controls authority.
-            // In a robust implementation, we'd use js-yaml.
-
             await createOrUpdateAgent(ag);
             router.push("/");
         } catch (err: any) {
@@ -95,104 +88,129 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
     };
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500 max-w-4xl">
-            <div className="flex items-center justify-between">
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6 max-w-4xl"
+        >
+            <div className="flex items-center justify-between pb-6 border-b border-border/50">
                 <div className="flex items-center gap-4">
                     <Link href="/">
-                        <Button variant="ghost" size="icon" className="hover:bg-zinc-800 text-zinc-400">
+                        <button className="flex items-center justify-center w-10 h-10 rounded-sm bg-neutral-bg1 border border-border text-text-secondary hover:text-text-primary hover:bg-neutral-bg2 transition-all">
                             <ChevronLeft className="w-5 h-5" />
-                        </Button>
+                        </button>
                     </Link>
-                    <h1 className="text-2xl font-semibold tracking-tight text-zinc-50">
-                        {initialAgent ? `Editar ${initialAgent.name}` : "Novo Agente"}
-                    </h1>
+                    <div>
+                        <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
+                            {initialAgent ? `Editar ${initialAgent.name}` : "Novo Agente"}
+                        </h1>
+                        <p className="text-sm text-text-muted mt-1">Configuração estrutural e comportamental</p>
+                    </div>
                 </div>
                 <div className="flex items-center gap-4">
-                    <span className="text-sm text-red-400">{error}</span>
-                    <Button onClick={handleSave} disabled={saving} className="bg-emerald-500 hover:bg-emerald-600 text-emerald-950 font-semibold gap-2">
+                    {error && <span className="text-sm text-status-error font-medium">{error}</span>}
+                    <button
+                        onClick={handleSave}
+                        disabled={saving}
+                        className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm text-sm font-semibold transition-all duration-200 bg-brand hover:bg-brand-hover text-brand-foreground shadow-sm disabled:opacity-50"
+                    >
                         <Save className="w-4 h-4" />
-                        {saving ? "Salvando..." : "Salvar Agente"}
-                    </Button>
+                        {saving ? "Registrando..." : "Salvar Agente"}
+                    </button>
                 </div>
             </div>
 
             <Tabs value={mode} onValueChange={(v) => setMode(v as any)}>
-                <TabsList className="bg-zinc-900 border border-zinc-800">
-                    <TabsTrigger value="visual" className="data-[state=active]:bg-zinc-800 data-[state=active]:text-zinc-50">Visual</TabsTrigger>
-                    <TabsTrigger value="yaml" className="data-[state=active]:bg-zinc-800 data-[state=active]:text-zinc-50 font-mono text-xs">YAML</TabsTrigger>
+                <TabsList className="bg-neutral-bg2 border border-border p-1 rounded-sm">
+                    <TabsTrigger value="visual" className="data-[state=active]:bg-neutral-bg3 data-[state=active]:text-text-primary text-text-secondary rounded-sm px-4">Visual</TabsTrigger>
+                    <TabsTrigger value="yaml" className="data-[state=active]:bg-neutral-bg3 data-[state=active]:text-text-primary text-text-secondary rounded-sm px-4 font-mono text-xs">YAML</TabsTrigger>
                 </TabsList>
 
-                <Card className="mt-4 bg-zinc-900/40 border-zinc-800/50 p-6">
-                    <TabsContent value="visual" className="m-0 space-y-6">
-                        <div className="grid grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <Label className="text-zinc-300">Name</Label>
+                <Card className="mt-6 glass-card p-8 bg-neutral-bg1/40">
+                    <TabsContent value="visual" className="m-0 space-y-8">
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <Label className="text-text-secondary font-medium">Name</Label>
                                 <Input
-                                    placeholder="ex: my-designer"
+                                    placeholder="ex: security-auditor"
                                     value={name} onChange={e => setName(e.target.value)}
                                     disabled={!!initialAgent}
-                                    className="bg-zinc-950 border-zinc-800 disabled:opacity-50"
+                                    className="glass-input h-11"
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <Label className="text-zinc-300">Description</Label>
+                            <div className="space-y-3">
+                                <Label className="text-text-secondary font-medium">Description</Label>
                                 <Input
                                     placeholder="O que este agente faz?"
                                     value={description} onChange={e => setDescription(e.target.value)}
-                                    className="bg-zinc-950 border-zinc-800"
+                                    className="glass-input h-11"
                                 />
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <Label className="text-zinc-300">Provider</Label>
+                        <div className="h-px bg-border/50" />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <Label className="text-text-secondary font-medium">Provider</Label>
                                 <Select value={provider} onValueChange={setProvider}>
-                                    <SelectTrigger className="bg-zinc-950 border-zinc-800"><SelectValue /></SelectTrigger>
-                                    <SelectContent className="bg-zinc-900 border-zinc-800 text-zinc-300">
+                                    <SelectTrigger className="glass-input h-11"><SelectValue /></SelectTrigger>
+                                    <SelectContent className="bg-neutral-bg2 border-border text-text-primary">
                                         {allProviders.map(p => (
-                                            <SelectItem key={p} value={p}>{p}</SelectItem>
+                                            <SelectItem key={p} value={p} className="focus:bg-neutral-bg3 focus:text-brand">{p}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="space-y-2">
-                                <Label className="text-zinc-300">Model</Label>
+                            <div className="space-y-3">
+                                <Label className="text-text-secondary font-medium">Model</Label>
                                 <Input
                                     placeholder="ex: deepseek-chat"
                                     value={model} onChange={e => setModel(e.target.value)}
-                                    className="bg-zinc-950 border-zinc-800"
+                                    className="glass-input h-11"
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <Label className="text-zinc-300">System Prompt</Label>
+                        <div className="h-px bg-border/50" />
+
+                        <div className="space-y-3">
+                            <Label className="text-text-secondary font-medium">System Prompt</Label>
                             <Textarea
-                                placeholder="Instruções para o agente..."
-                                className="min-h-[160px] bg-zinc-950 border-zinc-800 font-mono text-sm leading-relaxed"
+                                placeholder="Defina o comportamento e restrições do agente..."
+                                className="min-h-[180px] glass-input font-mono text-[13px] leading-relaxed p-4 resize-y"
                                 value={systemPrompt}
                                 onChange={e => setSystemPrompt(e.target.value)}
                             />
                         </div>
 
-                        <div className="space-y-3">
-                            <Label className="text-zinc-300">Skills ({selectedSkills.length} selecionadas)</Label>
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                        <div className="h-px bg-border/50" />
+
+                        <div className="space-y-4">
+                            <Label className="text-text-secondary font-medium flex items-center gap-2">
+                                Skills
+                                <span className="bg-neutral-bg3 text-text-muted text-[10px] px-2 py-0.5 rounded-sm">{selectedSkills.length} ativas</span>
+                            </Label>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                 {allSkills.map(skill => {
                                     const isSelected = selectedSkills.includes(skill.name);
                                     return (
                                         <div
                                             key={skill.name}
                                             onClick={() => toggleSkill(skill.name)}
-                                            className={`cursor-pointer border rounded-lg p-3 text-sm transition-all flex flex-col gap-1 ${isSelected ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-zinc-950 border-zinc-800 hover:border-zinc-700 text-zinc-400'
+                                            className={`cursor-pointer border rounded-sm p-4 text-sm transition-all flex flex-col gap-2 ${isSelected
+                                                    ? 'bg-brand/5 border-brand/40 text-brand'
+                                                    : 'bg-neutral-bg2/50 border-border hover:border-text-muted text-text-secondary'
                                                 }`}
                                         >
-                                            <span className="font-semibold flex items-center gap-1.5 line-clamp-1">
-                                                <Command className="w-3.5 h-3.5" />
+                                            <span className="font-semibold flex items-center gap-2 line-clamp-1 font-mono text-[13px]">
+                                                <Command className={`w-3.5 h-3.5 ${isSelected ? 'text-brand' : 'text-text-muted'}`} />
                                                 {skill.name}
                                             </span>
-                                            <span className="text-opacity-70 text-xs line-clamp-2">{skill.description}</span>
+                                            <span className={`text-[12px] line-clamp-2 leading-relaxed ${isSelected ? 'text-brand/70' : 'text-text-muted'}`}>
+                                                {skill.description}
+                                            </span>
                                         </div>
                                     )
                                 })}
@@ -201,20 +219,20 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
                     </TabsContent>
 
                     <TabsContent value="yaml" className="m-0 space-y-4">
-                        <div className="space-y-2">
-                            <Label className="text-zinc-300 flex justify-between">
-                                <span>Source (Read-only preview)</span>
+                        <div className="space-y-3">
+                            <Label className="text-text-secondary font-medium flex justify-between">
+                                <span className="flex items-center gap-2"><Command className="w-3.5 h-3.5" /> Source Preview (Read-only)</span>
                             </Label>
                             <Textarea
                                 value={yamlStr}
                                 readOnly
-                                className="min-h-[400px] bg-[#0d1117] border-zinc-800 text-emerald-300 font-mono text-sm leading-relaxed p-4"
+                                className="min-h-[400px] bg-neutral-bg1 border border-border text-brand font-mono text-[13px] leading-relaxed p-5 rounded-sm"
                             />
-                            <p className="text-xs text-zinc-500">Nesta versão demo, edições diretas pelo YAML estão desativadas no frontend. Use a aba Visual.</p>
+                            <p className="text-xs text-text-muted">Nesta versão as edições diretas pelo YAML estão desativadas. Use a aba Visual.</p>
                         </div>
                     </TabsContent>
                 </Card>
             </Tabs>
-        </div>
+        </motion.div>
     );
 }
