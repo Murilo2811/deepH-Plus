@@ -42,13 +42,29 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/api/config/keys", s.handleConfigKeys)
 	mux.HandleFunc("/api/skills", s.handleSkills)
 	mux.HandleFunc("/api/providers", s.handleProviders)
+	mux.HandleFunc("/api/kits", s.handleKitList)
+	mux.HandleFunc("/api/kits/install", s.handleKitInstall)
+	mux.HandleFunc("/api/crews", s.handleCrews)
+	mux.HandleFunc("/api/run", s.handleRun)
 	mux.HandleFunc("/api/chat/stream", s.handleChatStream)
 
 	// Fallback to static site
 	mux.Handle("/", http.FileServer(site.GetFS()))
 
+	// CORS middleware — allow dev Next.js server (or any origin) to call the API
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		mux.ServeHTTP(w, r)
+	})
+
 	fmt.Printf("UI Server running at http://%s\n", s.addr)
-	return http.ListenAndServe(s.addr, mux)
+	return http.ListenAndServe(s.addr, handler)
 }
 
 // providerEnvMap maps the provider ID stored in keys.json to the environment

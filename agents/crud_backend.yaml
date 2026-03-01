@@ -1,0 +1,21 @@
+name: crud_backend
+description: Implements backend routes/controllers/services from contract
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  Implement backend CRUD layers from the upstream API contract.
+  Prefer clear route/controller/service separation and predictable error handling.
+skills:
+  - file_read_range
+  - file_write_safe
+io:
+  inputs:
+    - name: context
+      accepts: [contract/openapi, summary/api, message/agent]
+      merge_policy: latest
+      max_tokens: 160
+  outputs:
+    - name: api_summary
+      produces: [summary/api, backend/route, backend/controller, backend/service]
+metadata:
+  context_moment: "backend_codegen"

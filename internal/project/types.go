@@ -5,68 +5,68 @@ import (
 )
 
 type RootConfig struct {
-	Version         int              `yaml:"version"`
-	DefaultProvider string           `yaml:"default_provider"`
-	Providers       []ProviderConfig `yaml:"providers"`
+	Version         int              `yaml:"version" json:"version"`
+	DefaultProvider string           `yaml:"default_provider" json:"default_provider"`
+	Providers       []ProviderConfig `yaml:"providers" json:"providers"`
 }
 
 type ProviderConfig struct {
-	Name      string            `yaml:"name"`
-	Type      string            `yaml:"type"`
-	BaseURL   string            `yaml:"base_url"`
-	APIKeyEnv string            `yaml:"api_key_env"`
-	Model     string            `yaml:"model"`
-	Headers   map[string]string `yaml:"headers"`
-	TimeoutMS int               `yaml:"timeout_ms"`
+	Name      string            `yaml:"name" json:"name"`
+	Type      string            `yaml:"type" json:"type"`
+	BaseURL   string            `yaml:"base_url" json:"base_url,omitempty"`
+	APIKeyEnv string            `yaml:"api_key_env" json:"api_key_env,omitempty"`
+	Model     string            `yaml:"model" json:"model,omitempty"`
+	Headers   map[string]string `yaml:"headers" json:"headers,omitempty"`
+	TimeoutMS int               `yaml:"timeout_ms" json:"timeout_ms,omitempty"`
 }
 
 type AgentConfig struct {
-	Name           string              `yaml:"name"`
-	Description    string              `yaml:"description"`
-	Provider       string              `yaml:"provider"`
-	Model          string              `yaml:"model"`
-	SystemPrompt   string              `yaml:"system_prompt"`
-	Skills         []string            `yaml:"skills"`
-	DependsOn      []string            `yaml:"depends_on"`
-	DependsOnPorts map[string][]string `yaml:"depends_on_ports"`
-	IO             AgentIOConfig       `yaml:"io"`
-	StartupCalls   []SkillCall         `yaml:"startup_calls"`
-	TimeoutMS      int                 `yaml:"timeout_ms"`
-	Metadata       map[string]string   `yaml:"metadata"`
+	Name           string              `yaml:"name" json:"name"`
+	Description    string              `yaml:"description" json:"description,omitempty"`
+	Provider       string              `yaml:"provider" json:"provider,omitempty"`
+	Model          string              `yaml:"model" json:"model,omitempty"`
+	SystemPrompt   string              `yaml:"system_prompt" json:"system_prompt,omitempty"`
+	Skills         []string            `yaml:"skills" json:"skills,omitempty"`
+	DependsOn      []string            `yaml:"depends_on" json:"depends_on,omitempty"`
+	DependsOnPorts map[string][]string `yaml:"depends_on_ports" json:"depends_on_ports,omitempty"`
+	IO             AgentIOConfig       `yaml:"io" json:"io,omitempty"`
+	StartupCalls   []SkillCall         `yaml:"startup_calls" json:"startup_calls,omitempty"`
+	TimeoutMS      int                 `yaml:"timeout_ms" json:"timeout_ms,omitempty"`
+	Metadata       map[string]string   `yaml:"metadata" json:"metadata,omitempty"`
 }
 
 type AgentIOConfig struct {
-	Inputs  []IOPortConfig `yaml:"inputs"`
-	Outputs []IOPortConfig `yaml:"outputs"`
+	Inputs  []IOPortConfig `yaml:"inputs" json:"inputs,omitempty"`
+	Outputs []IOPortConfig `yaml:"outputs" json:"outputs,omitempty"`
 }
 
 type IOPortConfig struct {
-	Name        string   `yaml:"name"`
-	Accepts     []string `yaml:"accepts"`
-	Produces    []string `yaml:"produces"`
-	MergePolicy string   `yaml:"merge_policy"`
+	Name        string   `yaml:"name" json:"name"`
+	Accepts     []string `yaml:"accepts" json:"accepts,omitempty"`
+	Produces    []string `yaml:"produces" json:"produces,omitempty"`
+	MergePolicy string   `yaml:"merge_policy" json:"merge_policy,omitempty"`
 	// ChannelPriority biases publish selection for handoffs targeting this input port.
 	// Higher values win earlier under publish budget pressure.
-	ChannelPriority float64 `yaml:"channel_priority"`
-	Required        bool    `yaml:"required"`
-	MaxTokens       int     `yaml:"max_tokens"`
-	Description     string  `yaml:"description"`
+	ChannelPriority float64 `yaml:"channel_priority" json:"channel_priority,omitempty"`
+	Required        bool    `yaml:"required" json:"required,omitempty"`
+	MaxTokens       int     `yaml:"max_tokens" json:"max_tokens,omitempty"`
+	Description     string  `yaml:"description" json:"description,omitempty"`
 }
 
 type SkillCall struct {
-	Skill string         `yaml:"skill"`
-	Args  map[string]any `yaml:"args"`
+	Skill string         `yaml:"skill" json:"skill"`
+	Args  map[string]any `yaml:"args" json:"args,omitempty"`
 }
 
 type SkillConfig struct {
-	Name        string            `yaml:"name"`
-	Type        string            `yaml:"type"`
-	Description string            `yaml:"description"`
-	Method      string            `yaml:"method"`
-	URL         string            `yaml:"url"`
-	Headers     map[string]string `yaml:"headers"`
-	TimeoutMS   int               `yaml:"timeout_ms"`
-	Params      map[string]any    `yaml:"params"`
+	Name        string            `yaml:"name" json:"name"`
+	Type        string            `yaml:"type" json:"type"`
+	Description string            `yaml:"description" json:"description,omitempty"`
+	Method      string            `yaml:"method" json:"method,omitempty"`
+	URL         string            `yaml:"url" json:"url,omitempty"`
+	Headers     map[string]string `yaml:"headers" json:"headers,omitempty"`
+	TimeoutMS   int               `yaml:"timeout_ms" json:"timeout_ms,omitempty"`
+	Params      map[string]any    `yaml:"params" json:"params,omitempty"`
 }
 
 type Project struct {

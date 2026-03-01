@@ -1,0 +1,7 @@
+name: http_request
+type: http
+description: Makes an HTTP request (safe defaults; user controls URL)
+method: GET
+timeout_ms: 5000
+params:
+  max_bytes: 65536

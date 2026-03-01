@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Zap, Bot, MessageSquare, Settings, Plus } from "lucide-react";
+import { Zap, Bot, MessageSquare, Settings, Plus, BookOpen, Play, Users } from "lucide-react";
 
 export function AppSidebar() {
     const pathname = usePathname();
@@ -10,7 +10,10 @@ export function AppSidebar() {
     const navItems = [
         { href: "/", icon: Zap, label: "Dashboard" },
         { href: "/chat", icon: MessageSquare, label: "Chat" },
+        { href: "/run", icon: Play, label: "Modo Equipe" },
+        { href: "/crews", icon: Users, label: "Times" },
         { href: "/config", icon: Settings, label: "Settings" },
+        { href: "/help", icon: BookOpen, label: "Help Guide" },
     ];
 
     return (

@@ -107,3 +107,120 @@ export async function saveKeys(keys: Record<string, string>): Promise<void> {
         throw new Error(`Failed to save keys: ${text}`);
     }
 }
+
+// ─── Kits ─────────────────────────────────────────────────────────────────────
+export interface Kit {
+    name: string;
+    description: string;
+    provider_type: string;
+    skills_count: number;
+    files_count: number;
+}
+
+export async function fetchKits(): Promise<Kit[]> {
+    const res = await fetch(`${API_BASE}/api/kits`);
+    if (!res.ok) return [];
+    return res.json();
+}
+
+export async function installKit(kitName: string, force = false): Promise<{ success: boolean; message: string }> {
+    const res = await fetch(`${API_BASE}/api/kits/install`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kit_name: kitName, force })
+    });
+    if (!res.ok) {
+        const text = await res.text().catch(() => res.statusText);
+        throw new Error(`Failed to install kit: ${text}`);
+    }
+    return res.json();
+}
+
+// ─── Crews ────────────────────────────────────────────────────────────────────
+export interface Crew {
+    name: string;
+    description?: string;
+    spec: string;
+    universes?: Array<{ name: string; spec: string;[key: string]: unknown }>;
+}
+
+export async function fetchCrews(): Promise<Crew[]> {
+    const res = await fetch(`${API_BASE}/api/crews`);
+    if (!res.ok) return [];
+    return res.json();
+}
+
+export async function saveCrew(crew: Crew): Promise<Crew> {
+    const res = await fetch(`${API_BASE}/api/crews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(crew)
+    });
+    if (!res.ok) {
+        const text = await res.text().catch(() => res.statusText);
+        throw new Error(`Failed to save crew: ${text}`);
+    }
+    return res.json();
+}
+
+// ─── Run (multi-agent SSE) ─────────────────────────────────────────────────────
+export type RunMode = 'sequential' | 'parallel';
+
+export interface RunEventAgentStart { agent: string; }
+export interface RunEventAgentResult { agent: string; text: string; }
+export interface RunEventAgentError { agent: string; error: string; }
+export interface RunEventDone { status: string; }
+
+export function runTeam(
+    agents: string[],
+    mode: RunMode,
+    task: string,
+    callbacks: {
+        onAgentStart?: (e: RunEventAgentStart) => void;
+        onAgentResult: (e: RunEventAgentResult) => void;
+        onAgentError?: (e: RunEventAgentError) => void;
+        onDone?: (e: RunEventDone) => void;
+    }
+): () => void {
+    const controller = new AbortController();
+
+    (async () => {
+        const res = await fetch(`${API_BASE}/api/run`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ agents, mode, task }),
+            signal: controller.signal
+        });
+
+        if (!res.body) return;
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const blocks = buffer.split('\n\n');
+            buffer = blocks.pop() ?? '';
+            for (const block of blocks) {
+                let eventType = '';
+                let dataLine = '';
+                for (const line of block.split('\n')) {
+                    if (line.startsWith('event: ')) eventType = line.slice(7).trim();
+                    else if (line.startsWith('data: ')) dataLine = line.slice(6).trim();
+                }
+                if (!dataLine) continue;
+                try {
+                    const payload = JSON.parse(dataLine);
+                    if (eventType === 'agent_start') callbacks.onAgentStart?.(payload);
+                    else if (eventType === 'agent_result') callbacks.onAgentResult(payload);
+                    else if (eventType === 'agent_error') callbacks.onAgentError?.(payload);
+                    else if (eventType === 'done') callbacks.onDone?.(payload);
+                } catch { /* ignore parse errors */ }
+            }
+        }
+    })().catch(() => { /* ignore abort */ });
+
+    return () => controller.abort();
+}

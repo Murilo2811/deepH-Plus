@@ -234,6 +234,12 @@ function parseYaml(yaml: string): Agent {
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { KitGallery } from "@/components/kit-gallery";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Component
+// ─────────────────────────────────────────────────────────────────────────────
+
 const DEFAULT_YAML = `name: ""
 description: ""
 provider: deepseek
@@ -261,7 +267,7 @@ function agentToYaml(a: Agent): string {
 
 export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
     const router = useRouter();
-    const [mode, setMode] = useState<"visual" | "yaml">("yaml");
+    const [mode, setMode] = useState<"visual" | "yaml" | "templates">(initialAgent ? "yaml" : "templates");
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
     const [yamlStr, setYamlStr] = useState(() =>
@@ -367,10 +373,10 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
 
                 {/* Mode switcher */}
                 <div className="flex bg-slate-panel rounded border border-border-accent p-0.5">
-                    {(["visual", "yaml"] as const).map(m => (
+                    {(!initialAgent ? ["templates", "visual", "yaml"] : ["visual", "yaml"]).map(m => (
                         <button
                             key={m}
-                            onClick={() => switchMode(m)}
+                            onClick={() => switchMode(m as any)}
                             className={`px-3 py-1.5 rounded text-xs font-bold uppercase tracking-widest transition-colors ${mode === m
                                 ? "bg-background-dark text-primary"
                                 : "text-slate-400 hover:text-slate-200"
@@ -389,7 +395,11 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
             )}
 
             <AnimatePresence mode="wait">
-                {mode === "yaml" ? (
+                {mode === "templates" ? (
+                    <motion.div key="templates" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        <KitGallery onInstallSuccess={() => router.push("/")} />
+                    </motion.div>
+                ) : mode === "yaml" ? (
                     <motion.div key="yaml" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                         <div className="relative">
                             {/* Line numbers + editor */}
@@ -619,11 +629,13 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
                             Delete
                         </button>
                     )}
-                    <button onClick={handleSave} disabled={saving}
-                        className="flex-[2] h-12 rounded bg-primary text-background-dark font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                        {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-                        {saving ? "Deploying..." : "Deploy Agent"}
-                    </button>
+                    {mode !== "templates" && (
+                        <button onClick={handleSave} disabled={saving}
+                            className="flex-[2] h-12 rounded bg-primary text-background-dark font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                            {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                            {saving ? "Deploying..." : "Deploy Agent"}
+                        </button>
+                    )}
                 </div>
             </div>
         </motion.div>

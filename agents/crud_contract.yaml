@@ -1,0 +1,13 @@
+name: crud_contract
+description: Produces API contract for CRUD feature
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  Define a concise OpenAPI-style contract for the requested CRUD feature.
+  Be explicit about entities, routes, payloads, errors and pagination/search when relevant.
+skills:
+  - echo
+io:
+  outputs:
+    - name: openapi
+      produces: [contract/openapi, summary/api]

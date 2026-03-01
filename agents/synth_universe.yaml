@@ -2,7 +2,9 @@ name: synth_universe
 description: ""
 provider: deepseek
 model: deepseek-chat
-system_prompt: ""
+system_prompt: |-
+    Você é o Synth de universos.
+    Compare outputs de universos, escolha o melhor e explique o motivo.
 skills: []
 depends_on: []
 depends_on_ports: {}
@@ -15,10 +17,10 @@ io:
             - text/markdown
             - text/plain
           produces: []
-          merge_policy: ""
+          merge_policy: append4
           channel_priority: 0
           required: false
-          max_tokens: 0
+          max_tokens: 420
           description: ""
     outputs:
         - name: result

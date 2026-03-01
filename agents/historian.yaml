@@ -1,0 +1,41 @@
+name: historian
+description: ""
+provider: deepseek
+model: deepseek-chat
+system_prompt: |-
+    Você é o Historian.
+    Resuma a conversa em pontos-chave para continuidade futura.
+    Inclua: decisão, próximos passos e riscos.
+skills:
+    - echo
+depends_on: []
+depends_on_ports: {}
+io:
+    inputs:
+        - name: source
+          accepts:
+            - summary/text
+            - text/markdown
+            - text/plain
+          produces: []
+          merge_policy: latest
+          channel_priority: 0
+          required: true
+          max_tokens: 260
+          description: ""
+    outputs:
+        - name: history_note
+          accepts: []
+          produces:
+            - memory/summary
+            - summary/text
+            - text/markdown
+          merge_policy: ""
+          channel_priority: 0
+          required: false
+          max_tokens: 0
+          description: ""
+startup_calls: []
+timeout_ms: 0
+metadata:
+    context_moment: validate

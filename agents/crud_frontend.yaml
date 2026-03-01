@@ -1,0 +1,21 @@
+name: crud_frontend
+description: Implements frontend pages/components/forms from backend API summary
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  Implement frontend CRUD UI from API summary.
+  Focus on clear page structure, form states and API client wiring.
+skills:
+  - file_read_range
+  - file_write_safe
+io:
+  inputs:
+    - name: context
+      accepts: [summary/api, backend/route, message/agent]
+      merge_policy: latest
+      max_tokens: 150
+  outputs:
+    - name: page
+      produces: [frontend/page, frontend/form, frontend/component, summary/code]
+metadata:
+  context_moment: "frontend_codegen"

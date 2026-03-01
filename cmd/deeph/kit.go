@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 
 	"deeph/internal/catalog"
@@ -90,53 +89,9 @@ func cmdKitAdd(args []string) error {
 	}
 	recordCoachCommandTransition(abs, "kit add", kit.Name)
 
-	p, err := project.Load(abs)
+	res, err := project.InstallKit(abs, kit, *force, *skipProvider, *setDefaultProvider, *providerName, *model)
 	if err != nil {
 		return err
-	}
-
-	skillStats := installStats{}
-	fileStats := installStats{}
-	sort.Strings(kit.RequiredSkills)
-	for _, skillName := range kit.RequiredSkills {
-		status, outPath, err := installCatalogSkillTemplate(abs, skillName, *force)
-		if err != nil {
-			return err
-		}
-		skillStats.bump(status)
-		if status != "unchanged" {
-			fmt.Printf("skill[%s]: %s (%s)\n", skillName, status, outPath)
-		}
-	}
-
-	for _, f := range kit.Files {
-		status, outPath, err := writeKitFile(abs, f.Path, f.Content, *force)
-		if err != nil {
-			return err
-		}
-		fileStats.bump(status)
-		if status != "unchanged" {
-			fmt.Printf("file[%s]: %s (%s)\n", f.Path, status, outPath)
-		}
-	}
-
-	providerMsg := "skipped"
-	providerChanged := false
-	if !*skipProvider && strings.EqualFold(strings.TrimSpace(kit.ProviderType), "deepseek") {
-		if strings.TrimSpace(*providerName) == "" {
-			return errors.New("--provider-name cannot be empty")
-		}
-		msg, changed, err := ensureKitDeepseekProvider(&p.Root, strings.TrimSpace(*providerName), strings.TrimSpace(*model), *setDefaultProvider)
-		if err != nil {
-			return err
-		}
-		providerMsg = msg
-		providerChanged = changed
-	}
-	if providerChanged {
-		if err := project.SaveRootConfig(abs, p.Root); err != nil {
-			return err
-		}
 	}
 
 	reloaded, err := project.Load(abs)
@@ -149,175 +104,14 @@ func cmdKitAdd(args []string) error {
 		return verr
 	}
 
-	fmt.Printf("Installed kit %q in %s\n", kit.Name, abs)
+	fmt.Printf("Installed kit %q in %s\n", res.KitName, abs)
 	fmt.Printf("  source: %s\n", sourceLabel)
-	fmt.Printf("  skills: created=%d updated=%d unchanged=%d skipped=%d\n", skillStats.Created, skillStats.Updated, skillStats.Unchanged, skillStats.Skipped)
-	fmt.Printf("  files:  created=%d updated=%d unchanged=%d skipped=%d\n", fileStats.Created, fileStats.Updated, fileStats.Unchanged, fileStats.Skipped)
-	fmt.Printf("  provider: %s\n", providerMsg)
+	fmt.Printf("  skills: created=%d updated=%d unchanged=%d skipped=%d\n", res.SkillStats.Created, res.SkillStats.Updated, res.SkillStats.Unchanged, res.SkillStats.Skipped)
+	fmt.Printf("  files:  created=%d updated=%d unchanged=%d skipped=%d\n", res.FileStats.Created, res.FileStats.Updated, res.FileStats.Unchanged, res.FileStats.Skipped)
+	fmt.Printf("  provider: %s\n", res.ProviderMsg)
 	fmt.Println("Next steps:")
 	fmt.Println("  1. deeph validate")
 	fmt.Printf("  2. deeph crew list\n")
-	fmt.Printf("  3. deeph run --multiverse 0 @%s \"sua tarefa\"\n", guessKitCrewName(kit))
+	fmt.Printf("  3. deeph run --multiverse 0 @%s \"sua tarefa\"\n", res.SuggestedCrew)
 	return nil
-}
-
-type installStats struct {
-	Created   int
-	Updated   int
-	Unchanged int
-	Skipped   int
-}
-
-func (s *installStats) bump(status string) {
-	switch status {
-	case "created":
-		s.Created++
-	case "updated":
-		s.Updated++
-	case "skipped":
-		s.Skipped++
-	default:
-		s.Unchanged++
-	}
-}
-
-func installCatalogSkillTemplate(workspace, name string, force bool) (status string, outPath string, err error) {
-	tmpl, err := catalog.Get(name)
-	if err != nil {
-		return "", "", err
-	}
-	skillsDir := filepath.Join(workspace, "skills")
-	if err := os.MkdirAll(skillsDir, 0o755); err != nil {
-		return "", "", err
-	}
-	outPath = filepath.Join(skillsDir, tmpl.Filename)
-	return writeTextFileWithStatus(outPath, tmpl.Content, force)
-}
-
-func writeKitFile(workspace, relPath, content string, force bool) (status string, outPath string, err error) {
-	outPath, err = secureJoin(workspace, relPath)
-	if err != nil {
-		return "", "", err
-	}
-	parent := filepath.Dir(outPath)
-	if err := os.MkdirAll(parent, 0o755); err != nil {
-		return "", "", err
-	}
-	return writeTextFileWithStatus(outPath, content, force)
-}
-
-func writeTextFileWithStatus(path, content string, force bool) (status string, outPath string, err error) {
-	outPath = path
-	newBytes := []byte(content)
-	oldBytes, readErr := os.ReadFile(path)
-	if readErr == nil {
-		if string(oldBytes) == content {
-			return "unchanged", outPath, nil
-		}
-		if !force {
-			return "skipped", outPath, nil
-		}
-		if err := os.WriteFile(path, newBytes, 0o644); err != nil {
-			return "", "", err
-		}
-		return "updated", outPath, nil
-	}
-	if !os.IsNotExist(readErr) {
-		return "", "", readErr
-	}
-	if err := os.WriteFile(path, newBytes, 0o644); err != nil {
-		return "", "", err
-	}
-	return "created", outPath, nil
-}
-
-func secureJoin(workspace, relPath string) (string, error) {
-	clean := filepath.Clean(strings.TrimSpace(relPath))
-	if clean == "." || clean == "" {
-		return "", fmt.Errorf("invalid relative path %q", relPath)
-	}
-	if filepath.IsAbs(clean) {
-		return "", fmt.Errorf("kit file path must be relative, got %q", relPath)
-	}
-	dst := filepath.Join(workspace, clean)
-	rel, err := filepath.Rel(workspace, dst)
-	if err != nil {
-		return "", err
-	}
-	if rel == "." || strings.HasPrefix(rel, "..") {
-		return "", fmt.Errorf("kit file path escapes workspace: %q", relPath)
-	}
-	return dst, nil
-}
-
-func ensureKitDeepseekProvider(root *project.RootConfig, name, model string, setDefault bool) (msg string, changed bool, err error) {
-	if strings.TrimSpace(model) == "" {
-		model = "deepseek-chat"
-	}
-	cfg := project.ProviderConfig{
-		Name:      name,
-		Type:      "deepseek",
-		BaseURL:   "https://api.deepseek.com",
-		APIKeyEnv: "DEEPSEEK_API_KEY",
-		Model:     model,
-		TimeoutMS: 30000,
-	}
-	idx := -1
-	for i := range root.Providers {
-		if root.Providers[i].Name == name {
-			idx = i
-			break
-		}
-	}
-	action := "kept"
-	if idx < 0 {
-		root.Providers = append(root.Providers, cfg)
-		idx = len(root.Providers) - 1
-		action = "added"
-		changed = true
-	}
-
-	existing := root.Providers[idx]
-	if strings.TrimSpace(existing.Type) == "" {
-		existing.Type = "deepseek"
-		changed = true
-	}
-	if existing.Type != "deepseek" {
-		return "", false, fmt.Errorf("provider %q exists with type %q (expected deepseek)", name, existing.Type)
-	}
-	if strings.TrimSpace(existing.BaseURL) == "" {
-		existing.BaseURL = cfg.BaseURL
-		changed = true
-	}
-	if strings.TrimSpace(existing.APIKeyEnv) == "" {
-		existing.APIKeyEnv = cfg.APIKeyEnv
-		changed = true
-	}
-	if strings.TrimSpace(existing.Model) == "" {
-		existing.Model = cfg.Model
-		changed = true
-	}
-	if existing.TimeoutMS <= 0 {
-		existing.TimeoutMS = cfg.TimeoutMS
-		changed = true
-	}
-	root.Providers[idx] = existing
-
-	defaultInfo := ""
-	if setDefault && strings.TrimSpace(root.DefaultProvider) != name {
-		root.DefaultProvider = name
-		changed = true
-		defaultInfo = " + default_provider"
-	}
-	return fmt.Sprintf("%s deepseek provider %q%s", action, name, defaultInfo), changed, nil
-}
-
-func guessKitCrewName(kit catalog.KitTemplate) string {
-	for _, f := range kit.Files {
-		if strings.HasPrefix(f.Path, "crews/") && strings.HasSuffix(f.Path, ".yaml") {
-			base := filepath.Base(f.Path)
-			return strings.TrimSuffix(base, ".yaml")
-		}
-	}
-	return "reviewpack"
 }

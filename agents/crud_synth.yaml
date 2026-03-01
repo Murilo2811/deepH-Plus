@@ -1,0 +1,20 @@
+name: crud_synth
+description: Reconciles contract/backend/frontend/test universes into a final plan
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  Reconcile upstream universes into one final implementation recommendation.
+  Resolve conflicts and list final file-level action items.
+skills:
+  - echo
+io:
+  inputs:
+    - name: context
+      accepts: [contract/openapi, summary/api, frontend/page, backend/route, summary/text, message/agent]
+      merge_policy: append3
+      max_tokens: 220
+  outputs:
+    - name: result
+      produces: [plan/summary, summary/text]
+metadata:
+  context_moment: "synthesis"

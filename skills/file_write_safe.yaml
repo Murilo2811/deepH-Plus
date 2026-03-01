@@ -1,0 +1,8 @@
+name: file_write_safe
+type: file_write_safe
+description: Writes a text file inside the workspace (relative path only, no overwrite by default)
+params:
+  max_bytes: 131072
+  create_dirs: true
+  create_if_missing: true
+  overwrite_default: false

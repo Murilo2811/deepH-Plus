@@ -1,0 +1,5 @@
+name: file_read_range
+type: file_read_range
+description: Reads a specific line range from a local file (lower token cost than full reads)
+params:
+  max_bytes: 32768

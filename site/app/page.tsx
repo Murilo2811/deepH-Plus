@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Agent, fetchAgents } from "@/lib/api";
+import { KitGallery } from "@/components/kit-gallery";
+import { type Agent, fetchAgents } from "@/lib/api";
 import {
   Bot,
   Cpu,
