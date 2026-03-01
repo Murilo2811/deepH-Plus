@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Agent, IOPort, createOrUpdateAgent, fetchSkills, fetchProviders } from "@/lib/api";
+import { Agent, IOPort, createOrUpdateAgent, deleteAgent, fetchSkills, fetchProviders } from "@/lib/api";
 import { Settings2, Terminal, Blocks, ChevronLeft, Save, Loader2, Code2, Plus, Trash2, Network } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -329,6 +329,21 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
         }
     };
 
+    const handleDelete = async () => {
+        if (!initialAgent || !initialAgent.name) return;
+        if (!window.confirm(`Tem certeza que deseja excluir o agente ${initialAgent.name}?`)) return;
+
+        setSaving(true);
+        setError("");
+        try {
+            await deleteAgent(initialAgent.name);
+            router.push("/");
+        } catch (err: any) {
+            setError(err.message || "Erro ao excluir agente.");
+            setSaving(false);
+        }
+    };
+
     const setAgentField = (patch: Partial<Agent>) => setAgent(prev => ({ ...prev, ...patch }));
 
     return (
@@ -357,8 +372,8 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
                             key={m}
                             onClick={() => switchMode(m)}
                             className={`px-3 py-1.5 rounded text-xs font-bold uppercase tracking-widest transition-colors ${mode === m
-                                    ? "bg-background-dark text-primary"
-                                    : "text-slate-400 hover:text-slate-200"
+                                ? "bg-background-dark text-primary"
+                                : "text-slate-400 hover:text-slate-200"
                                 }`}
                         >
                             {m}
@@ -598,6 +613,12 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
                             Cancel
                         </button>
                     </Link>
+                    {initialAgent && (
+                        <button onClick={handleDelete} disabled={saving} type="button"
+                            className="flex-1 h-12 rounded border border-red-500/30 text-red-500 font-bold hover:bg-red-500/10 transition-colors">
+                            Delete
+                        </button>
+                    )}
                     <button onClick={handleSave} disabled={saving}
                         className="flex-[2] h-12 rounded bg-primary text-background-dark font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
                         {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}

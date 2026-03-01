@@ -9,12 +9,13 @@ import {
   Brain,
   Settings2,
   Filter,
-  MessageSquare
+  MessageSquare,
+  Trash2
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
-function AgentCard({ agent, index }: { agent: Agent; index: number }) {
+function AgentCard({ agent, index, onDelete }: { agent: Agent; index: number; onDelete: (name: string) => void }) {
   // Mock sparkline heights for visual effect
   const sparklines = [40, 60, 35, 80, 55, 90, 75];
 
@@ -65,7 +66,7 @@ function AgentCard({ agent, index }: { agent: Agent; index: number }) {
       </div>
 
       {/* Overlay Actions on Hover */}
-      <div className="absolute inset-0 bg-background-dark/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center gap-3 transition-all duration-300 z-20">
+      <div className="absolute inset-0 bg-background-dark/90 backdrop-blur-md opacity-0 group-hover:opacity-100 flex flex-col md:flex-row items-center justify-center gap-3 transition-opacity duration-300 z-50">
         <Link href={`/chat?agent=${agent.name}`}>
           <button className="flex items-center gap-2 bg-primary text-background-dark px-4 py-2 rounded-lg text-xs font-bold hover:scale-105 transition-transform">
             <MessageSquare className="w-4 h-4" />
@@ -77,6 +78,9 @@ function AgentCard({ agent, index }: { agent: Agent; index: number }) {
             <Settings2 className="w-4 h-4" />
           </button>
         </Link>
+        <button onClick={() => { if (window.confirm(`Tem certeza que deseja excluir o agente ${agent.name}?`)) onDelete(agent.name); }} className="flex items-center gap-2 border border-red-500/30 text-red-500 px-4 py-2 rounded-lg text-xs font-bold hover:bg-red-500/10 transition-all">
+          <Trash2 className="w-4 h-4" />
+        </button>
       </div>
 
     </motion.div>
@@ -115,6 +119,18 @@ export default function Dashboard() {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
+
+  const handleDelete = async (name: string) => {
+    try {
+      // Import missing deleteAgent and run
+      const { deleteAgent } = await import('@/lib/api');
+      await deleteAgent(name);
+      setAgents(prev => prev.filter(a => a.name !== name));
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao excluir o agente");
+    }
+  };
 
   return (
     <div className="px-6 pb-24 animate-in">
@@ -195,7 +211,7 @@ export default function Dashboard() {
             </motion.div>
           ) : (
             agents.map((agent, i) => (
-              <AgentCard key={agent.name} agent={agent} index={i} />
+              <AgentCard key={agent.name} agent={agent} index={i} onDelete={handleDelete} />
             ))
           )}
         </div>

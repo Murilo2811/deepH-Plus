@@ -1,0 +1,38 @@
+name: synth_universe
+description: ""
+provider: deepseek
+model: deepseek-chat
+system_prompt: ""
+skills: []
+depends_on: []
+depends_on_ports: {}
+io:
+    inputs:
+        - name: context
+          accepts:
+            - summary/text
+            - plan/summary
+            - text/markdown
+            - text/plain
+          produces: []
+          merge_policy: ""
+          channel_priority: 0
+          required: false
+          max_tokens: 0
+          description: ""
+    outputs:
+        - name: result
+          accepts: []
+          produces:
+            - plan/summary
+            - summary/text
+            - text/markdown
+          merge_policy: ""
+          channel_priority: 0
+          required: false
+          max_tokens: 0
+          description: ""
+startup_calls: []
+timeout_ms: 0
+metadata:
+    context_moment: synthesis
