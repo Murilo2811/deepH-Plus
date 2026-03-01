@@ -1,5 +1,25 @@
 export const API_BASE = process.env.NODE_ENV === 'development' ? 'http://localhost:7730' : '';
 
+export interface IOPort {
+    name: string;
+    accepts?: string[];
+    produces?: string[];
+    required?: boolean;
+    merge_policy?: string;
+    max_tokens?: number;
+    description?: string;
+}
+
+export interface AgentIO {
+    inputs?: IOPort[];
+    outputs?: IOPort[];
+}
+
+export interface SkillCall {
+    skill: string;
+    args?: Record<string, any>;
+}
+
 export interface Agent {
     name: string;
     description?: string;
@@ -7,6 +27,11 @@ export interface Agent {
     model?: string;
     system_prompt?: string;
     skills?: string[];
+    depends_on?: string[];
+    io?: AgentIO;
+    startup_calls?: SkillCall[];
+    timeout_ms?: number;
+    metadata?: Record<string, string>;
 }
 
 export async function fetchAgents(): Promise<Agent[]> {
@@ -62,4 +87,23 @@ export async function saveConfig(config: any): Promise<any> {
     });
     if (!res.ok) throw new Error("Failed to save config");
     return res.json();
+}
+
+// Keys are stored separately in keys.json via /api/config/keys
+export async function fetchKeys(): Promise<Record<string, string>> {
+    const res = await fetch(`${API_BASE}/api/config/keys`);
+    if (!res.ok) return {};
+    return res.json();
+}
+
+export async function saveKeys(keys: Record<string, string>): Promise<void> {
+    const res = await fetch(`${API_BASE}/api/config/keys`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(keys)
+    });
+    if (!res.ok) {
+        const text = await res.text().catch(() => res.statusText);
+        throw new Error(`Failed to save keys: ${text}`);
+    }
 }

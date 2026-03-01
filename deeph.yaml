@@ -1,7 +1,25 @@
 version: 1
-default_provider: local_mock
+default_provider: deepseek
 providers:
   - name: local_mock
     type: mock
     model: mock-small
     timeout_ms: 3000
+  - name: deepseek
+    type: deepseek
+    model: deepseek-chat
+    base_url: https://api.deepseek.com
+    api_key_env: DEEPSEEK_API_KEY
+    timeout_ms: 60000
+  - name: openai
+    type: openai
+    model: gpt-4o-mini
+    base_url: https://api.openai.com
+    api_key_env: OPENAI_API_KEY
+    timeout_ms: 60000
+  - name: anthropic
+    type: anthropic
+    model: claude-3-5-haiku-20241022
+    base_url: https://api.anthropic.com
+    api_key_env: ANTHROPIC_API_KEY
+    timeout_ms: 60000

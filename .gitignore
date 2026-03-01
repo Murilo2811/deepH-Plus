@@ -21,8 +21,14 @@ tmp/
 .deeph/
 .gocache/
 .gopath/
+keys.json
+
+# Build artifacts
+deeph.exe
+site/out/
 
 # Editor / OS
 .DS_Store
 .vscode/
 .idea/
+

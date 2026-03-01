@@ -1,47 +1,65 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchConfig, saveConfig } from "@/lib/api";
-import { Copy, Plus, Save, Key, Shield, AlertTriangle, CloudRain, Cpu, Activity, Info, Network } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { usePathname } from "next/navigation";
+import { fetchKeys, saveKeys } from "@/lib/api";
+import { Copy, Save, Key, Cpu, Activity, Network } from "lucide-react";
+import { motion } from "framer-motion";
+
+interface Provider {
+    id: string;
+    title: string;
+    model: string;
+    icon: React.ElementType;
+    badge: string;
+    placeholder: string;
+}
+
+const PROVIDERS: Provider[] = [
+    { id: "deepseek", title: "DeepSeek", model: "DeepSeek Chat", icon: Cpu, badge: "Primary", placeholder: "sk-..." },
+    { id: "openai", title: "OpenAI", model: "GPT-4 Models", icon: Activity, badge: "Active", placeholder: "sk-proj-..." },
+    { id: "anthropic", title: "Anthropic", model: "Claude Família", icon: Network, badge: "Standby", placeholder: "sk-ant-..." },
+];
 
 export default function ConfigPage() {
-    const [config, setConfig] = useState<any>(null);
+    const [keys, setKeys] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [msg, setMsg] = useState("");
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
-        fetchConfig().then(c => {
-            setConfig(c);
-            setLoading(false);
-        }).catch(console.error);
+        fetchKeys()
+            .then(k => { setKeys(k); setLoading(false); })
+            .catch(() => setLoading(false));
     }, []);
 
-    const handleSave = async (e?: React.FormEvent) => {
-        if (e) e.preventDefault();
+    const handleSave = async () => {
         setSaving(true);
         setMsg("");
+        setIsError(false);
         try {
-            await saveConfig(config);
-            setMsg("Configurations deployed successfully.");
+            await saveKeys(keys);
+            setMsg("Configurações salvas com sucesso.");
             setTimeout(() => setMsg(""), 3500);
-        } catch (err) {
-            setMsg("Failed to synchronize with core config.");
+        } catch (err: any) {
+            setIsError(true);
+            setMsg(err?.message || "Erro ao salvar.");
         } finally {
             setSaving(false);
         }
     };
 
-    const handleProviderChange = (providerName: string, field: string, value: string) => {
-        setConfig((prev: any) => {
-            const next = { ...prev };
-            if (!next.providers) next.providers = {};
-            if (!next.providers[providerName]) next.providers[providerName] = {};
-            next.providers[providerName][field] = value;
-            return next;
-        });
+    const handleKeyChange = (providerId: string, value: string) => {
+        setKeys(prev => ({ ...prev, [providerId]: value }));
+    };
+
+    const handlePaste = async (providerId: string) => {
+        try {
+            const text = await navigator.clipboard.readText();
+            handleKeyChange(providerId, text.trim());
+        } catch {
+            // clipboard not available
+        }
     };
 
     if (loading) return (
@@ -55,12 +73,6 @@ export default function ConfigPage() {
         </div>
     );
 
-    const providers = [
-        { id: "deepseek", title: "DeepSeek", model: "DeepSeek Chat", icon: Cpu, badge: "Primary" },
-        { id: "openai", title: "OpenAI", model: "GPT-4 Models", icon: Activity, badge: "Active" },
-        { id: "anthropic", title: "Anthropic", model: "Claude Familia", icon: Network, badge: "Standby" },
-    ];
-
     return (
         <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -70,37 +82,40 @@ export default function ConfigPage() {
             <div className="flex flex-col gap-2 pt-2">
                 <h2 className="text-3xl font-bold tracking-tight text-white font-display">System Configuration</h2>
                 <p className="text-slate-400 text-sm leading-relaxed max-w-xl">
-                    Gerencie suas credenciais para os provedores de inteligência artificial. Essas chaves autorizam o deepH a executar ações no modelo. <strong className="text-primary font-medium tracking-wide">Mantidas apenas localmente.</strong>
+                    Gerencie suas credenciais para os provedores de inteligência artificial. Essas chaves autorizam o deepH a executar ações no modelo.{" "}
+                    <strong className="text-primary font-medium tracking-wide">Mantidas apenas localmente em keys.json.</strong>
                 </p>
             </div>
 
-            {/* KPI / Usage Summary (Visual Interest Mock) */}
+            {/* KPI / Usage Summary */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-surface-dark border border-border-accent/50 p-5 rounded-xl flex flex-col gap-1 shadow-sm relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
-                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Inferences</span>
-                    <span className="text-2xl font-bold text-white mt-1">2,410</span>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl" />
+                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Provedores Configurados</span>
+                    <span className="text-2xl font-bold text-white mt-1">
+                        {Object.values(keys).filter(v => v && v.trim().length > 0).length} / {PROVIDERS.length}
+                    </span>
                     <span className="text-xs text-primary flex items-center gap-1 mt-2">
-                        <Activity className="w-3.5 h-3.5" /> Normal rate
+                        <Activity className="w-3.5 h-3.5" /> Verificado localmente
                     </span>
                 </div>
                 <div className="bg-surface-dark border border-border-accent/50 p-5 rounded-xl flex flex-col gap-1 shadow-sm relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
-                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Local Config Size</span>
-                    <span className="text-2xl font-bold text-white mt-1">4.2 KB</span>
-                    <span className="text-xs text-slate-500 mt-2">Stored at <code className="text-primary/70">config.json</code></span>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl" />
+                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Armazenamento Local</span>
+                    <span className="text-2xl font-bold text-white mt-1">keys.json</span>
+                    <span className="text-xs text-slate-500 mt-2">Salvo em <code className="text-primary/70">seu workspace</code></span>
                 </div>
             </div>
 
-            <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
                 <h3 className="text-lg font-bold text-white font-display flex items-center gap-2 mb-2">
-                    <Key className="w-5 h-5 text-primary" /> Active Keys
+                    <Key className="w-5 h-5 text-primary" /> Chaves de API
                 </h3>
 
                 <div className="flex flex-col gap-4">
-                    {providers.map(provider => {
+                    {PROVIDERS.map(provider => {
                         const Icon = provider.icon;
-                        const defaultVal = config?.providers?.[provider.id]?.api_key || "";
+                        const currentVal = keys[provider.id] || "";
 
                         return (
                             <div key={provider.id} className="group relative overflow-hidden rounded-xl bg-surface-dark border border-border-accent/50 p-5 shadow-sm hover:border-primary/50 transition-colors">
@@ -114,33 +129,38 @@ export default function ConfigPage() {
                                             <span className="text-[11px] text-slate-400 uppercase tracking-widest">{provider.model}</span>
                                         </div>
                                     </div>
-                                    <span className="inline-flex items-center rounded bg-primary/10 px-2 py-1 text-[10px] font-bold tracking-widest text-primary ring-1 ring-inset ring-primary/20 uppercase">
-                                        {provider.badge}
+                                    <span className={`inline-flex items-center rounded px-2 py-1 text-[10px] font-bold tracking-widest uppercase ring-1 ring-inset ${currentVal ? "bg-primary/10 text-primary ring-primary/20" : "bg-slate-800 text-slate-400 ring-slate-600/40"}`}>
+                                        {currentVal ? "Configurado" : provider.badge}
                                     </span>
                                 </div>
 
-                                <div className="bg-black/40 rounded border border-border-accent/30 p-2 flex items-center justify-between gap-2 mb-4 group-hover:bg-black/60 transition-colors focus-within:border-primary/50">
+                                <div className="bg-black/40 rounded border border-border-accent/30 p-2 flex items-center justify-between gap-2 group-hover:bg-black/60 transition-colors focus-within:border-primary/50">
                                     <input
                                         type="password"
-                                        placeholder={`sk-proj...${provider.id}...`}
-                                        value={defaultVal}
-                                        onChange={(e) => handleProviderChange(provider.id, 'api_key', e.target.value)}
+                                        placeholder={provider.placeholder}
+                                        value={currentVal}
+                                        onChange={(e) => handleKeyChange(provider.id, e.target.value)}
                                         className="text-sm font-mono text-slate-300 truncate w-full bg-transparent border-none focus:ring-0 focus:outline-none px-2"
                                     />
-                                    <button type="button" className="text-slate-500 hover:text-primary transition-colors p-1" title="Paste/Replace">
+                                    <button
+                                        type="button"
+                                        onClick={() => handlePaste(provider.id)}
+                                        className="text-slate-500 hover:text-primary transition-colors p-1"
+                                        title="Colar do clipboard"
+                                    >
                                         <Copy className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>
-                        )
+                        );
                     })}
                 </div>
 
-                <div className="h-px bg-border-accent/30 w-full my-6"></div>
+                <div className="h-px bg-border-accent/30 w-full my-6" />
 
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <span className={`text-sm font-bold tracking-wide transition-all ${msg.includes("Failed") ? "text-red-400" : "text-primary bg-primary/10 px-3 py-1.5 rounded"} ${msg ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}>
-                        {msg || "Placeholder"}
+                    <span className={`text-sm font-bold tracking-wide transition-all duration-300 ${isError ? "text-red-400" : "text-primary bg-primary/10 px-3 py-1.5 rounded"} ${msg ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}>
+                        {msg || "·"}
                     </span>
 
                     <button
@@ -150,10 +170,10 @@ export default function ConfigPage() {
                         className="w-full sm:w-auto h-12 flex items-center justify-center gap-2 px-8 bg-primary hover:bg-primary/90 text-background-dark font-bold rounded-xl shadow-[0_0_20px_rgba(15,240,146,0.2)] hover:shadow-[0_0_30px_rgba(15,240,146,0.4)] transition-all active:scale-[0.98] disabled:opacity-50"
                     >
                         <Save className="w-5 h-5" />
-                        <span>{saving ? "Deploying Schema..." : "Save Settings"}</span>
+                        <span>{saving ? "Salvando..." : "Save Settings"}</span>
                     </button>
                 </div>
-            </form>
+            </div>
         </motion.div>
     );
 }
