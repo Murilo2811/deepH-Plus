@@ -5,7 +5,7 @@ import { AppHeader } from "@/components/app-header";
 
 export const metadata: Metadata = {
   title: "deepH — Local AI Agent Runtime",
-  description: "Painel de controle local do deepH AI assistant",
+  description: "Painel de controle local do deepH Plusassistant",
 };
 
 export default function RootLayout({

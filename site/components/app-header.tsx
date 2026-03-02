@@ -12,7 +12,7 @@ export function AppHeader() {
                 <div className="p-2 rounded bg-primary/10">
                     <Grid className="text-primary w-6 h-6" />
                 </div>
-                <h1 className="text-xl font-bold tracking-tight">deepH AI</h1>
+                <h1 className="text-xl font-bold tracking-tight">deepH Plus</h1>
             </div>
             <div className="flex items-center gap-6">
                 <div className="hidden md:block">
