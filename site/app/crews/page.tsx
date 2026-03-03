@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { fetchAgents, fetchCrews, saveCrew, updateCrew, deleteCrew, type Agent, type Crew } from "@/lib/api";
-import { Users, Plus, Trash2, ArrowUp, ArrowDown, ChevronDown, ChevronUp, Save, XCircle } from "lucide-react";
+import { Users, Plus, Trash2, ArrowUp, ArrowDown, ChevronDown, ChevronUp, Save, XCircle, Pencil } from "lucide-react";
 
 function generateYaml(crew: Crew): string {
     const lines: string[] = [`name: ${crew.name}`];
@@ -262,7 +262,10 @@ export default function CrewsPage() {
                             {crews.map(crew => (
                                 <div
                                     key={crew.name}
-                                    className="rounded-xl border border-primary/10 p-3 hover:border-primary/30 transition-all cursor-pointer"
+                                    className={`rounded-xl border p-3 transition-all cursor-pointer ${editingCrewName === crew.name
+                                            ? "border-primary/60 bg-primary/5"
+                                            : "border-primary/10 hover:border-primary/30"
+                                        }`}
                                     onClick={() => {
                                         const parts = crew.spec.includes(">")
                                             ? crew.spec.split(">")
@@ -283,14 +286,21 @@ export default function CrewsPage() {
                                             {crew.description && <div className="text-xs text-slate-500 mt-0.5 truncate">{crew.description}</div>}
                                         </div>
                                         <div className="flex items-center gap-1.5 shrink-0">
-                                            <span className="text-xs text-slate-600 bg-background-dark/60 px-2 py-0.5 rounded-lg">
+                                            <span className="text-xs text-slate-500 bg-background-dark/60 px-2 py-0.5 rounded-lg">
                                                 {crew.spec.includes(">") ? "seq" : "par"}
                                             </span>
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); }}
+                                                title="Clique no card para editar"
+                                                className="p-1 rounded-lg text-primary/50 hover:text-primary transition-all"
+                                            >
+                                                <Pencil className="w-3.5 h-3.5" />
+                                            </button>
                                             <button
                                                 onClick={(e) => handleDelete(crew.name, e)}
                                                 disabled={deleting === crew.name}
                                                 title="Excluir crew"
-                                                className="p-1 rounded-lg text-slate-600 hover:text-red-400 hover:bg-red-400/10 transition-all disabled:opacity-40"
+                                                className="p-1 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-400/10 transition-all disabled:opacity-40"
                                             >
                                                 <Trash2 className="w-3.5 h-3.5" />
                                             </button>
