@@ -13,6 +13,7 @@ export function AppHeader() {
                     <Grid className="text-primary w-6 h-6" />
                 </div>
                 <h1 className="text-xl font-bold tracking-tight">deepH Plus</h1>
+                <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded font-bold border border-primary/30 mt-0.5">v4.0</span>
             </div>
             <div className="flex items-center gap-6">
                 <div className="hidden md:block">

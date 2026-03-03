@@ -1094,6 +1094,335 @@ CONTATO E SUPORTE
 
 
 ==============================================================
+      ██████╗ ███████╗███████╗██████╗ ██╗  ██╗
+      ██╔══██╗██╔════╝██╔════╝██╔══██╗██║  ██║
+      ██║  ██║█████╗  █████╗  ██████╔╝███████║
+      ██║  ██║██╔══╝  ██╔══╝  ██╔═╝ ██╔══██║
+      ██████╔╝███████╗███████╗██║     ██║  ██║
+      ╚═════╝ ╚══════╝╚══════╝╚═╝     ╚═╝  ╚═╝
+                   Plus — v4.0
+==============================================================
+       TUTORIAL COMPLETO — GUIA PARA INICIANTES
+==============================================================
+
+Autor: Equipe deepH Plus
+Versão: 4.0 — Março 2026
+Tema: Interface Visual Premium (Dark Mode + Emerald Green)
+
+==============================================================
+ANTES DE COMEÇAR — LEIA ISTO COM ATENÇÃO!
+==============================================================
+
+Este tutorial foi escrito para QUALQUER pessoa, mesmo quem
+nunca usou uma ferramenta de inteligência artificial antes.
+
+Vamos explicar TUDO passo a passo, com calma e clareza.
+
+LEGENDA usada neste tutorial:
+  [!] → AVISO IMPORTANTE — leia com atenção!
+  [>] → Ação que você deve realizar
+  [*] → Dica útil ou curiosidade
+  ══  → Separador de seções
+
+Sempre que ver um comando como:
+  .\deeph.exe ui
+isso significa que você deve digitar exatamente isso no
+terminal (a tela preta). Mas não se preocupe — na maioria
+das vezes você usará apenas o atalho de dois cliques!
+
+
+==============================================================
+ÍNDICE
+==============================================================
+
+  PARTE 0 — O que é o deepH Plus? ....................  p. 1
+  PARTE 1 — Instalação e Primeiros Passos .............  p. 2
+  PARTE 2 — Abrindo o Painel Visual ..................  p. 3
+  PARTE 3 — Conhecendo o Layout da Interface ..........  p. 4
+  PARTE 4 — Configurando suas Chaves de API ...........  p. 5
+  PARTE 5 — O Dashboard: Seus Agentes ................  p. 6
+  PARTE 6 — Conversando no Chat .......................  p. 7
+  PARTE 7 — Criando e Editando Agentes ................  p. 8
+  PARTE 8 — Esquadrões (Crews): Trabalho em Equipe ....  p. 9
+  PARTE 9 — O Coach: Seu Assistente de Diagnóstico ....  p. 10
+  PARTE 10 — Usando no Terminal (Avançado) ............  p. 11
+  PARTE 11 — Provedores de IA Suportados ..............  p. 12
+  PARTE 12 — Solução de Problemas .....................  p. 13
+
+
+══════════════════════════════════════════════════════════════
+PARTE 0 — O QUE É O deepH Plus?
+══════════════════════════════════════════════════════════════
+
+O deepH Plus é o seu ESCRITÓRIO PESSOAL DE ASSISTENTES DE IA,
+instalado diretamente no seu computador. Tudo roda local,
+sem enviar seus dados para nenhum servidor externo.
+
+Pense assim: imagine que você contratou vários "funcionários
+virtais especializados". Cada um tem nome, personalidade
+e habilidades definidas por você.
+
+Você pode ter, por exemplo:
+  - Um "Consultor Financeiro" para análise de investimentos
+  - Um "Redator" para escrever textos e e-mails
+  - Um "Programador" para ajudar com código
+  - Um "Pesquisador" para buscar informações
+
+Cada um desses é chamado de AGENTE.
+
+O deepH Plus é o sistema que gerencia esses agentes através
+de uma INTERFACE VISUAL MODERNA E PREMIUM, com:
+  ✓ Tema escuro elegante (Deep Black + Emerald Green)
+  ✓ Animações suaves e design premium
+  ✓ Chat em tempo real com formatação rica (Markdown)
+  ✓ Painel de controle visual intuitivo
+  ✓ Suporte a múltiplos provedores de IA (DeepSeek, OpenAI,
+    Anthropic, Groq, Ollama local e mais)
+
+[*] Todas as conversas e configurações ficam no SEU
+    computador. Nada vai para nuvem exceto a mensagem
+    que você envia ao modelo de IA escolhido.
+
+
+══════════════════════════════════════════════════════════════
+PARTE 1 — INSTALAÇÃO E PRÉ-REQUISITOS
+══════════════════════════════════════════════════════════════
+
+Antes de abrir o deepH Plus, certifique-se de que você tem:
+
+  1. Windows 10 ou 11 (64-bit)
+  2. O arquivo deeph.exe na pasta C:\Users\BOSS\deepH
+  3. Conexão com internet (para chamar a IA via API)
+
+Você NÃO precisa instalar nada especial. O deepH Plus é
+um arquivo único executável (.exe) em Go, que já carrega
+o painel web dentro de si mesmo.
+
+──────────────────────────────────────────────────────────────
+Estrutura de Pastas do deepH Plus
+──────────────────────────────────────────────────────────────
+
+Sua pasta C:\Users\BOSS\deepH contém:
+
+  deeph.exe        → O programa principal (motor em Go)
+  start_ui.bat     → Atalho de duplo clique para iniciar
+  config.json      → Suas configurações e API Keys (gerado
+                     automaticamente na 1ª execução)
+  agents/          → Pasta com seus agentes (.yaml)
+  crews/           → Pasta com seus esquadrões (.yaml)
+  skills/          → Skills instaladas (habilidades extras)
+  sessions/        → Histórico de conversas salvo
+
+[!] NUNCA apague o arquivo config.json sem querer!
+    Ele contém suas chaves de API. Faça backup dele.
+
+
+══════════════════════════════════════════════════════════════
+PARTE 2 — ABRINDO O PAINEL VISUAL
+══════════════════════════════════════════════════════════════
+
+──────────────────────────────────────────────────────────────
+MÉTODO 1 (Recomendado) — Duplo Clique no Atalho
+──────────────────────────────────────────────────────────────
+
+[>] Passo 1: Abra o Explorador de Arquivos do Windows
+[>] Passo 2: Navegue até: C:\Users\BOSS\deepH
+[>] Passo 3: Dê DUPLO CLIQUE no arquivo:  start_ui.bat
+
+O que vai acontecer em sequência:
+  1. Uma JANELA PRETA (terminal) vai abrir mostrando logs
+  2. O motor Go vai iniciar e mostrar a mensagem:
+     "UI Server running at http://localhost:7730"
+  3. Seu navegador padrão vai abrir automaticamente
+  4. A INTERFACE PREMIUM do deepH Plus vai aparecer!
+
+[!] AVISO CRÍTICO: Não feche a janela preta (terminal)!
+    Ela é o "motor" do sistema. Se fechá-la, o painel
+    visual vai parar de funcionar completamente.
+    Pode MINIMIZÁ-LA à vontade — só não feche!
+
+──────────────────────────────────────────────────────────────
+MÉTODO 2 — Via Terminal (Opcional)
+──────────────────────────────────────────────────────────────
+
+[>] Abra o PowerShell ou CMD na pasta C:\Users\BOSS\deepH
+[>] Digite o comando:
+    .\deeph.exe ui
+[>] Acesse no navegador: http://localhost:7730
+
+[*] O atalho start_ui.bat faz exatamente isso por você!
+
+
+══════════════════════════════════════════════════════════════
+PARTE 3 — CONHECENDO O LAYOUT DA INTERFACE
+══════════════════════════════════════════════════════════════
+
+Quando o painel abrir, você verá uma tela com fundo muito
+escuro (quase preto) e detalhes em verde esmeralda (#0ff092).
+
+A interface é dividida em 4 zonas principais:
+
+  ┌─────────────────────────────────────────────────────┐
+  │  CABEÇALHO (Header)                                 │
+  │  deepH logo + Nome da Página + Status + Usuário     │
+  ├──────────────┬──────────────────────────────────────┤
+  │              │                                      │
+  │   BARRA      │                                      │
+  │   LATERAL    │      ÁREA DE CONTEÚDO                │
+  │  (Sidebar)   │      (Muda conforme a página)        │
+  │              │                                      │
+  │  • Dash      │                                      │
+  │  • Esquadrões│                                      │
+  │  • Chat      │                                      │
+  │  • Config    │                                      │
+  │              │                                      │
+  └──────────────┴──────────────────────────────────────┘
+
+──────────────────────────────────────────────────────────────
+3.1 — A BARRA LATERAL (Menu de Navegação)
+──────────────────────────────────────────────────────────────
+
+À esquerda ficam os botões de navegação. Cada um tem um
+ícone e texto:
+
+  🏠 Dashboard    → Gerencie seus agentes individuais
+  👥 Esquadrões   → Orchestre múltiplos agentes em equipe
+  💬 Chat         → Janela de conversa inteligente
+  ➕ Novo Agente  → Criar um novo agente do zero
+  ⚙️ Configurações → Gerenciar API Keys e preferências
+
+[*] As transições entre as telas são suaves e animadas!
+
+
+══════════════════════════════════════════════════════════════
+PARTE 4 — CONFIGURANDO SUAS CHAVES DE API
+══════════════════════════════════════════════════════════════
+
+Para o deepH Plus chamar a inteligência artificial, você
+precisa de uma CHAVE DE API do provedor de IA escolhido.
+
+[>] Passo 1: Clique em "Configurações" (ícone ⚙️) na sidebar.
+[>] Passo 2: Encontre o provedor (ex: DeepSeek).
+[>] Passo 3: COLE sua chave de API e clique em "Save Settings".
+
+[!] SEGURANÇA: A chave fica salva APENAS no seu computador.
+    Nunca passamos seus segredos por nossos servidores.
+
+
+══════════════════════════════════════════════════════════════
+PARTE 5 — O DASHBOARD E AGENTES
+══════════════════════════════════════════════════════════════
+
+O DASHBOARD mostra seus agentes como cartões translúcidos.
+Cada agente tem uma especialidade e um "System Prompt" (instruções).
+
+  • CONVERSAR: Abre o chat direto.
+  • EDITAR: Altera a personalidade ou provedor (modelo).
+  • EXCLUIR: Remove o agente definitivamente do sistema.
+
+
+══════════════════════════════════════════════════════════════
+PARTE 6 — CONVERSANDO NO CHAT
+══════════════════════════════════════════════════════════════
+
+O chat do deepH Plus v4.0 agora é mais inteligente! 
+Ele utiliza o **ContextBus** para lembrar apenas do que é 
+importante, economizando seus tokens de API.
+
+  • SUAS MENSAGENS: Lado direito, fundo verde neon.
+  • RESPOSTAS IA: Lado esquerdo, estilo vidro (Glassmorphism).
+
+[*] O chat suporta Markdown completo (negrito, tabelas, código).
+
+
+══════════════════════════════════════════════════════════════
+PARTE 7 — CRIANDO AGENTES MESTRES
+══════════════════════════════════════════════════════════════
+
+No editor, o campo mais vital é o **SYSTEM PROMPT**.
+Define quem a IA é e como deve reagir.
+
+Exemplo de Redator:
+  "Você é um redator sênior de marketing. Escreva posts
+   persuasivos para Instagram. Sempre termine com uma
+   pergunta para engajar a audiência."
+
+
+══════════════════════════════════════════════════════════════
+PARTE 8 — ESQUADRÕES (CREWS): O PODER DA EQUIPE
+══════════════════════════════════════════════════════════════
+
+A grande novidade da v4.0 são os **ESQUADRÕES**.
+Em vez de falar com um agente, você fala com uma EQUIPE.
+
+[>] EXEMPLO: Crew "build-calculator"
+Este esquadrão contém 3 agentes trabalhando em sequência:
+  1. Arquiteto: Planeja as funcionalidades.
+  2. Desenvolvedor: Escreve o código HTML/CSS/JS.
+  3. Assistente de Implantação: Abre a janela de salvar arquivo.
+
+Para rodar este exemplo no terminal:
+  .\deeph.exe run "build-calculator" "Crie uma calculadora neon"
+
+[*] Esquadrões usam conectores especiais:
+  "+" → Agentes rodam ao mesmo tempo.
+  ">" → Um agente passa o bastão para o próximo.
+
+
+══════════════════════════════════════════════════════════════
+PARTE 9 — O COACH: DIAGNÓSTICO EM TEMPO REAL
+══════════════════════════════════════════════════════════════
+
+O deepH Plus agora vem com o **COACH**.
+Ele monitora as execuções e dá dicas se algo não estiver 100%.
+
+  • Ver estatísticas: .\deeph.exe coach stats
+  • Resetar dicas: .\deeph.exe coach reset --all
+
+O Coach ajuda você a otimizar seus prompts e economizar tokens.
+
+
+══════════════════════════════════════════════════════════════
+PARTE 10 — USANDO NO TERMINAL (AVANÇADO)
+══════════════════════════════════════════════════════════════
+
+  RODAR UM AGENTE:
+  .\deeph.exe run "guide" "Tarefa aqui"
+
+  VER PLANO DE EXECUÇÃO (TRACE):
+  .\deeph.exe trace "agente1+agente2" "Tarefa"
+
+  LISTAR TUDO:
+  .\deeph.exe crew list
+  .\deeph.exe agent list
+  .\deeph.exe type list  (Explora os tipos de dados)
+
+
+══════════════════════════════════════════════════════════════
+PARTE 11 — PROVEDORES DE IA
+══════════════════════════════════════════════════════════════
+
+  • DeepSeek: Melhor custo-benefício (Super recomendo!).
+  • Groq: Ultra velocidade (Respostas instantâneas).
+  • Ollama: 100% grátis e offline (Roda no seu hardware).
+  • OpenAI/Anthropic: O "topo" da inteligência atual.
+
+
+══════════════════════════════════════════════════════════════
+PARTE 12 — SOLUÇÃO DE PROBLEMAS
+══════════════════════════════════════════════════════════════
+
+  P: A página não abre?
+  R: O start_ui.bat foi fechado? Reabra e aguarde 5 segundos.
+
+  P: Chat não responde?
+  R: Verifique sua API Key e saldo no provedor.
+
+  P: Erro de "Port already in use"?
+  R: Feche o deeph.exe pelo Gerenciador de Tarefas e tente de novo.
+
+
+==============================================================
   ✦  FIM DO TUTORIAL — deepH Plus versão 4.0  ✦
   "Seus agentes, suas regras, seu computador."
 ==============================================================

@@ -352,11 +352,9 @@ skills:
 - `http_request`
 
 These are templates the user can install into `skills/`.
+- `exec_command`
+- `file_write_dialog` (UI-powered file saving)
 
-## Roadmap (next)
+---
 
-- Real provider adapters (DeepSeek/OpenAI/Anthropic/Ollama)
-- LLM tool-calling loop (today MVP supports static startup calls)
-- Memory backends (sqlite first)
-- Structured tracing output (JSON)
-- Permission model for risky skills
+> **Note**: deepH Plus v4.0 is optimized for speed and token efficiency. Use `deeph validate` regularly to ensure your YAML configs match the internal type registry.

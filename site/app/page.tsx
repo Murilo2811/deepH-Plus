@@ -138,8 +138,8 @@ export default function Dashboard() {
       {/* Header Minimalista - O topo do Layout ja tem. Adicionando controles extras aqui */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-6">
         <div>
-          <h1 className="text-2xl font-display font-bold text-slate-100">Painel Operacional</h1>
-          <p className="text-sm text-slate-400 mt-1">Gerencie os sistemas e ferramentas de Inteligência Artificial.</p>
+          <h1 className="text-3xl md:text-4xl font-display font-bold text-slate-100 uppercase tracking-tighter">deepH Plus</h1>
+          <p className="text-primary mt-1 font-medium tracking-widest text-[10px] uppercase">Emerald Engine v4.0 — Neural Interface</p>
         </div>
         <Link href="/agents/new">
           <button className="bg-primary hover:bg-primary/90 text-background-dark px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2">
@@ -176,7 +176,7 @@ export default function Dashboard() {
 
       {/* Section Title */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-bold text-slate-100 font-display">Neural Agents</h2>
+        <h2 className="text-lg font-bold text-slate-100 font-display uppercase tracking-wider">Agentes Ativos</h2>
         <button className="p-2 hover:bg-primary/5 rounded-md transition-colors text-slate-400 hover:text-primary">
           <Filter className="w-4 h-4" />
         </button>
@@ -217,6 +217,6 @@ export default function Dashboard() {
           )}
         </div>
       </AnimatePresence>
-    </div>
+    </div >
   );
 }
