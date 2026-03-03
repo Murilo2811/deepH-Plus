@@ -35,13 +35,19 @@ func Load(workspace string) (*Project, error) {
 	if err != nil {
 		return nil, err
 	}
+	crews, crewFiles, err := loadDir[CrewConfig](filepath.Join(workspace, "crews"))
+	if err != nil {
+		return nil, err
+	}
 
 	return &Project{
 		Root:       root,
 		Agents:     agents,
 		Skills:     skills,
+		Crews:      crews,
 		AgentFiles: agentFiles,
 		SkillFiles: skillFiles,
+		CrewFiles:  crewFiles,
 	}, nil
 }
 
@@ -89,3 +95,4 @@ func loadDir[T any](dir string) ([]T, map[string]string, error) {
 
 func (a AgentConfig) GetName() string { return a.Name }
 func (s SkillConfig) GetName() string { return s.Name }
+func (c CrewConfig) GetName() string  { return c.Name }

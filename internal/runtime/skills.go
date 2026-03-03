@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -295,6 +296,62 @@ func (s *FileWriteSafeSkill) Execute(_ context.Context, exec SkillExecution) (ma
 	return result, nil
 }
 
+type FileWriteDialogSkill struct {
+	cfg       project.SkillConfig
+	workspace string
+}
+
+func (s *FileWriteDialogSkill) Name() string { return s.cfg.Name }
+func (s *FileWriteDialogSkill) Description() string {
+	return coalesce(s.cfg.Description, "Opens a Save As dialog for the user to choose where to save, then writes the content to that file (Windows only).")
+}
+func (s *FileWriteDialogSkill) Execute(ctx context.Context, ex SkillExecution) (map[string]any, error) {
+	content := coalesce(anyString(ex.Args["content"]), anyString(ex.Args["text"]))
+	if strings.TrimSpace(content) == "" && !hasStringKey(ex.Args, "content") && !hasStringKey(ex.Args, "text") {
+		return nil, fmt.Errorf("file_write_dialog requires args.content (string)")
+	}
+
+	defaultExt := anyString(ex.Args["default_extension"])
+	if defaultExt == "" {
+		defaultExt = "md"
+	}
+
+	script := `Add-Type -AssemblyName System.Windows.Forms
+$d = New-Object System.Windows.Forms.SaveFileDialog
+$d.Filter = "Text files (*.txt)|*.txt|Markdown (*.md)|*.md|All files (*.*)|*.*"
+$d.DefaultExt = "` + defaultExt + `"
+$d.Title = "Save Agent Output"
+if ($d.ShowDialog() -eq 'OK') {
+  Write-Output $d.FileName
+} else {
+  Write-Output "CANCELLED"
+}`
+
+	// Executa o powershell em uma janela invisivel. -STA obriga modo single thread necessario pro dialog box de forms.
+	cmd := exec.CommandContext(ctx, "powershell", "-NoProfile", "-STA", "-WindowStyle", "Hidden", "-Command", script)
+
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, fmt.Errorf("failed to open save dialog: %v - output: %s", err, string(out))
+	}
+
+	path := strings.TrimSpace(string(out))
+	if path == "CANCELLED" || path == "" {
+		return map[string]any{"status": "cancelled", "note": "User cancelled the save dialog"}, nil
+	}
+
+	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+		return nil, fmt.Errorf("failed to write file: %v", err)
+	}
+
+	return map[string]any{
+		"path":   path,
+		"bytes":  len(content),
+		"wrote":  true,
+		"status": "saved",
+	}, nil
+}
+
 type HTTPSkill struct {
 	cfg    project.SkillConfig
 	client *http.Client
@@ -361,6 +418,8 @@ func newSkill(workspace string, sc project.SkillConfig) Skill {
 		return &FileReadRangeSkill{cfg: sc, workspace: workspace}
 	case "file_write_safe":
 		return &FileWriteSafeSkill{cfg: sc, workspace: workspace}
+	case "file_write_dialog":
+		return &FileWriteDialogSkill{cfg: sc, workspace: workspace}
 	case "http":
 		return &HTTPSkill{cfg: sc, client: &http.Client{Timeout: timeout}}
 	default:

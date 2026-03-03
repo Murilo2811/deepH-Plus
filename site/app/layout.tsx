@@ -12,12 +12,12 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className="dark">
+    <html lang="pt-BR" className="dark" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="bg-background-dark text-slate-100 min-h-screen flex flex-col font-display antialiased">
+      <body suppressHydrationWarning className="bg-background-dark text-slate-100 min-h-screen flex flex-col font-display antialiased">
         <AppHeader />
 
         <main className="flex flex-1 overflow-hidden">

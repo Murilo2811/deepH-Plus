@@ -1,0 +1,3 @@
+name: knowledge-pipeline
+description: 'Pipeline de conhecimento: planejamento → explicação → consolidação histórica'
+spec: planner>explainer>historian>guide>synth_universe

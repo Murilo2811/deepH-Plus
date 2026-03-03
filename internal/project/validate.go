@@ -20,11 +20,12 @@ var validProviderTypes = map[string]struct{}{
 }
 
 var validSkillTypes = map[string]struct{}{
-	"echo":            {},
-	"file_read":       {},
-	"file_read_range": {},
-	"file_write_safe": {},
-	"http":            {},
+	"echo":              {},
+	"file_read":         {},
+	"file_read_range":   {},
+	"file_write_safe":   {},
+	"file_write_dialog": {},
+	"http":              {},
 }
 
 func Validate(p *Project) *ValidationError {

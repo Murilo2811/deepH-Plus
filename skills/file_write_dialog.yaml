@@ -1,0 +1,5 @@
+name: file_write_dialog
+type: file_write_dialog
+description: Opens a Windows Save As dialog so the user can choose exactly where to save the agent's output. Wait for the user to choose the folder and name. Use this tool any time it is necessary to output the final result into a file selected by the user.
+params:
+  default_extension: "md"

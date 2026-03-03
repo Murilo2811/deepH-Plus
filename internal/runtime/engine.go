@@ -1671,7 +1671,7 @@ type taskCompileChannelCandidate struct {
 	TokensCost int
 }
 
-func selectTaskCompileChannels(task Task, budget ContextBudget, moment ContextMoment) ([]string, taskCompileChannelStats) {
+func selectTaskCompileChannels(task Task, _ ContextBudget, moment ContextMoment) ([]string, taskCompileChannelStats) {
 	all := taskIncomingChannels(task)
 	stats := taskCompileChannelStats{Total: len(all), Selected: len(all)}
 	if len(all) == 0 {
@@ -1863,7 +1863,7 @@ func shouldPublishUnconsumedOutput(meta map[string]string) bool {
 	}
 }
 
-func (e *Engine) previewAgentOutputTypedValue(task Task, res AgentRunResult, link TypedHandoffLink) typesys.TypedValue {
+func (e *Engine) previewAgentOutputTypedValue(_ Task, res AgentRunResult, link TypedHandoffLink) typesys.TypedValue {
 	raw := strings.TrimSpace(res.Output)
 	if raw == "" {
 		return typesys.TypedValue{}

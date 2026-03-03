@@ -7,13 +7,15 @@ import (
 	"net/http"
 	"strings"
 
+	"deeph/internal/orchestrator"
 	"deeph/internal/project"
 	"deeph/internal/runtime"
 )
 
 type runRequest struct {
 	Agents []string `json:"agents"`
-	Mode   string   `json:"mode"` // "sequential" | "parallel"
+	Crew   string   `json:"crew"`
+	Mode   string   `json:"mode"` // "sequential" | "parallel" | "crew"
 	Task   string   `json:"task"`
 }
 
@@ -28,8 +30,8 @@ func (s *Server) handleRun(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf(`{"error": "invalid json: %v"}`, err), http.StatusBadRequest)
 		return
 	}
-	if len(req.Agents) == 0 {
-		http.Error(w, `{"error": "at least one agent is required"}`, http.StatusBadRequest)
+	if len(req.Agents) == 0 && req.Crew == "" {
+		http.Error(w, `{"error": "at least one agent or a crew is required"}`, http.StatusBadRequest)
 		return
 	}
 	if strings.TrimSpace(req.Task) == "" {
@@ -65,6 +67,59 @@ func (s *Server) handleRun(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := context.Background()
+
+	if req.Mode == "crew" {
+		if req.Crew == "" && len(req.Agents) > 0 {
+			req.Crew = req.Agents[0]
+		}
+		if req.Crew == "" {
+			sendEvent("error", map[string]string{"error": "crew name required for crew mode"})
+			return
+		}
+
+		crewConfig, _, err := project.LoadCrewConfig(s.workspace, req.Crew)
+		if err != nil {
+			sendEvent("error", map[string]string{"error": err.Error()})
+			return
+		}
+
+		sendEvent("crew_start", map[string]any{"crew": req.Crew, "universes": len(crewConfig.Universes)})
+
+		us := make([]orchestrator.UniverseState, len(crewConfig.Universes))
+		for i, uc := range crewConfig.Universes {
+			us[i] = orchestrator.UniverseState{
+				Config: uc,
+				ID:     uc.Name,
+				Label:  uc.Name,
+				Input:  req.Task,
+				Index:  i,
+			}
+		}
+
+		cbs := orchestrator.Callbacks{
+			OnStart: func(idx int, u orchestrator.UniverseState) {
+				sendEvent("agent_start", map[string]string{"agent": u.ID})
+			},
+			OnComplete: func(idx int, br orchestrator.RunBranch) {
+				if br.Error != "" {
+					sendEvent("agent_error", map[string]string{"agent": br.Universe.ID, "error": br.Error})
+				} else {
+					var last string
+					if len(br.Report.Results) > 0 {
+						last = br.Report.Results[len(br.Report.Results)-1].Output
+					}
+					sendEvent("agent_result", map[string]any{"agent": br.Universe.ID, "text": last})
+				}
+			},
+		}
+
+		_, _, err = orchestrator.RunDAG(ctx, s.workspace, p, us, cbs)
+		if err != nil {
+			sendEvent("error", map[string]string{"error": err.Error()})
+		}
+		sendEvent("done", map[string]string{"status": "ok"})
+		return
+	}
 
 	if req.Mode == "parallel" {
 		// Parallel: launch all agents concurrently, pipe results as they arrive

@@ -187,8 +187,9 @@ export async function deleteCrew(name: string): Promise<void> {
 }
 
 // ─── Run (multi-agent SSE) ─────────────────────────────────────────────────────
-export type RunMode = 'sequential' | 'parallel';
+export type RunMode = 'sequential' | 'parallel' | 'crew';
 
+export interface RunEventCrewStart { crew: string; universes: number; }
 export interface RunEventAgentStart { agent: string; }
 export interface RunEventAgentResult { agent: string; text: string; }
 export interface RunEventAgentError { agent: string; error: string; }
@@ -199,11 +200,13 @@ export function runTeam(
     mode: RunMode,
     task: string,
     callbacks: {
+        onCrewStart?: (e: RunEventCrewStart) => void;
         onAgentStart?: (e: RunEventAgentStart) => void;
         onAgentResult: (e: RunEventAgentResult) => void;
         onAgentError?: (e: RunEventAgentError) => void;
         onDone?: (e: RunEventDone) => void;
-    }
+    },
+    crew?: string
 ): () => void {
     const controller = new AbortController();
 
@@ -211,7 +214,7 @@ export function runTeam(
         const res = await fetch(`${API_BASE}/api/run`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ agents, mode, task }),
+            body: JSON.stringify({ agents, mode, task, crew }),
             signal: controller.signal
         });
 
@@ -236,9 +239,11 @@ export function runTeam(
                 if (!dataLine) continue;
                 try {
                     const payload = JSON.parse(dataLine);
-                    if (eventType === 'agent_start') callbacks.onAgentStart?.(payload);
+                    if (eventType === 'crew_start') callbacks.onCrewStart?.(payload);
+                    else if (eventType === 'agent_start') callbacks.onAgentStart?.(payload);
                     else if (eventType === 'agent_result') callbacks.onAgentResult(payload);
                     else if (eventType === 'agent_error') callbacks.onAgentError?.(payload);
+                    else if (eventType === 'error') callbacks.onAgentError?.({ agent: 'System', error: payload.error || "Unknown Error" });
                     else if (eventType === 'done') callbacks.onDone?.(payload);
                 } catch { /* ignore parse errors */ }
             }

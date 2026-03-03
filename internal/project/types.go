@@ -73,8 +73,31 @@ type Project struct {
 	Root       RootConfig
 	Agents     []AgentConfig
 	Skills     []SkillConfig
+	Crews      []CrewConfig
 	AgentFiles map[string]string
 	SkillFiles map[string]string
+	CrewFiles  map[string]string
+}
+
+type CrewConfig struct {
+	Name        string           `yaml:"name" json:"name"`
+	Description string           `yaml:"description" json:"description,omitempty"`
+	Spec        string           `yaml:"spec" json:"spec"`
+	Universes   []UniverseConfig `yaml:"universes" json:"universes,omitempty"`
+}
+
+type UniverseConfig struct {
+	Name            string   `yaml:"name" json:"name"`
+	Description     string   `yaml:"description" json:"description,omitempty"`
+	Spec            string   `yaml:"spec" json:"spec"`
+	InputPrefix     string   `yaml:"input_prefix" json:"input_prefix,omitempty"`
+	InputSuffix     string   `yaml:"input_suffix" json:"input_suffix,omitempty"`
+	DependsOn       []string `yaml:"depends_on" json:"depends_on,omitempty"`
+	InputPort       string   `yaml:"input_port" json:"input_port,omitempty"`
+	OutputPort      string   `yaml:"output_port" json:"output_port,omitempty"`
+	OutputKind      string   `yaml:"output_kind" json:"output_kind,omitempty"`
+	MergePolicy     string   `yaml:"merge_policy" json:"merge_policy,omitempty"`
+	HandoffMaxChars int      `yaml:"handoff_max_chars" json:"handoff_max_chars,omitempty"`
 }
 
 type IssueLevel string
