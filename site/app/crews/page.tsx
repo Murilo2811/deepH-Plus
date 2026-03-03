@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { fetchAgents, fetchCrews, saveCrew, type Agent, type Crew } from "@/lib/api";
-import { Users, Plus, Trash2, ArrowUp, ArrowDown, ChevronDown, ChevronUp, Save } from "lucide-react";
+import { fetchAgents, fetchCrews, saveCrew, updateCrew, deleteCrew, type Agent, type Crew } from "@/lib/api";
+import { Users, Plus, Trash2, ArrowUp, ArrowDown, ChevronDown, ChevronUp, Save, XCircle } from "lucide-react";
 
 function generateYaml(crew: Crew): string {
     const lines: string[] = [`name: ${crew.name}`];
@@ -19,9 +19,12 @@ export default function CrewsPage() {
     const [mode, setMode] = useState<"sequential" | "parallel">("sequential");
     const [selectedAgents, setSelectedAgents] = useState<string[]>([]);
     const [saving, setSaving] = useState(false);
+    const [deleting, setDeleting] = useState<string | null>(null);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [yamlOpen, setYamlOpen] = useState(false);
+    // Tracks the *original* name of the crew being edited. null = creating new crew.
+    const [editingCrewName, setEditingCrewName] = useState<string | null>(null);
 
     useEffect(() => {
         fetchAgents().then(setAgents).catch(console.error);
@@ -45,6 +48,17 @@ export default function CrewsPage() {
         });
     }
 
+    function resetForm() {
+        setName("");
+        setDescription("");
+        setMode("sequential");
+        setSelectedAgents([]);
+        setEditingCrewName(null);
+        setYamlOpen(false);
+        setError("");
+        setSuccess("");
+    }
+
     const spec = useMemo(() => {
         if (selectedAgents.length === 0) return "";
         return mode === "sequential"
@@ -63,16 +77,43 @@ export default function CrewsPage() {
         setSaving(true);
         try {
             const crew: Crew = { name: name.trim(), description: description.trim(), spec };
-            await saveCrew(crew);
-            setCrews(prev => {
-                const idx = prev.findIndex(c => c.name === crew.name);
-                return idx >= 0 ? prev.map((c, i) => i === idx ? crew : c) : [...prev, crew];
-            });
-            setSuccess(`Time "${crew.name}" salvo com sucesso!`);
+            if (editingCrewName !== null) {
+                // Editing an existing crew — use PUT so the backend can handle renames
+                const updated = await updateCrew(editingCrewName, crew);
+                setCrews(prev => prev.map(c => c.name === editingCrewName ? updated : c));
+                setEditingCrewName(updated.name); // update in case name changed
+                setSuccess(`Time "${updated.name}" atualizado com sucesso!`);
+            } else {
+                // Creating a new crew — use POST
+                const created = await saveCrew(crew);
+                setCrews(prev => {
+                    const idx = prev.findIndex(c => c.name === created.name);
+                    return idx >= 0 ? prev.map((c, i) => i === idx ? created : c) : [...prev, created];
+                });
+                setSuccess(`Time "${created.name}" salvo com sucesso!`);
+            }
         } catch (e: any) {
             setError(e.message ?? "Erro ao salvar.");
         } finally {
             setSaving(false);
+        }
+    }
+
+    async function handleDelete(crewName: string, e: React.MouseEvent) {
+        e.stopPropagation();
+        if (!window.confirm(`Excluir o crew "${crewName}"? Esta ação não pode ser desfeita.`)) return;
+        setDeleting(crewName);
+        setError("");
+        try {
+            await deleteCrew(crewName);
+            setCrews(prev => prev.filter(c => c.name !== crewName));
+            setSuccess(`Crew "${crewName}" excluído com sucesso.`);
+            // Reset form if we were editing this crew
+            if (editingCrewName === crewName) resetForm();
+        } catch (e: any) {
+            setError(e.message ?? "Erro ao excluir.");
+        } finally {
+            setDeleting(null);
         }
     }
 
@@ -88,7 +129,8 @@ export default function CrewsPage() {
                 {/* Builder */}
                 <div className="rounded-2xl border border-primary/10 bg-background-dark/40 p-5 flex flex-col gap-5">
                     <h2 className="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <Plus className="w-4 h-4 text-primary" /> Criar Novo Time
+                        <Plus className="w-4 h-4 text-primary" />
+                        {editingCrewName ? `Editando: ${editingCrewName}` : "Criar Novo Time"}
                     </h2>
 
                     {/* Name */}
@@ -181,15 +223,26 @@ export default function CrewsPage() {
                     {error && <p className="text-xs text-red-400">{error}</p>}
                     {success && <p className="text-xs text-green-400">{success}</p>}
 
-                    {/* Save */}
-                    <button
-                        onClick={handleSave}
-                        disabled={saving || !name.trim() || selectedAgents.length === 0}
-                        className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-background-dark font-semibold text-sm disabled:opacity-40 hover:bg-primary/90 transition-all shadow-[0_0_15px_rgba(15,240,146,0.2)]"
-                    >
-                        <Save className="w-4 h-4" />
-                        {saving ? "Salvando..." : "Salvar Time"}
-                    </button>
+                    {/* Actions */}
+                    <div className="flex gap-2">
+                        {editingCrewName && (
+                            <button
+                                onClick={resetForm}
+                                title="Cancelar edição"
+                                className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-600 text-slate-400 text-sm hover:border-slate-400 hover:text-slate-200 transition-all"
+                            >
+                                <XCircle className="w-4 h-4" /> Cancelar
+                            </button>
+                        )}
+                        <button
+                            onClick={handleSave}
+                            disabled={saving || !name.trim() || selectedAgents.length === 0}
+                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-background-dark font-semibold text-sm disabled:opacity-40 hover:bg-primary/90 transition-all shadow-[0_0_15px_rgba(15,240,146,0.2)]"
+                        >
+                            <Save className="w-4 h-4" />
+                            {saving ? "Salvando..." : editingCrewName ? "Atualizar Time" : "Salvar Time"}
+                        </button>
+                    </div>
                 </div>
 
                 {/* Crews List */}
@@ -214,6 +267,7 @@ export default function CrewsPage() {
                                         const parts = crew.spec.includes(">")
                                             ? crew.spec.split(">")
                                             : crew.spec.split("+");
+                                        setEditingCrewName(crew.name);
                                         setName(crew.name);
                                         setDescription(crew.description ?? "");
                                         setMode(crew.spec.includes(">") ? "sequential" : "parallel");
@@ -223,14 +277,24 @@ export default function CrewsPage() {
                                         setSuccess("");
                                     }}
                                 >
-                                    <div className="flex justify-between items-start">
-                                        <div>
+                                    <div className="flex justify-between items-start gap-2">
+                                        <div className="flex-1 min-w-0">
                                             <div className="text-sm font-medium text-slate-200">{crew.name}</div>
-                                            {crew.description && <div className="text-xs text-slate-500 mt-0.5">{crew.description}</div>}
+                                            {crew.description && <div className="text-xs text-slate-500 mt-0.5 truncate">{crew.description}</div>}
                                         </div>
-                                        <span className="text-xs text-slate-600 bg-background-dark/60 px-2 py-0.5 rounded-lg shrink-0">
-                                            {crew.spec.includes(">") ? "seq" : "par"}
-                                        </span>
+                                        <div className="flex items-center gap-1.5 shrink-0">
+                                            <span className="text-xs text-slate-600 bg-background-dark/60 px-2 py-0.5 rounded-lg">
+                                                {crew.spec.includes(">") ? "seq" : "par"}
+                                            </span>
+                                            <button
+                                                onClick={(e) => handleDelete(crew.name, e)}
+                                                disabled={deleting === crew.name}
+                                                title="Excluir crew"
+                                                className="p-1 rounded-lg text-slate-600 hover:text-red-400 hover:bg-red-400/10 transition-all disabled:opacity-40"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
                                     </div>
                                     <code className="text-xs text-primary/60 mt-1 block truncate">{crew.spec}</code>
                                 </div>

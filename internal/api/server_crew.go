@@ -127,3 +127,118 @@ func (s *Server) createCrew(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(crew)
 }
+
+func (s *Server) handleCrewByName(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	// Extract name from path: /api/crews/{name}
+	nameFromURL := strings.TrimPrefix(r.URL.Path, "/api/crews/")
+	nameFromURL = strings.TrimSuffix(nameFromURL, "/")
+	nameFromURL = strings.TrimSpace(nameFromURL)
+	if nameFromURL == "" {
+		http.Error(w, `{"error": "crew name required"}`, http.StatusBadRequest)
+		return
+	}
+	// Sanitization — prevents path traversal
+	if strings.ContainsAny(nameFromURL, `/\`) || strings.Contains(nameFromURL, "..") {
+		http.Error(w, `{"error": "invalid crew name"}`, http.StatusBadRequest)
+		return
+	}
+
+	// Find the existing file path based on the name from the URL
+	existingFilePath, err := s.findCrewFile(nameFromURL)
+	if err != nil && !os.IsNotExist(err) {
+		http.Error(w, fmt.Sprintf(`{"error": "failed to check crew file: %v"}`, err), http.StatusInternalServerError)
+		return
+	}
+	crewExists := err == nil
+
+	if r.Method == http.MethodPut {
+		var crew crewConfig
+		if err := json.NewDecoder(r.Body).Decode(&crew); err != nil {
+			http.Error(w, fmt.Sprintf(`{"error": "invalid json: %v"}`, err), http.StatusBadRequest)
+			return
+		}
+
+		// If crew.Name is not provided in the body, use the name from the URL
+		if crew.Name == "" {
+			crew.Name = nameFromURL
+		} else {
+			crew.Name = strings.TrimSpace(crew.Name)
+			if strings.ContainsAny(crew.Name, `/\`) || strings.Contains(crew.Name, "..") {
+				http.Error(w, `{"error": "invalid crew name in body"}`, http.StatusBadRequest)
+				return
+			}
+		}
+
+		crew.Spec = strings.TrimSpace(crew.Spec)
+		if crew.Spec == "" {
+			http.Error(w, `{"error": "crew spec is required"}`, http.StatusBadRequest)
+			return
+		}
+
+		if err := os.MkdirAll(s.crewDir(), 0o755); err != nil {
+			http.Error(w, fmt.Sprintf(`{"error": "mkdir: %v"}`, err), http.StatusInternalServerError)
+			return
+		}
+
+		// If the name changed, check if the new name already exists
+		if crew.Name != nameFromURL {
+			if _, err := s.findCrewFile(crew.Name); err == nil {
+				http.Error(w, fmt.Sprintf(`{"error": "crew '%s' already exists"}`, crew.Name), http.StatusConflict)
+				return
+			}
+		}
+
+		b, err := yaml.Marshal(&crew)
+		if err != nil {
+			http.Error(w, fmt.Sprintf(`{"error": "yaml marshal: %v"}`, err), http.StatusInternalServerError)
+			return
+		}
+
+		newFilePath := filepath.Join(s.crewDir(), crew.Name+".yaml")
+
+		// If the name changed, delete the old file
+		if crew.Name != nameFromURL && crewExists {
+			if err := os.Remove(existingFilePath); err != nil && !os.IsNotExist(err) {
+				http.Error(w, fmt.Sprintf(`{"error": "failed to delete old crew file: %v"}`, err), http.StatusInternalServerError)
+				return
+			}
+		}
+
+		if err := os.WriteFile(newFilePath, b, 0o644); err != nil {
+			http.Error(w, fmt.Sprintf(`{"error": "write: %v"}`, err), http.StatusInternalServerError)
+			return
+		}
+		json.NewEncoder(w).Encode(crew)
+		return
+	}
+
+	if r.Method == http.MethodDelete {
+		if !crewExists {
+			http.Error(w, `{"error": "crew not found"}`, http.StatusNotFound)
+			return
+		}
+		if err := os.Remove(existingFilePath); err != nil && !os.IsNotExist(err) {
+			http.Error(w, fmt.Sprintf(`{"error": "failed to delete: %v"}`, err), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status": "deleted"}`))
+		return
+	}
+
+	http.Error(w, `{"error": "method not allowed"}`, http.StatusMethodNotAllowed)
+}
+
+// findCrewFile returns the full path of the crew file for the given name,
+// checking both .yaml and .yml extensions. Returns os.ErrNotExist if neither is found.
+func (s *Server) findCrewFile(name string) (string, error) {
+	for _, ext := range []string{".yaml", ".yml"} {
+		p := filepath.Join(s.crewDir(), name+ext)
+		if _, err := os.Stat(p); err == nil {
+			return p, nil
+		}
+	}
+	return "", os.ErrNotExist
+}

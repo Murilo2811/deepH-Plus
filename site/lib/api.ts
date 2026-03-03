@@ -163,6 +163,29 @@ export async function saveCrew(crew: Crew): Promise<Crew> {
     return res.json();
 }
 
+export async function updateCrew(originalName: string, crew: Crew): Promise<Crew> {
+    const res = await fetch(`${API_BASE}/api/crews/${encodeURIComponent(originalName)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(crew)
+    });
+    if (!res.ok) {
+        const text = await res.text().catch(() => res.statusText);
+        throw new Error(`Failed to update crew: ${text}`);
+    }
+    return res.json();
+}
+
+export async function deleteCrew(name: string): Promise<void> {
+    const res = await fetch(`${API_BASE}/api/crews/${encodeURIComponent(name)}`, {
+        method: 'DELETE',
+    });
+    if (!res.ok) {
+        const text = await res.text().catch(() => res.statusText);
+        throw new Error(`Failed to delete crew: ${text}`);
+    }
+}
+
 // ─── Run (multi-agent SSE) ─────────────────────────────────────────────────────
 export type RunMode = 'sequential' | 'parallel';
 
