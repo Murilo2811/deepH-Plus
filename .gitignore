@@ -23,6 +23,14 @@ tmp/
 .gopath/
 keys.json
 
+# Temp debug/test files
+*.log
+run.json
+run_mock.json
+test_dialog.ps1
+pdf_pages/
+*.pdf
+
 # Build artifacts
 deeph.exe
 site/out/
