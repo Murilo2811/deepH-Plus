@@ -180,3 +180,66 @@ func TestHandleSkillsAndProviders(t *testing.T) {
 		t.Errorf("providers expected 200, got %d", rr.Code)
 	}
 }
+
+func TestHandleCrewByName(t *testing.T) {
+	workspace, cleanup := setupTestWorkspace(t)
+	defer cleanup()
+
+	srv := NewServer(workspace, "localhost:0")
+
+	// Cria o diretório de crews
+	crewDir := filepath.Join(workspace, "crews")
+	_ = os.MkdirAll(crewDir, 0755)
+
+	// 1) POST /api/crews — cria crew inicial
+	crew := map[string]string{"name": "test-crew", "spec": "guide>analyst"}
+	body, _ := json.Marshal(crew)
+	req, _ := http.NewRequest("POST", "/api/crews", bytes.NewBuffer(body))
+	rr := httptest.NewRecorder()
+	srv.createCrew(rr, req)
+	if rr.Code != http.StatusCreated {
+		t.Fatalf("POST expected 201, got %d: %s", rr.Code, rr.Body.String())
+	}
+
+	// Verifica que o arquivo existe no disco
+	crewFile := filepath.Join(crewDir, "test-crew.yaml")
+	if _, err := os.Stat(crewFile); err != nil {
+		t.Fatalf("crew file not created: %v", err)
+	}
+
+	// 2) PUT /api/crews/test-crew — atualiza crew
+	updated := map[string]string{"name": "test-crew", "description": "updated", "spec": "guide+analyst"}
+	body, _ = json.Marshal(updated)
+	req, _ = http.NewRequest("PUT", "/api/crews/test-crew", bytes.NewBuffer(body))
+	rr = httptest.NewRecorder()
+	srv.handleCrewByName(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Errorf("PUT expected 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var updatedCrew map[string]string
+	json.NewDecoder(rr.Body).Decode(&updatedCrew)
+	if updatedCrew["description"] != "updated" {
+		t.Errorf("expected description='updated', got '%s'", updatedCrew["description"])
+	}
+
+	// 3) DELETE /api/crews/test-crew — exclui crew
+	req, _ = http.NewRequest("DELETE", "/api/crews/test-crew", nil)
+	rr = httptest.NewRecorder()
+	srv.handleCrewByName(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Errorf("DELETE expected 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+
+	// Verifica que o arquivo foi removido do disco
+	if _, err := os.Stat(crewFile); !os.IsNotExist(err) {
+		t.Error("crew file should have been deleted")
+	}
+
+	// 4) Método inválido
+	req, _ = http.NewRequest("PATCH", "/api/crews/test-crew", nil)
+	rr = httptest.NewRecorder()
+	srv.handleCrewByName(rr, req)
+	if rr.Code != http.StatusMethodNotAllowed {
+		t.Errorf("PATCH expected 405, got %d", rr.Code)
+	}
+}

@@ -45,6 +45,7 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/api/kits", s.handleKitList)
 	mux.HandleFunc("/api/kits/install", s.handleKitInstall)
 	mux.HandleFunc("/api/crews", s.handleCrews)
+	mux.HandleFunc("/api/crews/", s.handleCrewByName)
 	mux.HandleFunc("/api/run", s.handleRun)
 	mux.HandleFunc("/api/chat/stream", s.handleChatStream)
 

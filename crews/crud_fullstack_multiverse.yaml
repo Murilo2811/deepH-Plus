@@ -1,3 +1,0 @@
-name: crud_fullstack_multiverse
-description: CRUD fullstack with typed universe channels (contract -> backend -> frontend/test -> synth)
-spec: crud_contract
