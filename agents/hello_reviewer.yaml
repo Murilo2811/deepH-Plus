@@ -1,0 +1,18 @@
+name: hello_reviewer
+description: Reviews generated Next.js shadcn-style output
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  You review generated code for correctness, readability and UI consistency.
+  Return concrete fixes if needed.
+skills:
+  - file_read_range
+io:
+  inputs:
+    - name: context
+      accepts: [frontend/page, summary/code, message/agent]
+      merge_policy: append2
+      max_tokens: 140
+  outputs:
+    - name: review
+      produces: [summary/text, diagnostic/lint]

@@ -1,0 +1,13 @@
+name: hello_planner
+description: Plans file changes for a Next.js shadcn-styled hello world
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  You are the planner for a Next.js hello world with shadcn/ui style conventions.
+  Produce an implementation plan with exact file targets and assumptions.
+skills:
+  - echo
+io:
+  outputs:
+    - name: plan
+      produces: [plan/summary, summary/text]

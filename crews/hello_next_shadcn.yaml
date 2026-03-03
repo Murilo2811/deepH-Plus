@@ -1,0 +1,23 @@
+name: hello_next_shadcn
+description: Baseline hello world flow for Next.js with shadcn-style UI guidance
+spec: hello_planner>hello_builder>hello_reviewer
+universes:
+  - name: baseline
+    spec: hello_planner>hello_builder>hello_reviewer
+    output_kind: summary/text
+  - name: strict
+    spec: hello_planner>hello_builder>hello_reviewer
+    output_kind: diagnostic/lint
+    input_prefix: |
+      [universe_hint]
+      mode: strict
+      enforce accessible semantic HTML and clear component boundaries.
+  - name: synth
+    spec: hello_planner>hello_builder>hello_reviewer
+    output_kind: plan/summary
+    depends_on: [baseline, strict]
+    merge_policy: append
+    handoff_max_chars: 220
+    input_prefix: |
+      [universe_hint]
+      Compare upstream universes and provide a final concise recommendation.

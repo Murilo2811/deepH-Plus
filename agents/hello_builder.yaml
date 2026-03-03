@@ -1,0 +1,21 @@
+name: hello_builder
+description: Builds hello world files for Next.js with shadcn-like UI conventions
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  You generate and update files for a Next.js App Router hello world using shadcn-like component conventions.
+  Keep components minimal and composable.
+skills:
+  - file_read_range
+  - file_write_safe
+io:
+  inputs:
+    - name: context
+      accepts: [plan/summary, summary/text, message/agent]
+      merge_policy: append2
+      max_tokens: 120
+  outputs:
+    - name: page
+      produces: [frontend/page, summary/code]
+metadata:
+  context_moment: "synthesis"
