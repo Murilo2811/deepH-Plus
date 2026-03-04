@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Agent, IOPort, createOrUpdateAgent, deleteAgent, fetchSkills, fetchProviders } from "@/lib/api";
-import { Settings2, Terminal, Blocks, ChevronLeft, Save, Loader2, Code2, Plus, Trash2, Network } from "lucide-react";
+import { Settings2, Terminal, Blocks, ChevronLeft, Save, Loader2, Code2, Plus, Trash2, Network, Search } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -274,6 +274,7 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
         initialAgent ? agentToYaml(initialAgent) : DEFAULT_YAML
     );
     const [yamlError, setYamlError] = useState("");
+    const [skillsFilter, setSkillsFilter] = useState("");
 
     const [allSkills, setAllSkills] = useState<{ name: string; description: string }[]>([]);
     const [allProviders, setAllProviders] = useState<string[]>([]);
@@ -281,6 +282,11 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
     // Parsed agent from YAML
     const [agent, setAgent] = useState<Agent>(() =>
         initialAgent ?? parseYaml(DEFAULT_YAML)
+    );
+
+    const filteredSkills = allSkills.filter(s =>
+        s.name.toLowerCase().includes(skillsFilter.toLowerCase()) ||
+        (s.description || "").toLowerCase().includes(skillsFilter.toLowerCase())
     );
 
     useEffect(() => {
@@ -593,8 +599,22 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
                                 <Blocks className="text-primary w-5 h-5" />
                                 <h2 className="text-slate-100 text-xl font-bold tracking-tight font-display">Skills & Capabilities</h2>
                             </div>
+
+                            <div className="relative mb-4">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <Search className="h-4 w-4 text-slate-500" />
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Filter skills by name or description..."
+                                    value={skillsFilter}
+                                    onChange={(e) => setSkillsFilter(e.target.value)}
+                                    className="form-input flex w-full rounded border-border-accent bg-slate-panel focus:ring-1 focus:ring-primary focus:border-primary text-slate-100 h-10 pl-10 pr-4 text-sm placeholder:text-slate-500"
+                                />
+                            </div>
+
                             <div className="grid grid-cols-2 gap-3">
-                                {allSkills.map(skill => {
+                                {filteredSkills.map(skill => {
                                     const isSelected = (agent.skills || []).includes(skill.name);
                                     return (
                                         <label key={skill.name} onClick={() => {
@@ -609,6 +629,11 @@ export function AgentEditor({ initialAgent }: { initialAgent?: Agent }) {
                                         </label>
                                     );
                                 })}
+                                {filteredSkills.length === 0 && (
+                                    <div className="col-span-2 text-center text-slate-500 text-sm py-4">
+                                        Nenhuma skill encontrada para o filtro informado.
+                                    </div>
+                                )}
                             </div>
                         </section>
                     </motion.div>

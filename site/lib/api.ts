@@ -61,10 +61,46 @@ export async function deleteAgent(name: string): Promise<void> {
     if (!res.ok) throw new Error("Failed to delete agent");
 }
 
-export async function fetchSkills(): Promise<{ name: string; description: string }[]> {
+export interface Skill {
+    name: string;
+    description: string;
+    filename: string;
+    content: string;
+}
+
+export async function fetchSkills(): Promise<Skill[]> {
     const res = await fetch(`${API_BASE}/api/skills`);
     if (!res.ok) return [];
     return res.json();
+}
+
+export async function createOrUpdateSkill(skill: Skill): Promise<Skill> {
+    const isUpdate = !!skill.name && !skill.content.includes("name: \"\"");
+    // Usually we update via PUT if skill already exists, but the user is creating a new yaml or editing
+    // Actually the server allows POST to /api/skills and PUT to /api/skills/:name
+    const method = skill.name ? 'PUT' : 'POST';
+    const url = skill.name ? `${API_BASE}/api/skills/${encodeURIComponent(skill.name)}` : `${API_BASE}/api/skills`;
+
+    const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(skill)
+    });
+    if (!res.ok) {
+        const text = await res.text().catch(() => res.statusText);
+        throw new Error(`Failed to save skill: ${text}`);
+    }
+    return res.json();
+}
+
+export async function deleteSkill(name: string): Promise<void> {
+    const res = await fetch(`${API_BASE}/api/skills/${encodeURIComponent(name)}`, {
+        method: 'DELETE'
+    });
+    if (!res.ok) {
+        const text = await res.text().catch(() => res.statusText);
+        throw new Error(`Failed to delete skill: ${text}`);
+    }
 }
 
 export async function fetchProviders(): Promise<string[]> {

@@ -2,13 +2,30 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { fetchAgents, fetchCrews, saveCrew, updateCrew, deleteCrew, type Agent, type Crew } from "@/lib/api";
-import { Users, Plus, Trash2, ArrowUp, ArrowDown, ChevronDown, ChevronUp, Save, XCircle, Pencil } from "lucide-react";
+import { Users, Plus, Trash2, ArrowUp, ArrowDown, ChevronDown, ChevronUp, Save, XCircle, Pencil, FileText } from "lucide-react";
 
 function generateYaml(crew: Crew): string {
     const lines: string[] = [`name: ${crew.name}`];
     if (crew.description) lines.push(`description: ${crew.description}`);
     lines.push(`spec: ${crew.spec}`);
     return lines.join("\n");
+}
+
+function parseCrewYaml(yaml: string): Crew {
+    const result: Crew = { name: "", description: "", spec: "" };
+    const lines = yaml.split("\n");
+    for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#")) continue;
+        const m = trimmed.match(/^(\w+):\s*(.*)/);
+        if (!m) continue;
+        const [, key, val] = m;
+        const valTrimmed = val.trim().replace(/^["']|["']$/g, "");
+        if (key === "name") result.name = valTrimmed;
+        if (key === "description") result.description = valTrimmed;
+        if (key === "spec") result.spec = valTrimmed;
+    }
+    return result;
 }
 
 export default function CrewsPage() {
@@ -25,6 +42,10 @@ export default function CrewsPage() {
     const [yamlOpen, setYamlOpen] = useState(false);
     // Tracks the *original* name of the crew being edited. null = creating new crew.
     const [editingCrewName, setEditingCrewName] = useState<string | null>(null);
+
+    const [editorMode, setEditorMode] = useState<"visual" | "yaml">("visual");
+    const [editorYamlStr, setEditorYamlStr] = useState("");
+    const [editorYamlError, setEditorYamlError] = useState("");
 
     useEffect(() => {
         fetchAgents().then(setAgents).catch(console.error);
@@ -57,6 +78,9 @@ export default function CrewsPage() {
         setYamlOpen(false);
         setError("");
         setSuccess("");
+        setEditorMode("visual");
+        setEditorYamlStr("");
+        setEditorYamlError("");
     }
 
     const spec = useMemo(() => {
@@ -69,28 +93,74 @@ export default function CrewsPage() {
     const previewCrew: Crew = { name: name || "meu-time", description, spec };
     const yaml = generateYaml(previewCrew);
 
+    const switchMode = (newMode: "visual" | "yaml") => {
+        if (newMode === "visual" && editorMode === "yaml") {
+            try {
+                const parsed = parseCrewYaml(editorYamlStr);
+                if (!parsed.name || !parsed.spec) throw new Error("YAML inválido: 'name' e 'spec' são obrigatórios.");
+
+                setName(parsed.name);
+                setDescription(parsed.description || "");
+
+                const parts = parsed.spec.includes(">") ? parsed.spec.split(">") : parsed.spec.split("+");
+                setMode(parsed.spec.includes(">") ? "sequential" : "parallel");
+                setSelectedAgents(parts.map(p => p.trim()).filter(Boolean));
+
+                setEditorYamlError("");
+            } catch (e: any) {
+                setEditorYamlError(e.message);
+                return;
+            }
+        }
+        if (newMode === "yaml" && editorMode === "visual") {
+            setEditorYamlStr(yaml);
+        }
+        setEditorMode(newMode);
+    };
+
     async function handleSave() {
         setError("");
         setSuccess("");
-        if (!name.trim()) { setError("O nome do crew é obrigatório."); return; }
-        if (selectedAgents.length === 0) { setError("Selecione ao menos um agente."); return; }
+        setEditorYamlError("");
+
+        let crewToSave: Crew;
+        if (editorMode === "yaml") {
+            try {
+                crewToSave = parseCrewYaml(editorYamlStr);
+                if (!crewToSave.name.trim() || !crewToSave.spec.trim()) {
+                    setEditorYamlError("YAML inválido: 'name' e 'spec' são obrigatórios.");
+                    return;
+                }
+            } catch (e: any) {
+                setEditorYamlError("YAML inválido: " + e.message);
+                return;
+            }
+        } else {
+            if (!name.trim()) { setError("O nome do crew é obrigatório."); return; }
+            if (selectedAgents.length === 0) { setError("Selecione ao menos um agente."); return; }
+            crewToSave = { name: name.trim(), description: description.trim(), spec };
+        }
+
         setSaving(true);
         try {
-            const crew: Crew = { name: name.trim(), description: description.trim(), spec };
             if (editingCrewName !== null) {
                 // Editing an existing crew — use PUT so the backend can handle renames
-                const updated = await updateCrew(editingCrewName, crew);
+                const updated = await updateCrew(editingCrewName, crewToSave);
                 setCrews(prev => prev.map(c => c.name === editingCrewName ? updated : c));
                 setEditingCrewName(updated.name); // update in case name changed
                 setSuccess(`Time "${updated.name}" atualizado com sucesso!`);
+                // Keep the YAML in sync if we are in YAML mode
+                if (editorMode === "yaml") setEditorYamlStr(generateYaml(updated));
             } else {
                 // Creating a new crew — use POST
-                const created = await saveCrew(crew);
+                const created = await saveCrew(crewToSave);
                 setCrews(prev => {
                     const idx = prev.findIndex(c => c.name === created.name);
                     return idx >= 0 ? prev.map((c, i) => i === idx ? created : c) : [...prev, created];
                 });
                 setSuccess(`Time "${created.name}" salvo com sucesso!`);
+                setEditingCrewName(created.name);
+                if (editorMode === "yaml") setEditorYamlStr(generateYaml(created));
             }
         } catch (e: any) {
             setError(e.message ?? "Erro ao salvar.");
@@ -128,95 +198,139 @@ export default function CrewsPage() {
             <div className="grid md:grid-cols-2 gap-6">
                 {/* Builder */}
                 <div className="rounded-2xl border border-primary/10 bg-background-dark/40 p-5 flex flex-col gap-5">
-                    <h2 className="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <Plus className="w-4 h-4 text-primary" />
-                        {editingCrewName ? `Editando: ${editingCrewName}` : "Criar Novo Time"}
-                    </h2>
-
-                    {/* Name */}
-                    <div>
-                        <label className="text-xs text-slate-400 mb-1 block">Nome do Time</label>
-                        <input
-                            value={name}
-                            onChange={e => setName(e.target.value.toLowerCase().replace(/\s+/g, "-"))}
-                            placeholder="meu-time"
-                            className="w-full rounded-xl border border-primary/10 bg-background-dark/60 text-slate-200 text-sm px-3 py-2 focus:outline-none focus:border-primary/40 placeholder-slate-500"
-                        />
-                    </div>
-
-                    {/* Description */}
-                    <div>
-                        <label className="text-xs text-slate-400 mb-1 block">Descrição (opcional)</label>
-                        <input
-                            value={description}
-                            onChange={e => setDescription(e.target.value)}
-                            placeholder="Descreva o objetivo do time..."
-                            className="w-full rounded-xl border border-primary/10 bg-background-dark/60 text-slate-200 text-sm px-3 py-2 focus:outline-none focus:border-primary/40 placeholder-slate-500"
-                        />
-                    </div>
-
-                    {/* Mode */}
-                    <div>
-                        <label className="text-xs text-slate-400 mb-1 block">Modo</label>
-                        <div className="flex gap-2">
-                            {(["sequential", "parallel"] as const).map(m => (
+                    <div className="flex justify-between items-center mb-1">
+                        <h2 className="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                            <Plus className="w-4 h-4 text-primary" />
+                            {editingCrewName ? `Editando: ${editingCrewName}` : "Criar Novo Time"}
+                        </h2>
+                        <div className="flex bg-slate-panel/50 rounded border border-primary/10 p-0.5">
+                            {(["visual", "yaml"] as const).map(m => (
                                 <button
                                     key={m}
-                                    onClick={() => setMode(m)}
-                                    className={`flex-1 text-xs py-1.5 rounded-lg border transition-all ${mode === m ? "border-primary text-primary bg-primary/10" : "border-primary/10 text-slate-400 hover:border-primary/30"}`}
+                                    onClick={() => switchMode(m)}
+                                    className={`px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest transition-colors ${editorMode === m
+                                        ? "bg-primary/20 text-primary"
+                                        : "text-slate-400 hover:text-slate-200"
+                                        }`}
                                 >
-                                    {m === "sequential" ? "Sequencial (>)" : "Paralelo (+)"}
+                                    {m}
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    {/* Agent Selector */}
-                    <div>
-                        <label className="text-xs text-slate-400 mb-2 block">Agentes</label>
-                        <div className="flex flex-col gap-1 max-h-40 overflow-y-auto pr-1">
-                            {agents.length === 0 ? (
-                                <p className="text-xs text-slate-500">Nenhum agente encontrado.</p>
-                            ) : agents.map(a => {
-                                const idx = selectedAgents.indexOf(a.name);
-                                const isSelected = idx >= 0;
-                                return (
-                                    <div key={a.name} className="flex items-center gap-2">
-                                        <button
-                                            onClick={() => toggleAgent(a.name)}
-                                            className={`flex-1 text-left px-3 py-1.5 rounded-lg border text-xs transition-all ${isSelected ? "border-primary/50 bg-primary/10 text-primary" : "border-primary/10 text-slate-300 hover:border-primary/30"}`}
-                                        >
-                                            {isSelected && <span className="mr-1 text-primary/70">{idx + 1}.</span>}
-                                            {a.name}
-                                        </button>
-                                        {isSelected && mode === "sequential" && (
-                                            <div className="flex flex-col gap-0.5">
-                                                <button onClick={() => moveAgent(idx, "up")} className="text-slate-500 hover:text-primary transition-colors"><ArrowUp className="w-3 h-3" /></button>
-                                                <button onClick={() => moveAgent(idx, "down")} className="text-slate-500 hover:text-primary transition-colors"><ArrowDown className="w-3 h-3" /></button>
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
+                    {editorYamlError && <p className="text-xs text-red-500">{editorYamlError}</p>}
 
-                    {/* YAML Preview */}
-                    {spec && (
-                        <div>
-                            <button
-                                onClick={() => setYamlOpen(v => !v)}
-                                className="text-xs text-slate-400 flex items-center gap-1 hover:text-primary transition-colors"
-                            >
-                                {yamlOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                                Preview YAML
-                            </button>
-                            {yamlOpen && (
-                                <pre className="mt-2 text-xs text-primary/80 bg-background-dark/60 rounded-xl border border-primary/10 p-3 overflow-x-auto font-mono leading-relaxed">
-                                    {yaml}
-                                </pre>
-                            )}
+                    {editorMode === "yaml" ? (
+                        <div className="flex-1 flex flex-col gap-2 min-h-[350px]">
+                            <div className="flex rounded-xl overflow-hidden border border-primary/10 bg-background-dark/60">
+                                <div className="py-3 px-2 bg-black/40 select-none border-r border-primary/10 min-w-[2.5rem] text-right">
+                                    {editorYamlStr.split("\n").map((_, idx) => (
+                                        <div key={idx} className="text-slate-500 text-[11px] font-mono leading-[1.625rem]">
+                                            {idx + 1}
+                                        </div>
+                                    ))}
+                                </div>
+                                <textarea
+                                    value={editorYamlStr}
+                                    onChange={e => { setEditorYamlStr(e.target.value); setEditorYamlError(""); }}
+                                    spellCheck={false}
+                                    className="flex-1 bg-transparent text-primary p-3 font-mono text-xs leading-[1.625rem] resize-y focus:outline-none min-h-[350px] w-full"
+                                    style={{ tabSize: 2 }}
+                                />
+                            </div>
+                            <p className="text-[11px] text-slate-500 text-center mt-1">
+                                ✏️ Edite o YAML diretamente e clique em Salvar Time.
+                            </p>
                         </div>
+                    ) : (
+                        <>
+                            {/* Name */}
+                            <div>
+                                <label className="text-xs text-slate-400 mb-1 block">Nome do Time</label>
+                                <input
+                                    value={name}
+                                    onChange={e => setName(e.target.value.toLowerCase().replace(/\s+/g, "-"))}
+                                    placeholder="meu-time"
+                                    className="w-full rounded-xl border border-primary/10 bg-background-dark/60 text-slate-200 text-sm px-3 py-2 focus:outline-none focus:border-primary/40 placeholder-slate-500"
+                                />
+                            </div>
+
+                            {/* Description */}
+                            <div>
+                                <label className="text-xs text-slate-400 mb-1 block">Descrição (opcional)</label>
+                                <input
+                                    value={description}
+                                    onChange={e => setDescription(e.target.value)}
+                                    placeholder="Descreva o objetivo do time..."
+                                    className="w-full rounded-xl border border-primary/10 bg-background-dark/60 text-slate-200 text-sm px-3 py-2 focus:outline-none focus:border-primary/40 placeholder-slate-500"
+                                />
+                            </div>
+
+                            {/* Mode */}
+                            <div>
+                                <label className="text-xs text-slate-400 mb-1 block">Modo</label>
+                                <div className="flex gap-2">
+                                    {(["sequential", "parallel"] as const).map(m => (
+                                        <button
+                                            key={m}
+                                            onClick={() => setMode(m)}
+                                            className={`flex-1 text-xs py-1.5 rounded-lg border transition-all ${mode === m ? "border-primary text-primary bg-primary/10" : "border-primary/10 text-slate-400 hover:border-primary/30"}`}
+                                        >
+                                            {m === "sequential" ? "Sequencial (>)" : "Paralelo (+)"}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Agent Selector */}
+                            <div>
+                                <label className="text-xs text-slate-400 mb-2 block">Agentes</label>
+                                <div className="flex flex-col gap-1 max-h-40 overflow-y-auto pr-1">
+                                    {agents.length === 0 ? (
+                                        <p className="text-xs text-slate-500">Nenhum agente encontrado.</p>
+                                    ) : agents.map(a => {
+                                        const idx = selectedAgents.indexOf(a.name);
+                                        const isSelected = idx >= 0;
+                                        return (
+                                            <div key={a.name} className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => toggleAgent(a.name)}
+                                                    className={`flex-1 text-left px-3 py-1.5 rounded-lg border text-xs transition-all ${isSelected ? "border-primary/50 bg-primary/10 text-primary" : "border-primary/10 text-slate-300 hover:border-primary/30"}`}
+                                                >
+                                                    {isSelected && <span className="mr-1 text-primary/70">{idx + 1}.</span>}
+                                                    {a.name}
+                                                </button>
+                                                {isSelected && mode === "sequential" && (
+                                                    <div className="flex flex-col gap-0.5">
+                                                        <button onClick={() => moveAgent(idx, "up")} className="text-slate-500 hover:text-primary transition-colors"><ArrowUp className="w-3 h-3" /></button>
+                                                        <button onClick={() => moveAgent(idx, "down")} className="text-slate-500 hover:text-primary transition-colors"><ArrowDown className="w-3 h-3" /></button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* YAML Preview */}
+                            {spec && (
+                                <div>
+                                    <button
+                                        onClick={() => setYamlOpen(v => !v)}
+                                        className="text-xs text-slate-400 flex items-center gap-1 hover:text-primary transition-colors"
+                                    >
+                                        {yamlOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                                        Preview YAML
+                                    </button>
+                                    {yamlOpen && (
+                                        <pre className="mt-2 text-xs text-primary/80 bg-background-dark/60 rounded-xl border border-primary/10 p-3 overflow-x-auto font-mono leading-relaxed">
+                                            {yaml}
+                                        </pre>
+                                    )}
+                                </div>
+                            )}
+                        </>
                     )}
 
                     {/* Feedback */}
@@ -236,7 +350,7 @@ export default function CrewsPage() {
                         )}
                         <button
                             onClick={handleSave}
-                            disabled={saving || !name.trim() || selectedAgents.length === 0}
+                            disabled={saving || (editorMode === "visual" ? (!name.trim() || selectedAgents.length === 0) : !editorYamlStr.trim())}
                             className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-background-dark font-semibold text-sm disabled:opacity-40 hover:bg-primary/90 transition-all shadow-[0_0_15px_rgba(15,240,146,0.2)]"
                         >
                             <Save className="w-4 h-4" />
@@ -263,8 +377,8 @@ export default function CrewsPage() {
                                 <div
                                     key={crew.name}
                                     className={`rounded-xl border p-3 transition-all cursor-pointer ${editingCrewName === crew.name
-                                            ? "border-primary/60 bg-primary/5"
-                                            : "border-primary/10 hover:border-primary/30"
+                                        ? "border-primary/60 bg-primary/5"
+                                        : "border-primary/10 hover:border-primary/30"
                                         }`}
                                     onClick={() => {
                                         const parts = crew.spec.includes(">")

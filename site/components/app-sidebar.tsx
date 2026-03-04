@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Zap, Bot, MessageSquare, Settings, Plus, BookOpen, Play, Users } from "lucide-react";
+import { Zap, Bot, MessageSquare, Settings, Plus, BookOpen, Play, Users, Wrench } from "lucide-react";
 
 export function AppSidebar() {
     const pathname = usePathname();
@@ -12,6 +12,7 @@ export function AppSidebar() {
         { href: "/chat", icon: MessageSquare, label: "Chat" },
         { href: "/run", icon: Play, label: "Modo Equipe" },
         { href: "/crews", icon: Users, label: "Times" },
+        { href: "/skills", icon: Wrench, label: "Skills" },
         { href: "/config", icon: Settings, label: "Settings" },
         { href: "/help", icon: BookOpen, label: "Help Guide" },
     ];

@@ -6,10 +6,10 @@ import (
 )
 
 type SkillTemplate struct {
-	Name        string
-	Description string
-	Filename    string
-	Content     string
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Filename    string `json:"filename"`
+	Content     string `json:"content"`
 }
 
 var skillTemplates = map[string]SkillTemplate{
