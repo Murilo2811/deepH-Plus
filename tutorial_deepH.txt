@@ -11,1418 +11,1237 @@
 ==============================================================
 
 Autor: Equipe deepH Plus
-Versão: 4.0 — Fevereiro 2026
+Versão: 4.0
 Tema: Interface Visual Premium (Dark Mode + Emerald Green)
 
 ==============================================================
-ANTES DE COMEÇAR — LEIA ISTO COM ATENÇÃO!
+SOBRE ESTE TUTORIAL
 ==============================================================
 
-Este tutorial foi escrito para QUALQUER pessoa, mesmo quem
-nunca usou uma ferramenta de inteligência artificial antes.
+Este guia foi escrito para QUALQUER pessoa — mesmo quem
+nunca usou uma ferramenta de Inteligência Artificial antes.
 
-Vamos explicar TUDO passo a passo, com calma e clareza.
+Não assuma nenhum conhecimento prévio. Se você sabe como abrir
+o navegador da internet, já sabe o suficiente para começar.
 
-LEGENDA usada neste tutorial:
-  [!] → AVISO IMPORTANTE — leia com atenção!
-  [>] → Ação que você deve realizar
-  [*] → Dica útil ou curiosidade
-  ══  → Separador de seções
-
-Sempre que ver um comando como:
-  .\\deeph.exe ui
-isso significa que você deve digitar exatamente isso no
-terminal (a tela preta). Mas não se preocupe — na maioria
-das vezes você usará apenas o atalho de dois cliques!
+LEGENDA:
+  [!]  → Aviso importante. Leia com atenção!
+  [>]  → Uma ação que você precisa fazer agora.
+  [*]  → Dica extra ou curiosidade.
 
 
 ==============================================================
 ÍNDICE
 ==============================================================
 
-  PARTE 0 — O que é o deepH Plus? ....................  p. 1
-  PARTE 1 — Instalação e Primeiros Passos .............  p. 2
-  PARTE 2 — Abrindo o Painel Visual ..................  p. 3
-  PARTE 3 — Conhecendo o Layout da Interface ..........  p. 4
-  PARTE 4 — Configurando suas Chaves de API ...........  p. 5
-  PARTE 5 — O Dashboard: Seus Agentes ................  p. 6
-  PARTE 6 — Conversando no Chat .......................  p. 7
-  PARTE 7 — Criando e Editando Agentes ................  p. 8
-  PARTE 8 — Usando no Terminal (Avançado) .............  p. 9
-  PARTE 9 — Provedores de IA Suportados ...............  p. 10
-  PARTE 10 — Solução de Problemas .....................  p. 11
-  PARTE 11 — Vários Agentes Trabalhando Juntos ........  p. 12
-  PARTE 12 — Usando Kits Prontos ......................  p. 13
+  PARTE 0  — O que é o deepH Plus?
+  PARTE 1  — Instalação e Estrutura de Pastas
+  PARTE 2  — Como Abrir o Painel Visual (Passo a Passo)
+  PARTE 3  — Conhecendo o Layout da Interface
+  PARTE 4  — Configurando suas Chaves de API
+  PARTE 5  — O Dashboard: Visualizando seus Agentes
+  PARTE 6  — Como Conversar no Chat (Passo a Passo)
+  PARTE 7  — Criando um Novo Agente (Passo a Passo)
+  PARTE 8  — Esquadrões (Crews): Vários Agentes em Equipe
+  PARTE 9  — O Coach: O Assistente de Diagnóstico
+  PARTE 10 — Usando no Terminal (Para Usuários Avançados)
+  PARTE 11 — Qual Provedor de IA Devo Usar?
+  PARTE 12 — Kits Prontos
+  PARTE 13 — Solução de Problemas Comuns
 
 
 ══════════════════════════════════════════════════════════════
 PARTE 0 — O QUE É O deepH Plus?
 ══════════════════════════════════════════════════════════════
 
-O deepH Plus é o seu ESCRITÓRIO PESSOAL DE ASSISTENTES DE IA,
-instalado diretamente no seu computador. Tudo roda local,
-sem enviar seus dados para nenhum servidor externo.
+O deepH Plus é um GERENCIADOR PESSOAL DE ASSISTENTES DE IA que
+funciona diretamente no seu computador, sem necessidade de
+cadastro em sites externos ou assinatura de serviços.
 
-Pense assim: imagine que você contratou vários "funcionários
-virtuais especializados". Cada um tem nome, personalidade
-e habilidades definidas por você.
+A ideia central é simples: você cria "funcionários virtuais"
+chamados AGENTES. Cada agente tem um nome, uma especialidade
+e um jeito de se comportar que você mesmo define.
 
-Você pode ter, por exemplo:
-  - Um "Consultor Financeiro" para análise de investimentos
-  - Um "Redator" para escrever textos e e-mails
-  - Um "Programador" para ajudar com código
-  - Um "Pesquisador" para buscar informações
+Exemplos de agentes que você pode criar:
+  - Um "Redator Criativo" para escrever posts para redes sociais.
+  - Um "Analista Financeiro" para interpretar planilhas.
+  - Um "Assistente de Código" para revisar scripts de programação.
+  - Um "Tradutor" para converter textos de inglês para português.
 
-Cada um desses é chamado de AGENTE.
+A grande diferença do deepH Plus para um site de IA normal:
+  ✓ Tudo roda no SEU computador.
+  ✓ Suas conversas ficam salvas LOCALMENTE, não em nuvem externa.
+  ✓ Você conecta diretamente aos serviços de IA (DeepSeek, OpenAI,
+    etc.) usando sua própria chave — o deepH Plus nunca lê
+    suas chaves nem suas mensagens. Ele apenas faz a ponte.
 
-O deepH Plus é o sistema que gerencia esses agentes através
-de uma INTERFACE VISUAL MODERNA E PREMIUM, com:
-  ✓ Tema escuro elegante (Deep Black + Emerald Green)
-  ✓ Animações suaves e design premium
-  ✓ Chat em tempo real com formatação rica (Markdown)
-  ✓ Painel de controle visual intuitivo
-  ✓ Suporte a múltiplos provedores de IA (DeepSeek, OpenAI,
-    Anthropic, Groq, Ollama local e mais)
-
-[*] Todas as conversas e configurações ficam no SEU
-    computador. Nada vai para nuvem exceto a mensagem
-    que você envia ao modelo de IA escolhido.
+[*] Você pode ter quantos agentes quiser, cada um com uma
+    "personalidade" totalmente diferente e um provedor de IA
+    diferente se precisar.
 
 
 ══════════════════════════════════════════════════════════════
-PARTE 1 — INSTALAÇÃO E PRÉ-REQUISITOS
+PARTE 1 — INSTALAÇÃO E ESTRUTURA DE PASTAS
 ══════════════════════════════════════════════════════════════
 
-Antes de abrir o deepH Plus, certifique-se de que você tem:
-
-  1. Windows 10 ou 11 (64-bit)
-  2. O arquivo deeph.exe na pasta C:\\Users\\BOSS\\deepH
-  3. Conexão com internet (para chamar a IA via API)
-
-Você NÃO precisa instalar nada especial. O deepH Plus é
-um arquivo único executável (.exe) em Go, que já carrega
-o painel web dentro de si mesmo.
+Você NÃO precisa instalar nenhum programa complicado.
+O deepH Plus se apresenta como um único arquivo chamado
+`deeph.exe`. Basta ele existir na pasta para funcionar.
 
 ──────────────────────────────────────────────────────────────
-Estrutura de Pastas do deepH Plus
+O que você precisa ter:
 ──────────────────────────────────────────────────────────────
 
-Sua pasta C:\\Users\\BOSS\\deepH contém:
+  1. Windows 10 ou 11 (versão 64 bits).
+  2. A pasta do deepH Plus no seu computador
+     (geralmente em: C:\Users\BOSS\deepH).
+  3. Conexão com a internet (necessária apenas para a IA
+     poder responder. O painel em si funciona offline,
+     mas sem internet a IA não consegue gerar respostas).
 
-  deeph.exe        → O programa principal (motor em Go)
-  start_ui.bat     → Atalho de duplo clique para iniciar
-  config.json      → Suas configurações e API Keys (gerado
-                     automaticamente na 1ª execução)
-  agents/          → Pasta com seus agentes (.yaml)
-  skills/          → Skills instaladas (habilidades extras)
-  sessions/        → Histórico de conversas salvo
+──────────────────────────────────────────────────────────────
+O que existe dentro da pasta deepH:
+──────────────────────────────────────────────────────────────
 
-[!] NUNCA apague o arquivo config.json sem querer!
-    Ele contém suas chaves de API. Faça backup dele.
+  deeph.exe       → O arquivo principal. É o motor de tudo.
+                    Nunca exclua nem mova este arquivo daqui.
+
+  start_ui.bat    → O atalho de dois cliques para abrir
+                    o painel visual. É o que você usará
+                    no dia a dia.
+
+  config.json     → Arquivo criado automaticamente na
+                    primeira vez que você abre o sistema.
+                    Guarda suas configurações e API Keys.
+                    [!] Nunca exclua este arquivo sem querer!
+                    Faça um backup dele em local seguro.
+
+  agents/         → Pasta onde ficam os seus agentes.
+                    Cada agente é um arquivo com extensão .yaml.
+
+  crews/          → Pasta onde ficam as equipes de agentes
+                    (vários agentes trabalhando juntos).
+
+  skills/         → Pasta onde ficam as habilidades extras.
+                    Skills são capacidades adicionais que
+                    você pode "ensinar" a um agente.
+
+  sessions/       → Histórico de conversas salvas no seu PC.
+                    Cada bate-papo com um agente gera um
+                    arquivo .json aqui.
 
 
 ══════════════════════════════════════════════════════════════
-PARTE 2 — ABRINDO O PAINEL VISUAL
+PARTE 2 — COMO ABRIR O PAINEL VISUAL (PASSO A PASSO)
 ══════════════════════════════════════════════════════════════
 
 ──────────────────────────────────────────────────────────────
-MÉTODO 1 (Recomendado) — Duplo Clique no Atalho
+MÉTODO RECOMENDADO: O Atalho de Dois Cliques
 ──────────────────────────────────────────────────────────────
 
-[>] Passo 1: Abra o Explorador de Arquivos do Windows
-[>] Passo 2: Navegue até: C:\\Users\\BOSS\\deepH
-[>] Passo 3: Dê DUPLO CLIQUE no arquivo:  start_ui.bat
+[>] PASSO 1: Abra o Explorador de Arquivos do Windows.
+             Você pode fazer isso de duas formas:
+             - Pressione as teclas [Windows + E] juntas, OU
+             - Clique na pasta amarela na barra de tarefas.
 
-O que vai acontecer em sequência:
-  1. Uma JANELA PRETA (terminal) vai abrir mostrando logs
-  2. O motor Go vai iniciar e mostrar a mensagem:
-     "UI Server running at http://localhost:7730"
-  3. Seu navegador padrão vai abrir automaticamente
-  4. A INTERFACE PREMIUM do deepH Plus vai aparecer!
+[>] PASSO 2: Na barra de endereços no topo do Explorador,
+             clique nela e apague o que estiver escrito.
+             Digite o caminho abaixo e pressione ENTER:
+               C:\Users\BOSS\deepH
+             Isso vai levar você diretamente à pasta!
 
-[!] AVISO CRÍTICO: Não feche a janela preta (terminal)!
-    Ela é o "motor" do sistema. Se fechá-la, o painel
-    visual vai parar de funcionar completamente.
-    Pode MINIMIZÁ-LA à vontade — só não feche!
+[>] PASSO 3: Dentro da pasta deepH, você verá vários arquivos.
+             Procure pelo arquivo chamado:
+               start_ui.bat
+             Ele pode aparecer como "start_ui" se as extensões
+             estiverem ocultas no seu Windows.
+
+[>] PASSO 4: Dê um DUPLO CLIQUE rápido neste arquivo.
+             (Dois cliques seguidos, sem pausas longas entre eles)
+
+O QUE ACONTECE AGORA:
+  Uma JANELA PRETA (o terminal) vai abrir e você vai ver
+  vários textos e códigos rolando muito rápido. Isso é normal!
+  É o sistema iniciando. Em poucos segundos você verá algo como:
+    "UI Server running at http://localhost:7730"
+  Quando isso aparecer, seu navegador vai abrir automaticamente
+  com o painel do deepH Plus!
+
+[!] AVISO FUNDAMENTAL — SOBRE A JANELA PRETA:
+    Esta janela preta é o "motor" do sistema. Ela precisa
+    ficar aberta o tempo todo enquanto você usa o deepH Plus.
+    - Você pode MINIMIZÁ-LA (clicar no traço [_] para esconder).
+    - Mas NÃO A FECHE (clicar no X).
+    - Se fechar por acidente: o painel no navegador para,
+      as IAs param de responder. Para resolver: basta abrir
+      o start_ui.bat novamente e aguardar.
 
 ──────────────────────────────────────────────────────────────
-MÉTODO 2 — Via Terminal (Opcional)
+MÉTODO ALTERNATIVO: Via Terminal (Opcional)
 ──────────────────────────────────────────────────────────────
 
-[>] Abra o PowerShell ou CMD na pasta C:\\Users\\BOSS\\deepH
-[>] Digite o comando:
-    .\\deeph.exe ui
-[>] Acesse no navegador: http://localhost:7730
+Se você preferir abrir pelo terminal manualmente:
 
-[*] O atalho start_ui.bat faz exatamente isso por você!
+[>] PASSO 1: Pressione [Windows + X] e clique em "Terminal"
+             ou "PowerShell".
+
+[>] PASSO 2: No terminal que abrir, digite o comando abaixo
+             e pressione ENTER:
+               cd C:\Users\BOSS\deepH
+
+[>] PASSO 3: Agora execute o programa:
+               .\deeph.exe ui
+
+[>] PASSO 4: Abra seu navegador de internet e acesse:
+               http://localhost:7730
+
+[*] O arquivo start_ui.bat faz exatamente esses passos
+    automaticamente e para você. Use ele no dia a dia!
 
 
 ══════════════════════════════════════════════════════════════
 PARTE 3 — CONHECENDO O LAYOUT DA INTERFACE
 ══════════════════════════════════════════════════════════════
 
-Quando o painel abrir, você verá uma tela com fundo muito
-escuro (quase preto) e detalhes em verde esmeralda (#0ff092).
+Ao abrir o painel, você verá uma tela de fundo escuro (quase
+preto) com elementos em VERDE ESMERALDA brilhante. Este é o
+design premium do deepH Plus v4.0.
 
-A interface é dividida em 4 zonas principais:
-
-  ┌─────────────────────────────────────────────────────┐
-  │  CABEÇALHO (Header)                                 │
-  │  deepH logo + Nome da Página + Status + Usuário     │
-  ├──────────────┬──────────────────────────────────────┤
-  │              │                                      │
-  │   BARRA      │                                      │
-  │   LATERAL    │      ÁREA DE CONTEÚDO                │
-  │  (Sidebar)   │      (Muda conforme a página)        │
-  │              │                                      │
-  │  • Dashboard │                                      │
-  │  • Chat      │                                      │
-  │  • + Agente  │                                      │
-  │  • Config    │                                      │
-  │              │                                      │
-  └──────────────┴──────────────────────────────────────┘
-
-──────────────────────────────────────────────────────────────
-3.1 — O CABEÇALHO (Barra Superior)
-──────────────────────────────────────────────────────────────
-
-No topo da tela você sempre verá:
-
-  • "deepH" e versão (v1.0 • local) no canto esquerdo
-  • O nome da página atual (Dashboard / Chat / Config)
-  • Um indicador de "Servidor Ativo" com ponto verde pulsante
-  • Seu nome de usuário no canto direito
-
-──────────────────────────────────────────────────────────────
-3.2 — A BARRA LATERAL (Menu de Navegação)
-──────────────────────────────────────────────────────────────
-
-À esquerda ficam os botões de navegação. Cada um tem um
-ícone e texto:
-
-  🏠 Dashboard    → Tela inicial com todos os seus agentes
-  💬 Chat         → Ir direto para a janela de conversa
-  ➕ Novo Agente  → Criar um novo agente do zero
-  ⚙️ Configurações → Gerenciar API Keys e configurações
-
-[*] Clique em qualquer um para navegar instantaneamente.
-    A transição é suave e animada!
-
-──────────────────────────────────────────────────────────────
-3.3 — OS EFEITOS VISUAIS (Design Premium)
-──────────────────────────────────────────────────────────────
-
-O deepH Plus foi construído com efeitos modernos:
-
-  • GLASSMORPHISM: Cartões com efeito de vidro translúcido
-  • GLOW VERDE: Brilha em volta dos elementos ativos
-  • GRADIENTES: Fundo com gradientes suaves de profundidade
-  • ANIMAÇÕES: Todos os elementos aparecem com fade/slide suave
-  • PULSO: O indicador de status pulsa continuamente em verde
-
-
-══════════════════════════════════════════════════════════════
-PARTE 4 — CONFIGURANDO SUAS CHAVES DE API
-══════════════════════════════════════════════════════════════
-
-Para o deepH Plus chamar a inteligência artificial, você
-precisa de uma CHAVE DE API do provedor de IA escolhido.
-
-Pense na chave de API como uma "senha de acesso" ao cérebro
-da IA. Sem ela, o motor não consegue gerar respostas.
-
-──────────────────────────────────────────────────────────────
-4.1 — Onde Obter sua Chave (Gratuito ou Pago)
-──────────────────────────────────────────────────────────────
-
-Principais provedores e onde criar conta:
-
-  DEEPSEEK (Recomendado — muito barato!)
-  → Site: platform.deepseek.com
-  → Modelo principal: deepseek-chat
-  → Custo: centavos por milhão de tokens (~R$0,01/resposta)
-  → Chave começa com: sk-...
-
-  OPENAI
-  → Site: platform.openai.com
-  → Modelos: gpt-4o, gpt-4o-mini
-  → Custo: moderado
-  → Chave começa com: sk-proj-...
-
-  ANTHROPIC (CLAUDE)
-  → Site: console.anthropic.com
-  → Modelo: claude-3-5-sonnet
-  → Custo: moderado/alto
-  → Chave começa com: sk-ant-...
-
-  GROQ (Ultra rápido, gratuito até certo limite!)
-  → Site: console.groq.com
-  → Modelos: llama-3.3-70b, mixtral
-  → Chave começa com: gsk_...
-
-  OLLAMA (100% GRATUITO — roda no seu PC!)
-  → Site: ollama.ai
-  → Sem internet, sem custo, sem chave!
-  → Requer GPU ou processador potente
-
-──────────────────────────────────────────────────────────────
-4.2 — Inserindo a Chave no deepH Plus
-──────────────────────────────────────────────────────────────
-
-[>] Passo 1: Clique em "Configurações" (ícone ⚙️) na barra
-             lateral esquerda
-
-[>] Passo 2: Você verá a tela "System Configuration" com
-             seções para cada provedor
-
-[>] Passo 3: Encontre o provedor desejado (ex: DeepSeek)
-             e clique no campo de texto escuro
-
-[>] Passo 4: COLE sua chave de API no campo
-             (use CTRL+V para colar)
-
-[>] Passo 5: Clique no botão "Save Settings" (verde neon)
-             no final da página
-
-[!] SEGURANÇA: A chave fica salva APENAS no arquivo
-    config.json no seu computador. Ela só é enviada
-    DIRETAMENTE ao servidor da IA quando você envia
-    uma mensagem. Nunca passamos por servidores nossos.
-
-[*] Você pode configurar VÁRIOS provedores ao mesmo tempo!
-    Cada agente usa o provedor definido no seu arquivo .yaml.
-
-──────────────────────────────────────────────────────────────
-4.3 — Verificando se a Configuração Funcionou
-──────────────────────────────────────────────────────────────
-
-Após salvar, as chaves configuradas aparecerão na tela de
-configurações com status atingido. Tente conversar com
-um agente para confirmar que a resposta da IA chegou.
-
-Se der erro, verifique:
-  ✗ A chave foi copiada completa? (sem espaços extras)
-  ✗ A conta tem créditos disponíveis?
-  ✗ O provedor no agente e na config são o mesmo?
-
-
-══════════════════════════════════════════════════════════════
-PARTE 5 — O DASHBOARD: SEUS AGENTES
-══════════════════════════════════════════════════════════════
-
-O DASHBOARD é a tela inicial — é onde vivem seus agentes.
-
-──────────────────────────────────────────────────────────────
-5.1 — Entendendo os Cartões de Agente
-──────────────────────────────────────────────────────────────
-
-Cada agente aparece como um CARTÃO TRANSLÚCIDO na tela.
-Um cartão contém:
-
-  ┌──────────────────────────────────────┐
-  │ 🤖  NOME DO AGENTE         [Status] │
-  │     Provedor: deepseek              │
-  │                                      │
-  │  "Descrição do que este agente faz  │
-  │   e quais habilidades tem."          │
-  │                                      │
-  │  [CONVERSAR]        [EDITAR] ⚙️     │
-  └──────────────────────────────────────┘
-
-  • NOME: O nome personalizado que você deu ao agente
-  • STATUS: Indica se está ativo (ponto verde pulsante)
-  • PROVEDOR: Qual IA ele usa (DeepSeek, OpenAI etc)
-  • DESCRIÇÃO: O que ele faz (você que define isso!)
-  • CONVERSAR: Abre o chat com este agente
-  • EDITAR: Abre o editor para modificá-lo
-
-──────────────────────────────────────────────────────────────
-5.2 — O Agente Padrão "guide"
-──────────────────────────────────────────────────────────────
-
-Por padrão, o deepH Plus vem com um agente chamado "guide".
-Ele é configurado para DeepSeek e serve como assistente geral.
-
-Você pode:
-  → Conversar com ele já (se tiver chave DeepSeek)
-  → Editá-lo para mudar o nome, provedor ou especialidade
-  → Usá-lo como modelo para criar novos agentes
-
-──────────────────────────────────────────────────────────────
-5.3 — Criando um Novo Agente pelo Painel
-──────────────────────────────────────────────────────────────
-
-[>] Clique no botão "Novo Agente" (ícone ➕) na barra lateral
-[>] A tela de criação de agente vai abrir
-[>] Preencha os campos (veja a Parte 7 para detalhes)
-[>] Clique em "Deploy Agent" (salvar)
-
-O novo agente aparecerá no Dashboard imediatamente!
-
-
-══════════════════════════════════════════════════════════════
-PARTE 6 — CONVERSANDO NO CHAT
-══════════════════════════════════════════════════════════════
-
-──────────────────────────────────────────────────────────────
-6.1 — Abrindo uma Conversa
-──────────────────────────────────────────────────────────────
-
-[>] No Dashboard, clique em "CONVERSAR" no cartão do agente
-    desejado (ou clique diretamente no nome do agente)
-
-A tela de Chat vai abrir com:
+A tela é dividida em duas áreas principais:
 
   ┌─────────────────────────────────────────────────────────┐
-  │  🤖 [nome do agente]           ● Neural Link Active     │
-  ├─────────────────────────────────────────────────────────┤
-  │                                                         │
-  │                                                         │
-  │     [Área de mensagens — fica aqui]                     │
-  │                                                         │
-  │                                                         │
-  ├─────────────────────────────────────────────────────────┤
-  │  📎  [Digite sua mensagem...]             🎙️  ↑ Enviar │
-  └─────────────────────────────────────────────────────────┘
+  │            CABEÇALHO (Header Superior)                  │
+  │  Logo deepH + Nome da Página + Status verde pulsante    │
+  ├───────────────────┬─────────────────────────────────────┤
+  │                   │                                     │
+  │  BARRA LATERAL    │   ÁREA DE CONTEÚDO                  │
+  │   (Menu esq.)     │   (muda a cada seção clicada)       │
+  │                   │                                     │
+  │  🏠 Dashboard    │                                     │
+  │  👥 Esquadrões   │                                     │
+  │  💬 Chat         │                                     │
+  │  ➕ Novo Agente  │                                     │
+  │  ⚙️ Configurações│                                     │
+  │                   │                                     │
+  └───────────────────┴─────────────────────────────────────┘
 
 ──────────────────────────────────────────────────────────────
-6.2 — Enviando uma Mensagem
+Os ícones da Barra Lateral (Menu esquerdo):
 ──────────────────────────────────────────────────────────────
 
-Existem 3 formas de enviar:
+  🏠 Dashboard     → A tela inicial. Mostra todos os seus
+                      agentes criados em formato de "cartões".
 
-  1. [>] Clique no campo de texto na parte inferior
-  2. [>] Digite sua pergunta ou tarefa
-  3. [>] Pressione ENTER (sem Shift) OU clique na seta ↑
+  👥 Esquadrões    → Gerencia equipes (vários agentes
+                      trabalhando juntos em uma mesma tarefa).
 
-[*] Para adicionar quebra de linha sem enviar, use SHIFT+ENTER
+  💬 Chat          → Abre a janela de conversa. Você digita
+                      aqui e o agente responde.
 
-──────────────────────────────────────────────────────────────
-6.3 — Como as Mensagens Aparecem
-──────────────────────────────────────────────────────────────
-
-SUAS MENSAGENS aparecem no lado DIREITO da tela:
-  → Fundo VERDE NEON (#0ff092)
-  → Texto em preto (alta legibilidade)
-  → Identificado como "Admin / Você"
-
-RESPOSTAS DA IA aparecem no lado ESQUERDO:
-  → Fundo escuro translúcido (glassmorphism)
-  → Texto em branco/cinza claro
-  → Identificado pelo NOME DO AGENTE
-
-Enquanto a IA está "pensando", você verá três pontinhos
-pulsantes animados no lado esquerdo:  ● ● ●
-
-──────────────────────────────────────────────────────────────
-6.4 — Formatação Rica nas Respostas
-──────────────────────────────────────────────────────────────
-
-O Chat suporta MARKDOWN completo nas respostas da IA:
-
-  • **Texto em negrito**
-  • *Texto em itálico*
-  • # Títulos e subtítulos
-  • Listas com marcadores
-  • Blocos de código com highlight
-  • Tabelas formatadas
-  • Links clicáveis
-
-[*] Peça para o agente formatar a resposta em markdown
-    para respostas mais organizadas e legíveis!
-
-──────────────────────────────────────────────────────────────
-6.5 — Ações nas Mensagens
-──────────────────────────────────────────────────────────────
-
-Na última mensagem da IA, você verá dois botões:
-
-  [Copiar] → Copia todo o texto da resposta para o clipboard
-  [Regenerar] → Pede para a IA gerar uma resposta diferente
-
-[*] Use Regenerar se a resposta não foi satisfatória!
-    A IA vai tentar de novo com uma abordagem diferente.
-
-──────────────────────────────────────────────────────────────
-6.6 — O Chat é Persistente!
-──────────────────────────────────────────────────────────────
-
-Cada conversa é salva automaticamente em:
-  C:\\Users\\BOSS\\deepH\\sessions\\
-
-Ficam salvas em arquivos .json com o histórico completo.
-Isso significa que a IA consegue "lembrar" das últimas
-mensagens da conversa para manter o contexto.
-
-[!] O histórico é enviado a cada nova mensagem para manter
-    o contexto. Conversas muito longas aumentam o custo por
-    chamada. Em caso de problemas, reinicie o chat abrindo
-    o agente novamente (uma nova sessão começa).
-
-
-══════════════════════════════════════════════════════════════
-PARTE 7 — CRIANDO E EDITANDO AGENTES
-══════════════════════════════════════════════════════════════
-
-O Editor de Agentes é onde você PERSONALIZA e CRIA seus
-assistentes virtuais!
-
-──────────────────────────────────────────────────────────────
-7.1 — Abrindo o Editor
-──────────────────────────────────────────────────────────────
-
-PARA CRIAR UM NOVO AGENTE:
-  [>] Clique em "Novo Agente" (➕) na barra lateral
-
-PARA EDITAR UM AGENTE EXISTENTE:
-  [>] No Dashboard, clique em "Editar" (⚙️) no cartão dele
-
-──────────────────────────────────────────────────────────────
-7.2 — Os Campos do Editor
-──────────────────────────────────────────────────────────────
-
-O editor possui os seguintes campos:
-
-  NOME DO AGENTE
-  → O apelido do seu agente (ex: "Consultor", "RedatorPro")
-  → Use nomes sem espaços ou caracteres especiais
-  → Exemplo: consultor_financeiro
-
-  DESCRIÇÃO
-  → O que este agente faz? Explique em 1-2 frases.
-  → Isso aparece no cartão do Dashboard
-  → Exemplo: "Analisa investimentos e mercado financeiro"
-
-  PROVEDOR (Provider)
-  → Qual empresa de IA vai "dar vida" a este agente?
-  → Opções: deepseek, openai, anthropic, groq, ollama
-  → Escolha o mesmo provedor cuja chave você configurou
-
-  MODELO (Model)
-  → O nome específico do modelo dentro do provedor
-  → DeepSeek: deepseek-chat, deepseek-reasoner
-  → OpenAI: gpt-4o, gpt-4o-mini, gpt-3.5-turbo
-  → Anthropic: claude-3-5-sonnet-20241022
-  → Groq: llama-3.3-70b-versatile, mixtral-8x7b-32768
-  → Ollama: llama3, mistral, phi3
-
-  SYSTEM PROMPT (Regras do Agente)
-  → Este é o campo mais importante!
-  → São as INSTRUÇÕES que definem a personalidade e
-    especialidade do agente
-  → Exemplo para um Consultor Financeiro:
-    "Você é um consultor financeiro brasileiro experiente.
-     Sempre forneça análises equilibradas, mencione riscos
-     e benefícios. Fale em português do Brasil. Responda
-     de forma objetiva e profissional."
-
-  SKILLS (Habilidades)
-  → Skills são capacidades extras que o agente pode usar
-  → São arquivos SKILL.md instalados na pasta skills/
-  → Selecione as skills relevantes para o agente
-  → Elas aparecem como cards verdes quando ativadas
-
-──────────────────────────────────────────────────────────────
-7.3 — Boas Práticas para System Prompts
-──────────────────────────────────────────────────────────────
-
-Um bom System Prompt deve conter:
-
-  1. PERSONA: Quem ele é?
-     "Você é um especialista em marketing digital..."
-
-  2. COMPORTAMENTO: Como ele deve agir?
-     "Seja conciso, direto e use exemplos práticos..."
-
-  3. IDIOMA: Em que língua responde?
-     "Responda sempre em português do Brasil..."
-
-  4. RESTRIÇÕES: O que ele NÃO deve fazer?
-     "Não dê conselhos médicos. Não discuta política..."
-
-  5. FORMATO: Como formatar as respostas?
-     "Use listas quando listar itens. Use negrito para
-      pontos importantes. Limite respostas a 300 palavras..."
-
-──────────────────────────────────────────────────────────────
-7.4 — Salvando o Agente
-──────────────────────────────────────────────────────────────
-
-[>] Após preencher todos os campos, clique em "Deploy Agent"
-
-O agente será salvo como arquivo .yaml em:
-  C:\\Users\\BOSS\\deepH\\agents\\[nome-do-agente].yaml
-
-[*] Você pode editar este arquivo .yaml diretamente com
-    um editor de texto como o Notepad++ para ajustes rápidos!
-
-──────────────────────────────────────────────────────────────
-7.5 — Exemplo de Arquivo YAML de Agente
-──────────────────────────────────────────────────────────────
-
-Este é o que o deepH Plus gera internamente:
-
-  name: consultor_financeiro
-  description: Analista de investimentos e mercado
-  provider: deepseek
-  model: deepseek-chat
-  system_prompt: |
-    Você é um consultor financeiro brasileiro experiente.
-    Analise investimentos com foco em risco e retorno.
-    Sempre mencione as variáveis do mercado brasileiro.
-    Responda de forma clara e objetiva em português.
-  skills:
-    - web_search
-    - memory
-
-
-══════════════════════════════════════════════════════════════
-PARTE 8 — USANDO NO TERMINAL (MODO AVANÇADO)
-══════════════════════════════════════════════════════════════
-
-O deepH Plus também funciona 100% pelo terminal, sem precisar
-abrir o navegador. Isso é útil para automações e scripts.
-
-──────────────────────────────────────────────────────────────
-8.1 — Comandos Principais
-──────────────────────────────────────────────────────────────
-
-Abra o PowerShell na pasta C:\\Users\\BOSS\\deepH e use:
-
-  INICIAR A INTERFACE VISUAL:
-  .\\deeph.exe ui
-
-  RODAR UM AGENTE DIRETAMENTE:
-  .\\deeph.exe run "guide" "Qual a capital do Brasil?"
-
-  VER A LISTA DE AGENTES:
-  .\\deeph.exe agents list
-
-  VER AS SKILLS INSTALADAS:
-  .\\deeph.exe skills list
-
-  RODAR MÚLTIPLOS AGENTES (Orquestração):
-  .\\deeph.exe run "agente1 + agente2" "Sua tarefa aqui"
-
-──────────────────────────────────────────────────────────────
-8.2 — Exemplo de Uso no Terminal
-──────────────────────────────────────────────────────────────
-
-[>] Abra o PowerShell (Win+X → Terminal do Windows)
-[>] Navegue até a pasta:
-    cd C:\\Users\\BOSS\\deepH
-[>] Execute:
-    .\\deeph.exe run "guide" "Me explique o que é inflação"
-
-Você verá a resposta completa aparecer diretamente no terminal!
-
-[*] Para scripts automáticos e pipelines, o modo terminal
-    é o mais poderoso. Pode redirecionar a saída para
-    arquivos: .\\deeph.exe run "guide" "tarefa" > resposta.txt
-
-
-══════════════════════════════════════════════════════════════
-PARTE 9 — PROVEDORES DE IA SUPORTADOS
-══════════════════════════════════════════════════════════════
-
-──────────────────────────────────────────────────────────────
-9.1 — Tabela Comparativa de Provedores
-──────────────────────────────────────────────────────────────
-
-  PROVEDOR     | CUSTO      | VELOCIDADE | QUALIDADE | OFFLINE?
-  ─────────────┼────────────┼────────────┼───────────┼─────────
-  DeepSeek     | ★★★★★ (>)  | ★★★★       | ★★★★★     | Não
-  Groq         | ★★★★★ (>)  | ★★★★★      | ★★★★      | Não
-  OpenAI       | ★★★        | ★★★★       | ★★★★★     | Não
-  Anthropic    | ★★★        | ★★★        | ★★★★★     | Não
-  Ollama       | Gratuito   | ★★ (CPU)   | ★★★       | SIM
-  local_mock   | Gratuito   | ★★★★★      | (teste)   | SIM
-
-  (>) = Barato com muito custo-benefício
-
-──────────────────────────────────────────────────────────────
-9.2 — Como Escolher o Provedor Certo
-──────────────────────────────────────────────────────────────
-
-  SE VOCÊ QUER ECONOMIZAR E TER QUALIDADE:
-  → Use DeepSeek (deepseek-chat). Melhor custo-benefício
-    do mercado em 2025/2026!
-
-  SE VOCÊ QUER VELOCIDADE MÁXIMA:
-  → Use Groq (llama-3.3-70b-versatile). É ridiculamente
-    rápido e tem nível gratuito generoso.
-
-  SE VOCÊ QUER SEM INTERNET (PRIVACIDADE TOTAL):
-  → Instale o Ollama em ollama.ai e use modelos locais.
-    Não requer chave de API. Precisa de computador potente.
-
-  SE VOCÊ QUER A IA MAIS AVANÇADA:
-  → OpenAI GPT-4o ou Anthropic Claude são líderes em
-    raciocínio complexo, mas custam mais.
-
-──────────────────────────────────────────────────────────────
-9.3 — Configurando o Provider no Arquivo de Agente
-──────────────────────────────────────────────────────────────
-
-Cada agente pode usar um provedor diferente. Para trocar:
-
-  Via Interface Visual:
-  [>] Dashboard → Editar agente → Escolha o Provider/Model
-  [>] Clique em Deploy Agent
-
-  Via Arquivo YAML (manual):
-  [>] Abra C:\\Users\\BOSS\\deepH\\agents\\[nome].yaml
-  [>] Mude o campo "provider:" e "model:"
-  [>] Salve o arquivo — a mudança é imediata!
-
-
-══════════════════════════════════════════════════════════════
-PARTE 10 — SOLUÇÃO DE PROBLEMAS
-══════════════════════════════════════════════════════════════
-
-──────────────────────────────────────────────────────────────
-PROBLEMA: A página não abre no navegador
-──────────────────────────────────────────────────────────────
-
-CAUSA: O servidor Go não iniciou corretamente
-SOLUÇÃO:
-  [>] Feche a janela preta (se existir)
-  [>] Dê duplo clique em start_ui.bat novamente
-  [>] Aguarde 5 segundos e acesse: http://localhost:7730
-  [>] Se ainda não abrir, tente outro navegador
-
-──────────────────────────────────────────────────────────────
-PROBLEMA: "Failed to fetch" ou tela grá — resposta vazia
-──────────────────────────────────────────────────────────────
-
-CAUSA: O backend (janela preta) foi fechado acidentalmente
-SOLUÇÃO:
-  [>] Procure se a janela preta ainda existe (minimizada)
-  [>] Se não existir, abra o start_ui.bat novamente
-  [>] NUNCA feche a janela preta durante o uso!
-
-──────────────────────────────────────────────────────────────
-PROBLEMA: Chat não responde — "Erro na API"
-──────────────────────────────────────────────────────────────
-
-CAUSA: Chave de API inválida, vencida ou sem créditos
-SOLUÇÃO:
-  [>] Vá em Configurações (⚙️)
-  [>] Verifique se a chave está correta (copie de novo
-      do site do provedor)
-  [>] Verifique se a conta tem créditos disponíveis
-  [>] Confirme que o agente usa o mesmo provedor
-      da chave configurada
-
-──────────────────────────────────────────────────────────────
-PROBLEMA: Resposta muito lenta
-──────────────────────────────────────────────────────────────
-
-CAUSA: O modelo escolhido é pesado ou a conexão está lenta
-SOLUÇÃO:
-  [>] Tente usar Groq (gratuito e ultrarrápido!)
-  [>] Ou troque para um modelo menor (ex: gpt-4o-mini
-      em vez de gpt-4o)
-  [>] Verifique sua conexão de internet
-
-──────────────────────────────────────────────────────────────
-PROBLEMA: Layout sem estilo (texto puro, fundo preto sem design)
-──────────────────────────────────────────────────────────────
-
-CAUSA: O binário ainda não foi recompilado
-SOLUÇÃO:
-  [>] Feche completamente o start_ui.bat
-  [>] Abra o start_ui.bat novamente
-  [>] No navegador, pressione CTRL+F5 (limpeza de cache)
-  [>] A interface premium deve aparecer
-
-──────────────────────────────────────────────────────────────
-PROBLEMA: "Port already in use" — porta 7730 ocupada
-──────────────────────────────────────────────────────────────
-
-CAUSA: Uma instância anterior ainda está rodando
-SOLUÇÃO:
-  [>] Abra o Gerenciador de Tarefas (CTRL+SHIFT+ESC)
-  [>] Procure por "deeph.exe" na lista de processos
-  [>] Clique com botão direito → Finalizar Tarefa
-  [>] Abra o start_ui.bat novamente
-
-──────────────────────────────────────────────────────────────
-PROBLEMA: Agente não aparece no Dashboard
-──────────────────────────────────────────────────────────────
-
-CAUSA: O arquivo .yaml foi salvo com erro ou está ausente
-SOLUÇÃO:
-  [>] Verifique se existe o arquivo em:
-      C:\\Users\\BOSS\\deepH\\agents\\[nome-do-agente].yaml
-  [>] Abra o arquivo no Bloco de Notas e verifique
-      se o YAML está bem formatado (indentação com espaços,
-      não tabs!)
-  [>] Recarregue o painel (F5)
-
-──────────────────────────────────────────────────────────────
-PROBLEMA: Erro de compilação ao tentar atualizar
-──────────────────────────────────────────────────────────────
-
-CAUSA: Modificações no código-fonte com dependências faltantes
-SOLUÇÃO:
-  [>] Na pasta C:\\Users\\BOSS\\deepH\\site\\ execute:
-      npm install
-  [>] Depois execute: npm run build
-  [>] E finalmente: go build -a -o deeph.exe .\\cmd\\deeph
-
-
-══════════════════════════════════════════════════════════════
-DICAS AVANÇADAS PARA USUÁRIOS EXPERIENTES
-══════════════════════════════════════════════════════════════
-
-  1. CRIE UM AGENTE POR PROJETO: Separe agentes por tema
-     (financeiro, redação, código, pesquisa). Isso melhora
-     muito a qualidade das respostas.
-
-  2. SYSTEM PROMPTS SÃO TUDO: Dedique tempo para criar
-     um bom prompt de sistema. Defina claramente a persona,
-     o idioma, o estilo e as restrições.
-
-  3. USE O MODO TERMINAL PARA AUTOMAÇÃO: Integre o deepH
-     com scripts PowerShell para tarefas repetitivas.
-     Ex: .\\deeph.exe run "analista" < dados.txt > relatorio.txt
-
-  4. BACKUP DO CONFIG.JSON: Faça backup regular do seu
-     config.json. Ele contém todas as suas chaves e
-     configurações. Salve em local seguro!
-
-  5. COMBINE AGENTES: Use o modo multi-agent no terminal
-     para tarefas complexas que precisam de múltiplas
-     perspectivas.
-
-  6. EXPERIMENTE O OLLAMA: Para conversas privadas que
-     não podem sair do seu computador, instale o Ollama
-     e use modelos locais. É gratuito e 100% offline!
-
-  7. EDITE O YAML DIRETAMENTE: Para ajustes rápidos,
-     edite os arquivos .yaml diretamente com Notepad++
-     ou VS Code. As mudanças são aplicadas imediatamente!
-
-
-══════════════════════════════════════════════════════════════
-PARTE 11 — VÁRIOS AGENTES TRABALHANDO JUNTOS
-══════════════════════════════════════════════════════════════
-
-Uma das capacidades mais poderosas do deepH Plus é a
-ORQUESTRAÇÃO DE MÚLTIPLOS AGENTES. Você pode fazer
-vários agentes trabalharem em equipe — ao mesmo tempo
-ou em sequência — para resolver tarefas complexas.
-
-Pense nisso como uma equipe de funcionários: cada um
-traz uma especialidade, e o resultado é muito melhor
-do que qualquer um sozinho.
-
-──────────────────────────────────────────────────────────────
-11.1 — SINTAXE DE ORQUESTRAÇÃO
-──────────────────────────────────────────────────────────────
-
-O controle é feito pelo comando run no terminal, com
-dois operadores especiais:
-
-  O SINAL DE + (mais) → significa PARALELO
-  Os agentes rodam ao MESMO TEMPO, de forma independente.
-
-  O SINAL DE > (maior que) → significa SEQUÊNCIA
-  O resultado do primeiro é passado como entrada ao próximo.
-
-──────────────────────────────────────────────────────────────
-11.2 — MODO PARALELO (+ )
-──────────────────────────────────────────────────────────────
-
-Uso: dois ou mais agentes recebem a mesma tarefa e
-trabalhando SIMULTANEAMENTE. O sistema aguarda que
-ambos terminem antes de prosseguir.
-
-EXEMPLO:
-  .\deeph.exe run "analista+redator" "Pesquise sobre inflação"
-
-O que acontece:
-  → O agente "analista" roda ao mesmo tempo que o "redator"
-  → Ambos recebem a mesma tarefa
-  → Os resultados são exibidos lado a lado
-
-[*] Útil quando você quer comparar perspectivas diferentes
-    ou dividir um trabalho em partes independentes.
-
-──────────────────────────────────────────────────────────────
-11.3 — MODO SEQUENCIAL (>)
-──────────────────────────────────────────────────────────────
-
-Uso: o OUTPUT do primeiro agente vira o INPUT do
-proximo. É como uma linha de montagem — cada etapa
-melhora o trabalho da anterior.
-
-EXEMPLO:
-  .\deeph.exe run "planejador>codificador>revisor" "Crie um script"
-
-O que acontece:
-  1. O "planejador" recebe a tarefa e cria um plano
-  2. O "codificador" recebe o plano e escreve o código
-  3. O "revisor" recebe o código e faz a revisão final
-
-[*] Ideal para pipelines de trabalho com etapas bem definidas.
-    O resultado de cada agente alimenta o próximo!
-
-──────────────────────────────────────────────────────────────
-11.4 — MODO COMBINADO (paralelo + sequencial)
-──────────────────────────────────────────────────────────────
-
-Você pode MISTURAR os dois modos na mesma execução!
-
-EXEMPLO:
-  .\deeph.exe run "planejador+leitor>codificador>revisor" "Tarefa"
-
-O que acontece:
-  1. "planejador" e "leitor" rodam AO MESMO TEMPO
-  2. O "codificador" recebe os DOIS resultados e os integra
-  3. O "revisor" faz a revisão final do trabalho combinado
-
-[!] Este é o modo mais poderoso. Use para tarefas complexas
-    que exigem coleta de informações paralelas e depois
-    uma síntese ou produção final.
-
-──────────────────────────────────────────────────────────────
-11.5 — SYNTAX COMPLETA DO COMANDO run
-──────────────────────────────────────────────────────────────
-
-  .\deeph.exe run [opções] "<spec>" "[sua tarefa aqui]"
-
-OPÇÕES DISPONÍVEIS:
-  --trace          Exibe o plano de execução detalhado
-  --coach=false    Desativa as dicas automáticas do Coach
-  --multiverse N   Roda N universos paralelos para comparar
-                   resultados de uma mesma equipe de agentes
-  --judge-agent X  Usa o agente X para escolher o
-                   melhor resultado entre os universos
-
-EXEMPLOS COMPLETOS:
-  [>] Agente simples:
-      .\deeph.exe run "guide" "Me fale sobre Go lang"
-
-  [>] Dois agentes em paralelo:
-      .\deeph.exe run "pesquisador+redator" "Escreva sobre IA"
-
-  [>] Pipeline de três etapas:
-      .\deeph.exe run "planejador>dev>revisor" "Crie uma API REST"
-
-  [>] Ver o plano antes de executar (trace):
-      .\deeph.exe trace "planejador+leitor>revisor" "Minha tarefa"
-
-[*] O comando trace NÃO executa os agentes — ele apenas
-    mostra como a tarefa seria dividida entre eles.
-    Ótimo para entender o fluxo antes de rodar de verdade!
-
-──────────────────────────────────────────────────────────────
-11.6 — USANDO CREWS (Times Pré-Definidos)
-──────────────────────────────────────────────────────────────
-
-Além de compor equipes manualmente, você pode criar
-arquivos .yaml de "crew" na pasta crews/ para salvar
-configurações de times reutilizáveis.
-
-COMANDOS DE CREW:
-  .\deeph.exe crew list           → Lista os crews disponíveis
-  .\deeph.exe crew show <nome>    → Detalhes de um crew
-  .\deeph.exe run "@reviewpack"   → Roda o crew "reviewpack"
-
-[*] Crews são úteis para equipes que você usa repetidamente.
-    Crie uma vez e reutilize com facilidade!
-
-
-══════════════════════════════════════════════════════════════
-PARTE 12 — USANDO KITS PRONTOS
-══════════════════════════════════════════════════════════════
-
-O deepH Plus oferece KITS — pacotes prontos que instalam
-automaticamente um conjunto de agentes, skills e configurações
-para um caso de uso específico.
-
-Pense nos kits como "templates de projeto" — você instala
-um kit e já tem tudo configurado para começar a trabalhar!
-
-──────────────────────────────────────────────────────────────
-12.1 — VER KITS DISPONÍVEIS
-──────────────────────────────────────────────────────────────
-
-[>] Abra o PowerShell na pasta C:\Users\BOSS\deepH
-[>] Execute:
-    .\deeph.exe kit list
-
-A lista de kits disponíveis vai aparecer no terminal
-com nome, descrição, número de skills e arquivos incluídos:
-
-  - hello-next-tailwind: Starter kit para Next.js com Tailwind
-    (skills=2 files=3 provider=deepseek)
-  - reviewpack: Kit de revisão de código com múltiplos agentes
-    (skills=3 files=2 provider=deepseek)
-  ...
-
-──────────────────────────────────────────────────────────────
-12.2 — INSTALAR UM KIT
-──────────────────────────────────────────────────────────────
-
-[>] Para instalar um kit, execute:
-    .\deeph.exe kit add <nome-do-kit>
-
-EXEMPLO:
-  .\deeph.exe kit add hello-next-tailwind
-
-O que acontece automaticamente:
-  ✓ As skills necessárias são instaladas na pasta skills/
-  ✓ Os arquivos de agentes .yaml são criados na pasta agents/
-  ✓ Um provider DeepSeek é configurado (se necessário)
-  ✓ A validação é feita e o kit está pronto para uso!
-
-[!] IMPORTANTE: Execute deeph init antes de instalar kits!
-    O workspace precisa estar inicializado primeiro.
-    Se ainda não fez isso: .\deeph.exe init
-
-──────────────────────────────────────────────────────────────
-12.3 — OPÇÕES DO COMANDO kit add
-──────────────────────────────────────────────────────────────
-
-  .\deeph.exe kit add [opções] <nome-do-kit>
-
-OPÇÕES DISPONÍVEIS:
-  --force              Sobrescreve arquivos existentes
-  --provider-name X    Nome do provider a criar (padrão: deepseek)
-  --model X            Modelo a usar (padrão: deepseek-chat)
-  --set-default-provider  Define o provider instalado como padrão
-  --skip-provider      Não configura nenhum provider
-
-EXEMPLOS:
-  [>] Instalação simples:
-      .\deeph.exe kit add reviewpack
-
-  [>] Forçar reinstalação (sobrescrever arquivos):
-      .\deeph.exe kit add reviewpack --force
-
-  [>] Usar provider e modelo específicos:
-      .\deeph.exe kit add reviewpack --provider-name meu-ds --model deepseek-reasoner
-
-──────────────────────────────────────────────────────────────
-12.4 — APÓS INSTALAR UM KIT
-──────────────────────────────────────────────────────────────
-
-Após instalar, o terminal mostrará um resumo e os
-próximos passos recomendados:
-
-  Installed kit "reviewpack" in C:\Users\BOSS\deepH
-    source: built-in
-    skills:  created=2 updated=0 unchanged=0 skipped=0
-    files:   created=1 updated=0 unchanged=0 skipped=0
-    provider: added deepseek provider "deepseek" + default_provider
-  Next steps:
-    1. deeph validate
-    2. deeph crew list
-    3. deeph run --multiverse 0 @reviewpack "sua tarefa"
-
-[>] Execute os passos sugeridos em ordem:
-    1. .\deeph.exe validate
-    2. .\deeph.exe crew list
-    3. .\deeph.exe run "@reviewpack" "Revise este código"
-
-[*] Kits que incluem crews podem ser executados com a
-    sintaxe @nome-do-crew para rodar todos os agentes
-    do kit de uma só vez!
-
-
-==============================================================
-GLOSSÁRIO — PALAVRAS QUE VOCÊ PRECISA SABER
-==============================================================
-
-  AGENTE: Um assistente virtual com personalidade e
-          especialidade definidas por você.
-
-  API KEY: Senha de acesso ao serviço de IA na nuvem.
-           Obtida no site do provedor (OpenAI, DeepSeek etc)
-
-  BACKEND: O "motor" do sistema. É a janela preta do
-           terminal que roda o servidor em Go.
-
-  FRONTEND: A interface visual que você vê no navegador.
-
-  LOCALHOST: Endereço do servidor rodando no seu próprio
-             computador (não vai para internet).
-
-  MODELO: O "cérebro" específico da IA (ex: GPT-4o é um
-          modelo da OpenAI, deepseek-chat é do DeepSeek).
-
-  PROVEDOR: A empresa que criou e hospeda o modelo de IA.
-
-  CREW: Um time pré-definido de agentes salvo como arquivo
-        .yaml na pasta crews/. Pode ser acionado com @crew.
-
-  KIT: Pacote de instalação pronto com agentes, skills e
-       configurações para um caso de uso específico.
-
-  ORQUESTRAÇÃO: Coordenação de múltiplos agentes usando
-                + (paralelo) e > (sequencial) para criar
-                fluxos de trabalho complexos.
-
-  SKILL: Uma habilidade extra que você pode adicionar
-         a um agente (ex: pesquisa web, memória, código).
-
-  SSE: Server-Sent Events — tecnologia que permite o
-       texto aparecer em tempo real (palavra por palavra).
-
-  SYSTEM PROMPT: As instruções secretas que definem a
-                 personalidade e comportamento do agente.
-
-  TOKEN: Unidade de cobrança das APIs de IA. Uma palavra
-         = ~1,3 tokens. Cada chamada consome tokens.
-
-  YAML: Formato de arquivo de configuração usado pelos
-        agentes. Fácil de ler e editar com qualquer editor.
-
-
-==============================================================
-CONTATO E SUPORTE
-==============================================================
-
-  Repositório: github.com/[seu-usuario]/deepH-Plus
-  Issues: Abra um issue no GitHub para bugs e sugestões
-
-  Dica final: Este projeto é de código aberto. Você pode
-  modificar, contribuir e melhorar o deepH Plus à vontade!
-
-
-==============================================================
-      ██████╗ ███████╗███████╗██████╗ ██╗  ██╗
-      ██╔══██╗██╔════╝██╔════╝██╔══██╗██║  ██║
-      ██║  ██║█████╗  █████╗  ██████╔╝███████║
-      ██║  ██║██╔══╝  ██╔══╝  ██╔═╝ ██╔══██║
-      ██████╔╝███████╗███████╗██║     ██║  ██║
-      ╚═════╝ ╚══════╝╚══════╝╚═╝     ╚═╝  ╚═╝
-                   Plus — v4.0
-==============================================================
-       TUTORIAL COMPLETO — GUIA PARA INICIANTES
-==============================================================
-
-Autor: Equipe deepH Plus
-Versão: 4.0 — Março 2026
-Tema: Interface Visual Premium (Dark Mode + Emerald Green)
-
-==============================================================
-ANTES DE COMEÇAR — LEIA ISTO COM ATENÇÃO!
-==============================================================
-
-Este tutorial foi escrito para QUALQUER pessoa, mesmo quem
-nunca usou uma ferramenta de inteligência artificial antes.
-
-Vamos explicar TUDO passo a passo, com calma e clareza.
-
-LEGENDA usada neste tutorial:
-  [!] → AVISO IMPORTANTE — leia com atenção!
-  [>] → Ação que você deve realizar
-  [*] → Dica útil ou curiosidade
-  ══  → Separador de seções
-
-Sempre que ver um comando como:
-  .\deeph.exe ui
-isso significa que você deve digitar exatamente isso no
-terminal (a tela preta). Mas não se preocupe — na maioria
-das vezes você usará apenas o atalho de dois cliques!
-
-
-==============================================================
-ÍNDICE
-==============================================================
-
-  PARTE 0 — O que é o deepH Plus? ....................  p. 1
-  PARTE 1 — Instalação e Primeiros Passos .............  p. 2
-  PARTE 2 — Abrindo o Painel Visual ..................  p. 3
-  PARTE 3 — Conhecendo o Layout da Interface ..........  p. 4
-  PARTE 4 — Configurando suas Chaves de API ...........  p. 5
-  PARTE 5 — O Dashboard: Seus Agentes ................  p. 6
-  PARTE 6 — Conversando no Chat .......................  p. 7
-  PARTE 7 — Criando e Editando Agentes ................  p. 8
-  PARTE 8 — Esquadrões (Crews): Trabalho em Equipe ....  p. 9
-  PARTE 9 — O Coach: Seu Assistente de Diagnóstico ....  p. 10
-  PARTE 10 — Usando no Terminal (Avançado) ............  p. 11
-  PARTE 11 — Provedores de IA Suportados ..............  p. 12
-  PARTE 12 — Solução de Problemas .....................  p. 13
-
-
-══════════════════════════════════════════════════════════════
-PARTE 0 — O QUE É O deepH Plus?
-══════════════════════════════════════════════════════════════
-
-O deepH Plus é o seu ESCRITÓRIO PESSOAL DE ASSISTENTES DE IA,
-instalado diretamente no seu computador. Tudo roda local,
-sem enviar seus dados para nenhum servidor externo.
-
-Pense assim: imagine que você contratou vários "funcionários
-virtais especializados". Cada um tem nome, personalidade
-e habilidades definidas por você.
-
-Você pode ter, por exemplo:
-  - Um "Consultor Financeiro" para análise de investimentos
-  - Um "Redator" para escrever textos e e-mails
-  - Um "Programador" para ajudar com código
-  - Um "Pesquisador" para buscar informações
-
-Cada um desses é chamado de AGENTE.
-
-O deepH Plus é o sistema que gerencia esses agentes através
-de uma INTERFACE VISUAL MODERNA E PREMIUM, com:
-  ✓ Tema escuro elegante (Deep Black + Emerald Green)
-  ✓ Animações suaves e design premium
-  ✓ Chat em tempo real com formatação rica (Markdown)
-  ✓ Painel de controle visual intuitivo
-  ✓ Suporte a múltiplos provedores de IA (DeepSeek, OpenAI,
-    Anthropic, Groq, Ollama local e mais)
-
-[*] Todas as conversas e configurações ficam no SEU
-    computador. Nada vai para nuvem exceto a mensagem
-    que você envia ao modelo de IA escolhido.
-
-
-══════════════════════════════════════════════════════════════
-PARTE 1 — INSTALAÇÃO E PRÉ-REQUISITOS
-══════════════════════════════════════════════════════════════
-
-Antes de abrir o deepH Plus, certifique-se de que você tem:
-
-  1. Windows 10 ou 11 (64-bit)
-  2. O arquivo deeph.exe na pasta C:\Users\BOSS\deepH
-  3. Conexão com internet (para chamar a IA via API)
-
-Você NÃO precisa instalar nada especial. O deepH Plus é
-um arquivo único executável (.exe) em Go, que já carrega
-o painel web dentro de si mesmo.
-
-──────────────────────────────────────────────────────────────
-Estrutura de Pastas do deepH Plus
-──────────────────────────────────────────────────────────────
-
-Sua pasta C:\Users\BOSS\deepH contém:
-
-  deeph.exe        → O programa principal (motor em Go)
-  start_ui.bat     → Atalho de duplo clique para iniciar
-  config.json      → Suas configurações e API Keys (gerado
-                     automaticamente na 1ª execução)
-  agents/          → Pasta com seus agentes (.yaml)
-  crews/           → Pasta com seus esquadrões (.yaml)
-  skills/          → Skills instaladas (habilidades extras)
-  sessions/        → Histórico de conversas salvo
-
-[!] NUNCA apague o arquivo config.json sem querer!
-    Ele contém suas chaves de API. Faça backup dele.
-
-
-══════════════════════════════════════════════════════════════
-PARTE 2 — ABRINDO O PAINEL VISUAL
-══════════════════════════════════════════════════════════════
-
-──────────────────────────────────────────────────────────────
-MÉTODO 1 (Recomendado) — Duplo Clique no Atalho
-──────────────────────────────────────────────────────────────
-
-[>] Passo 1: Abra o Explorador de Arquivos do Windows
-[>] Passo 2: Navegue até: C:\Users\BOSS\deepH
-[>] Passo 3: Dê DUPLO CLIQUE no arquivo:  start_ui.bat
-
-O que vai acontecer em sequência:
-  1. Uma JANELA PRETA (terminal) vai abrir mostrando logs
-  2. O motor Go vai iniciar e mostrar a mensagem:
-     "UI Server running at http://localhost:7730"
-  3. Seu navegador padrão vai abrir automaticamente
-  4. A INTERFACE PREMIUM do deepH Plus vai aparecer!
-
-[!] AVISO CRÍTICO: Não feche a janela preta (terminal)!
-    Ela é o "motor" do sistema. Se fechá-la, o painel
-    visual vai parar de funcionar completamente.
-    Pode MINIMIZÁ-LA à vontade — só não feche!
-
-──────────────────────────────────────────────────────────────
-MÉTODO 2 — Via Terminal (Opcional)
-──────────────────────────────────────────────────────────────
-
-[>] Abra o PowerShell ou CMD na pasta C:\Users\BOSS\deepH
-[>] Digite o comando:
-    .\deeph.exe ui
-[>] Acesse no navegador: http://localhost:7730
-
-[*] O atalho start_ui.bat faz exatamente isso por você!
-
-
-══════════════════════════════════════════════════════════════
-PARTE 3 — CONHECENDO O LAYOUT DA INTERFACE
-══════════════════════════════════════════════════════════════
-
-Quando o painel abrir, você verá uma tela com fundo muito
-escuro (quase preto) e detalhes em verde esmeralda (#0ff092).
-
-A interface é dividida em 4 zonas principais:
-
-  ┌─────────────────────────────────────────────────────┐
-  │  CABEÇALHO (Header)                                 │
-  │  deepH logo + Nome da Página + Status + Usuário     │
-  ├──────────────┬──────────────────────────────────────┤
-  │              │                                      │
-  │   BARRA      │                                      │
-  │   LATERAL    │      ÁREA DE CONTEÚDO                │
-  │  (Sidebar)   │      (Muda conforme a página)        │
-  │              │                                      │
-  │  • Dash      │                                      │
-  │  • Esquadrões│                                      │
-  │  • Chat      │                                      │
-  │  • Config    │                                      │
-  │              │                                      │
-  └──────────────┴──────────────────────────────────────┘
-
-──────────────────────────────────────────────────────────────
-3.1 — A BARRA LATERAL (Menu de Navegação)
-──────────────────────────────────────────────────────────────
-
-À esquerda ficam os botões de navegação. Cada um tem um
-ícone e texto:
+  ➕ Novo Agente   → Cria um agente novo do zero.
 
-  🏠 Dashboard    → Gerencie seus agentes individuais
-  👥 Esquadrões   → Orchestre múltiplos agentes em equipe
-  💬 Chat         → Janela de conversa inteligente
-  ➕ Novo Agente  → Criar um novo agente do zero
-  ⚙️ Configurações → Gerenciar API Keys e preferências
+  ⚙️ Configurações → Onde você insere as chaves de API e
+                      define configurações gerais.
 
-[*] As transições entre as telas são suaves e animadas!
+[*] Ao passar o mouse sobre qualquer área verde ou um cartão
+    de agente, você verá ele "iluminar" levemente. Isso é
+    intencional — faz parte do design premium!
 
 
 ══════════════════════════════════════════════════════════════
 PARTE 4 — CONFIGURANDO SUAS CHAVES DE API
 ══════════════════════════════════════════════════════════════
 
-Para o deepH Plus chamar a inteligência artificial, você
-precisa de uma CHAVE DE API do provedor de IA escolhido.
+O deepH Plus conecta você DIRETAMENTE ao serviço de IA de sua
+escolha (DeepSeek, OpenAI, etc.), sem intermediários.
 
-[>] Passo 1: Clique em "Configurações" (ícone ⚙️) na sidebar.
-[>] Passo 2: Encontre o provedor (ex: DeepSeek).
-[>] Passo 3: COLE sua chave de API e clique em "Save Settings".
+Para isso, você precisa de uma CHAVE DE API — funciona como
+uma "senha de acesso" ao cérebro da IA. Sem ela, os agentes
+não conseguem gerar respostas.
 
-[!] SEGURANÇA: A chave fica salva APENAS no seu computador.
-    Nunca passamos seus segredos por nossos servidores.
+──────────────────────────────────────────────────────────────
+4.1 — Onde obter sua chave de API (é rápido e fácil!)
+──────────────────────────────────────────────────────────────
+
+  DEEPSEEK (Mais Recomendado — Baratíssimo e inteligente):
+  1. Abra seu navegador e acesse: https://platform.deepseek.com
+  2. Clique em "Sign Up" para criar uma conta gratuita.
+  3. Após logar, procure por "API Keys" no menu.
+  4. Clique em "Create new secret key", copie e guarde a chave.
+  → A chave começa com: sk-
+  → Custo: frações de centavo por resposta.
+
+  GROQ (Rápidíssimo e tem cota gratuita generosa):
+  1. Acesse: https://console.groq.com
+  2. Crie sua conta gratuita.
+  3. Vá em "API Keys" → "Create API Key".
+  4. Copie a chave gerada.
+  → A chave começa com: gsk_
+
+  OPENAI (ChatGPT — pago, porém sem cotas mínimas):
+  1. Acesse: https://platform.openai.com
+  2. Crie a conta e adicione créditos (mínimo US$5).
+  3. Vá em "API Keys" e crie uma nova chave.
+  → A chave começa com: sk-proj-
+
+  OLLAMA (100% GRATUITO e sem internet — roda no seu PC!):
+  1. Acesse: https://ollama.ai e baixe o instalador.
+  2. Instale o Ollama no seu computador.
+  3. No deepH Plus, basta usar o provider "ollama".
+  → Nenhuma chave necessária! Mas exige um PC razoável.
+
+──────────────────────────────────────────────────────────────
+4.2 — Como inserir a chave no deepH Plus (Passo a Passo):
+──────────────────────────────────────────────────────────────
+
+[>] PASSO 1: No painel aberto no navegador, olhe para a
+             barra lateral esquerda e clique no ícone
+             ⚙️ "Configurações".
+
+[>] PASSO 2: A tela de configurações vai abrir, mostrando
+             seções para cada provedor de IA suportado.
+
+[>] PASSO 3: Encontre a seção do seu provedor. Por exemplo,
+             se você criou uma conta no DeepSeek, procure
+             pela seção "DeepSeek" na tela.
+
+[>] PASSO 4: Clique dentro do campo de texto escuro ao lado
+             de "API Key" (ou nome similar).
+
+[>] PASSO 5: Cole a sua chave de API utilizando CTRL+V.
+             Certifique-se de não ter espaços antes ou
+             depois da chave. Ela deve aparecer completa.
+
+[>] PASSO 6: Role até o final da página e clique no
+             botão verde "Save Settings".
+
+[>] PASSO 7: O sistema confirma salvando as configurações.
+             Pronto — a chave está configurada!
+
+[!] SEGURANÇA: Sua chave fica armazenada APENAS no arquivo
+    config.json no seu próprio computador. O deepH Plus
+    nunca envia sua chave para servidores próprios. Ela só
+    é usada quando você enviar uma mensagem, e vai direto
+    ao servidor do provedor escolhido (DeepSeek, OpenAI etc).
+
+[*] Você pode configurar chaves de VÁRIOS provedores ao
+    mesmo tempo! Cada agente vai usar o provedor que você
+    definir para ele individualmente.
+
+──────────────────────────────────────────────────────────────
+4.3 — Verificando se funciona:
+──────────────────────────────────────────────────────────────
+
+Após salvar a chave, volte ao Dashboard e clique em
+"CONVERSAR" em qualquer agente. Escreva uma mensagem simples
+como "Olá, você está funcionando?" e envie.
+
+  ✓ Se o agente responder: Tudo certo!
+  ✗ Se não responder ou der erro: Veja a Parte 13 deste tutorial.
 
 
 ══════════════════════════════════════════════════════════════
-PARTE 5 — O DASHBOARD E AGENTES
+PARTE 5 — O DASHBOARD: VISUALIZANDO SEUS AGENTES
 ══════════════════════════════════════════════════════════════
 
-O DASHBOARD mostra seus agentes como cartões translúcidos.
-Cada agente tem uma especialidade e um "System Prompt" (instruções).
+O Dashboard é a tela principal — a "recepção" do seu escritório.
 
-  • CONVERSAR: Abre o chat direto.
-  • EDITAR: Altera a personalidade ou provedor (modelo).
-  • EXCLUIR: Remove o agente definitivamente do sistema.
+Quando você clica em 🏠 Dashboard na barra lateral, verá
+um ou mais cartões translúcidos, cada um representando um agente.
+
+──────────────────────────────────────────────────────────────
+O que você vê em cada cartão de agente:
+──────────────────────────────────────────────────────────────
+
+  ╔══════════════════════════════════════════════════╗
+  ║  🤖  NOME DO AGENTE                 ● Ativo     ║
+  ║     Provedor: deepseek                           ║
+  ║                                                  ║
+  ║  Descrição: Assistente geral de linguagem        ║
+  ║                                                  ║
+  ║    [  CONVERSAR  ]          [ ⚙️ EDITAR ]       ║
+  ╚══════════════════════════════════════════════════╝
+
+  • NOME: O apelido dado ao agente na criação.
+  • ● Ativo: O ponto verde pulsante indica que ele está
+    pronto para receber conversas.
+  • Provedor: Qual IA está "dentro" deste agente.
+  • Descrição: Um resumo do que ele faz.
+  • [CONVERSAR]: Clique aqui para iniciar uma conversa.
+  • [EDITAR ⚙️]: Clique aqui para alterar nome, descrição,
+    provedor ou as instruções internas do agente.
+
+──────────────────────────────────────────────────────────────
+O agente padrão "guide":
+──────────────────────────────────────────────────────────────
+
+O deepH Plus vem com um agente chamado "guide" pré-criado.
+Ele usa o DeepSeek e serve como assistente geral. Use-o
+para testar logo após configurar sua chave.
+
+  [*] Você pode renomear o "guide" ou deletá-lo a qualquer
+      momento clicando em Editar.
 
 
 ══════════════════════════════════════════════════════════════
-PARTE 6 — CONVERSANDO NO CHAT
+PARTE 6 — COMO CONVERSAR NO CHAT (PASSO A PASSO)
 ══════════════════════════════════════════════════════════════
 
-O chat do deepH Plus v4.0 agora é mais inteligente! 
-Ele utiliza o **ContextBus** para lembrar apenas do que é 
-importante, economizando seus tokens de API.
+Com o agente e a chave configurados, é hora de conversar!
 
-  • SUAS MENSAGENS: Lado direito, fundo verde neon.
-  • RESPOSTAS IA: Lado esquerdo, estilo vidro (Glassmorphism).
+──────────────────────────────────────────────────────────────
+6.1 — Abrindo uma conversa com um agente:
+──────────────────────────────────────────────────────────────
 
-[*] O chat suporta Markdown completo (negrito, tabelas, código).
+[>] PASSO 1: Certifique-se de que está na tela Dashboard
+             (ícone 🏠 na barra lateral).
+
+[>] PASSO 2: Encontre o cartão do agente com o qual você
+             quer conversar.
+
+[>] PASSO 3: Clique no botão [CONVERSAR] no cartão do agente.
+             A tela de Chat vai abrir.
+
+──────────────────────────────────────────────────────────────
+6.2 — Entendendo a tela de Chat:
+──────────────────────────────────────────────────────────────
+
+A tela de chat funciona como qualquer aplicativo de mensagens:
+
+  ┌──────────────────────────────────────────────────────┐
+  │  🤖 Nome do Agente                ● Neural Link     │
+  ├──────────────────────────────────────────────────────┤
+  │                                                      │
+  │                          [Sua mensagem aqui] →       │
+  │                                                      │
+  │  ← [Resposta do agente aparece aqui]                │
+  │                                                      │
+  ├──────────────────────────────────────────────────────┤
+  │  📎  [ Digite a sua mensagem aqui... ]   ↑ Enviar   │
+  └──────────────────────────────────────────────────────┘
+
+  • Suas mensagens appearing no lado DIREITO, com fundo verde.
+  • As respostas do agente aparecem no lado ESQUERDO, com
+    fundo escuro translúcido (efeito de vidro).
+
+──────────────────────────────────────────────────────────────
+6.3 — Como enviar sua primeira mensagem:
+──────────────────────────────────────────────────────────────
+
+[>] PASSO 1: Clique dentro do campo de texto na PARTE INFERIOR
+             da tela. Você verá o cursor piscar lá dentro.
+
+[>] PASSO 2: Digite o que você quer perguntar ou pedir ao
+             agente. Escreva como se fosse um e-mail para
+             um colega. Seja claro sobre o que precisa.
+             Exemplo: "Me faça um resumo de 5 tópicos sobre
+                       como economizar energia em casa."
+
+[>] PASSO 3: Para enviar, você tem duas opções:
+             - Pressione a tecla ENTER no teclado, OU
+             - Clique no botão com seta ↑ à direita do campo.
+
+[>] PASSO 4: Você verá três pontinhos pulsantes (● ● ●) do
+             lado esquerdo. Isso significa que a IA está
+             "pensando" e preparando a resposta.
+
+[>] PASSO 5: A resposta vai aparecer letra por letra em tempo
+             real, como um chat de mensagens ao vivo!
+
+[!] Dica de escrita:
+    Se quiser quebrar uma linha dentro da sua mensagem sem
+    enviá-la (para fazer texto em mais de um parágrafo),
+    pressione SHIFT + ENTER juntas.
+
+──────────────────────────────────────────────────────────────
+6.4 — Recursos da tela de Chat:
+──────────────────────────────────────────────────────────────
+
+Abaixo de cada resposta do agente, você verá dois botões:
+
+  [Copiar]     → Copia todo o texto da resposta para
+                 sua área de transferência. Você pode
+                 colar em qualquer outro lugar (CTRL+V).
+
+  [Regenerar]  → Pede para a IA gerar uma resposta nova
+                 e diferente para a mesma pergunta.
+                 Use quando a primeira resposta não foi
+                 o que você esperava.
+
+As respostas suportam Markdown, o que significa que a IA
+pode responder com:
+  • **Texto em negrito**
+  • *Itálico*
+  • # Títulos
+  • Listas com marcadores
+  • Tabelas formatadas
+  • Blocos de código (realce de sintaxe para programação)
+
+[*] Dica: Peça explicitamente ao agente para formatar a
+    resposta como quiser. Por exemplo: "Responda em formato
+    de lista de tópicos" ou "Crie uma tabela comparativa".
+
+──────────────────────────────────────────────────────────────
+6.5 — O Chat salva automaticamente:
+──────────────────────────────────────────────────────────────
+
+Todo bate-papo é salvo no seu computador em:
+  C:\Users\BOSS\deepH\sessions\
+
+Isso significa que o agente "lembra" das últimas mensagens
+da conversa. Você não precisa repetir o contexto toda hora.
+
+[!] Se uma conversa ficar MUITO longa (centenas de mensagens),
+    o custo de cada nova mensagem começa a subir, porque o
+    sistema envia o histórico completo para a IA. Para começar
+    do zero, basta clicar novamente em "CONVERSAR" na tela do
+    Dashboard — isso abre uma sessão nova e zerada.
 
 
 ══════════════════════════════════════════════════════════════
-PARTE 7 — CRIANDO AGENTES MESTRES
+PARTE 7 — CRIANDO UM NOVO AGENTE (PASSO A PASSO)
 ══════════════════════════════════════════════════════════════
 
-No editor, o campo mais vital é o **SYSTEM PROMPT**.
-Define quem a IA é e como deve reagir.
+Criar um agente é como preencher uma ficha de contratação
+do seu novo "funcionário virtual". A tela de criação possui
+várias seções — vamos explicar cada uma delas.
 
-Exemplo de Redator:
-  "Você é um redator sênior de marketing. Escreva posts
-   persuasivos para Instagram. Sempre termine com uma
-   pergunta para engajar a audiência."
+──────────────────────────────────────────────────────────────
+7.1 — Iniciando a criação:
+──────────────────────────────────────────────────────────────
+
+[>] PASSO 1: Olhe para a barra lateral esquerda e clique no
+             ícone ➕ "Novo Agente". A tela de criação abrirá.
+
+No topo da tela você verá dois modos de edição disponíveis:
+  • Modo FORMULÁRIO (padrão): Preencha campo por campo
+    de forma visual e amigável.
+  • Modo YAML: Escreva toda a configuração do agente em
+    formato de texto estruturado. Mais avançado, porém
+    mais claro para quem já conhece a ferramenta.
+
+Ambos os modos criam o mesmo resultado. Se ainda está
+aprendendo, comece pelo Modo Formulário (Parte 7.2).
+O Modo YAML é explicado na Parte 7.9.
+
+──────────────────────────────────────────────────────────────
+7.2 — SEÇÃO "General Information" — Informações Básicas:
+──────────────────────────────────────────────────────────────
+
+Esta é a primeira seção visível no formulário.
+
+CAMPO: Agent Name (Nome do Agente)
+  [>] Digite um nome curto e sem espaços para o agente.
+      Use underline (_) para separar palavras se precisar.
+  Bons exemplos:
+    - planner
+    - redator_pro
+    - consultor_financeiro
+  Exemplos ruins (causam erros no sistema):
+    - "Meu Agente" (espaços → proibido)
+    - "redator-1" (hífen → pode causar problemas)
+  [!] O nome que você digitar aqui vira o nome do arquivo
+      salvo em agents/[nome].yaml. Por isso, evite acentos,
+      espaços e caracteres especiais.
+
+CAMPO: Description (Descrição)
+  [>] Escreva 1 ou 2 frases resumindo o propósito do agente.
+      O placeholder já dá a dica: "Short description of
+      the agent's purpose" (descrição curta do propósito).
+  Exemplos:
+    - "Planeja etapas de projetos e divide tarefas complexas."
+    - "Redige posts curtos para Instagram com tom descontraído."
+  Esta descrição aparece no cartão do Dashboard para que
+  você se lembre do que cada agente faz.
+
+──────────────────────────────────────────────────────────────
+7.3 — SEÇÃO "System Prompt" — A Personalidade do Agente:
+──────────────────────────────────────────────────────────────
+
+O System Prompt é o campo MAIS IMPORTANTE de toda a criação.
+É o conjunto de instruções secretas que moldam o comportamento
+do agente. Ele lê essas instruções automaticamente antes de
+qualquer conversa e age conforme o que estiver escrito aqui.
+
+[>] Clique dentro da caixa de texto escura desta seção e
+    escreva as instruções. Use linguagem natural, como se
+    estivesse explicando a função para um novo funcionário.
+
+Um bom System Prompt deve conter:
+  a) QUEM é este agente? (sua persona e especialidade)
+  b) COMO ele deve se comportar e qual o seu tom?
+  c) Em que IDIOMA deve responder?
+  d) O que ele NÃO deve fazer ou fugir do tema?
+  e) Como deve FORMATAR as respostas?
+
+EXEMPLO — System Prompt para um Agente Planejador:
+  ─────────────────────────────────────────────────────
+  Você é o Planner, um especialista em criar planos de
+  execução claros e objetivos para projetos de tecnologia.
+
+  Sempre responda em português do Brasil.
+  Estruture as respostas em listas numeradas com etapas curtas.
+  Seja objetivo: evite textos longos e explicações desnecessárias.
+  Foque em passos concretos que podem ser executados na prática.
+  Não fuja do tema: se perguntarem algo fora do escopo de
+  planejamento, redirecione educadamente ao seu propósito.
+  ─────────────────────────────────────────────────────
+
+EXEMPLO — System Prompt RUIM (muito vago):
+  ─────────────────────────────────────────────────────
+  Você é um assistente útil.
+  ─────────────────────────────────────────────────────
+  Com um prompt assim, a IA não saberá qual é sua função,
+  qual idioma usar nem como formatar as respostas.
+
+──────────────────────────────────────────────────────────────
+7.4 — SEÇÃO "Provider & Model" — O Cérebro da IA:
+──────────────────────────────────────────────────────────────
+
+CAMPO: Provider (Provedor)
+  [>] Clique no menu suspenso e selecione o provedor de IA.
+      Escolha o mesmo cujo API Key você cadastrou na Parte 4.
+  Opções disponíveis:
+    - DeepSeek   → Barato e excelente qualidade.
+    - OpenAI     → GPT-4o. Líder do mercado, custo moderado.
+    - Anthropic  → Claude. Excelente para texto e código.
+    - Groq       → Ultra-rápido, tem cota gratuita.
+    - Ollama     → Roda offline no seu PC. Sem custo.
+
+CAMPO: Model (Modelo)
+  [>] Digite o nome exato do modelo dentro do provedor.
+      O modelo é a "versão" do cérebro da IA escolhida.
+  Exemplos por provedor:
+    - DeepSeek:   deepseek-chat  (recomendado para texto)
+                  deepseek-reasoner  (raciocínio complexo)
+    - OpenAI:     gpt-4o  (melhor qualidade)
+                  gpt-4o-mini  (mais barato e rápido)
+    - Anthropic:  claude-3-5-sonnet-20241022
+    - Groq:       llama-3.3-70b-versatile
+    - Ollama:     llama3  /  mistral  /  phi3
+
+──────────────────────────────────────────────────────────────
+7.5 — SEÇÃO "I/O Ports" — Entradas e Saídas do Agente:
+──────────────────────────────────────────────────────────────
+
+Esta seção é o que permite que agentes se "conectem" uns
+aos outros em pipelines sequenciais (ver Parte 8). Ela
+define o que o agente ACEITA como entrada (INPUTS) e o que
+ele PRODUZ como saída (OUTPUTS).
+
+[*] Para uso simples (conversar no chat), você pode deixar
+    os valores padrão que o sistema preenche automaticamente.
+    Esta seção é mais importante ao criar pipelines de Crews.
+
+──────────────────────────────────────────────────────────────
+INPUTS (Entradas):
+──────────────────────────────────────────────────────────────
+  Define o que este agente recebe como "matéria-prima".
+
+  CAMPO "Name" (Nome):
+    O identificador da entrada. Exemplo: "task", "context".
+    É como um rótulo do que está chegando para o agente.
+
+  CAMPO "Accepts" (Aceita — tipos de conteúdo):
+    Que tipo de conteúdo este agente consegue receber?
+    Exemplos de valores válidos:
+      text/plain      → Texto simples.
+      text/markdown   → Texto formatado.
+      summary/text    → Resumo de texto.
+      plan/summary    → Plano de etapas resumido.
+    Use vírgula para separar vários tipos aceitos.
+    Exemplo: text/plain, text/markdown
+
+  [>] Para ADICIONAR outra entrada: clique em "+ Add Input".
+  [>] Para REMOVER uma entrada: clique no ícone 🗑️ (lixeira).
+
+──────────────────────────────────────────────────────────────
+OUTPUTS (Saídas):
+──────────────────────────────────────────────────────────────
+  Define o que este agente produz ao terminar seu trabalho.
+  A saída de um agente pode virar a entrada do próximo
+  dentro de um pipeline sequencial.
+
+  CAMPO "Name" (Nome):
+    O identificador da saída. Exemplo: "result", "plan".
+
+  CAMPO "Produces" (Produz — tipos de conteúdo):
+    Que tipo de conteúdo este agente vai gerar?
+    Exemplos de valores válidos:
+      text/markdown   → Texto formatado com Markdown.
+      summary/text    → Um resumo do tema.
+      plan/summary    → Um plano de execução.
+      code/python     → Código Python.
+      code/html       → Código HTML.
+    Use vírgula para separar múltiplos tipos.
+
+  [>] Para ADICIONAR outra saída: clique em "+ Add Output".
+
+──────────────────────────────────────────────────────────────
+7.6 — SEÇÃO "Metadata" — Dados de Contexto Extra:
+──────────────────────────────────────────────────────────────
+
+Metadata são informações adicionais opcionais que ajudam o
+sistema a entender como usar este agente em contextos
+mais avançados, como o gerenciamento automático de contexto.
+
+[>] Para ADICIONAR um item de metadata: clique em
+    "+ Add metadata key".
+  Isso abre dois campos lado a lado:
+    - Campo ESQUERDO: a chave (ex: context_moment)
+    - Campo DIREITO: o valor (ex: discovery)
+
+  [>] Para REMOVER: clique no ícone 🗑️ ao lado.
+
+Exemplos de metadata úteis:
+  Chave: context_moment      Valor: discovery
+  → Indica quando este agente deve ser usado no fluxo.
+
+  Chave: context_max_input_tokens    Valor: 900
+  → Limita quantos tokens de contexto o agente recebe.
+    Útil para economizar créditos em agentes que fazem
+    tarefas simples e não precisam de muito contexto.
+
+[*] Para usuários iniciantes, a seção de Metadata pode
+    ser deixada em branco sem problemas. O sistema
+    funciona normalmente sem ela.
+
+──────────────────────────────────────────────────────────────
+7.7 — SEÇÃO "Skills & Capabilities" — Habilidades:
+──────────────────────────────────────────────────────────────
+
+Esta seção permite adicionar Skills (habilidades extras)
+ao agente. Skills são módulos que ampliam o que um agente
+pode fazer além de apenas conversar.
+
+Como funciona:
+  [>] A seção exibe painéis com ícone </>. Cada painel
+      representa um slot de skill disponível.
+  [>] Clique em qualquer slot vazio para ver e selecionar
+      as skills instaladas na pasta skills/ do projeto.
+
+Exemplos de skills que podem existir:
+  - echo: retorna a entrada recebida sem modificação.
+          Útil para depurar pipelines de agentes.
+  - web_search: permite que o agente pesquise na internet.
+  - memory: dá ao agente memória de longo prazo entre sessões.
+  - file_write_dialog: abre o diálogo "Salvar Como" do Windows
+    para salvar o resultado direto do agente como arquivo.
+
+[*] Para criar um agente básico de chat, deixe todas as
+    Skills em branco. Você pode adicionar skills depois,
+    editando o agente novamente.
+
+──────────────────────────────────────────────────────────────
+7.8 — Salvando o agente (Modo Formulário):
+──────────────────────────────────────────────────────────────
+
+[>] PASSO 1: Após preencher todos os campos desejados,
+             role até o final da página.
+
+[>] PASSO 2: Clique no botão verde "Deploy Agent".
+
+[>] PASSO 3: O agente será criado e salvo como um arquivo
+             .yaml em: agents/[nome-do-agente].yaml
+
+[>] PASSO 4: Você será redirecionado ao Dashboard, onde o
+             novo agente aparecerá imediatamente com seu
+             cartão na tela!
+
+──────────────────────────────────────────────────────────────
+7.9 — MODO YAML: Criando o agente escrevendo código:
+──────────────────────────────────────────────────────────────
+
+O Modo YAML permite criar ou editar um agente escrevendo
+diretamente o arquivo de configuração em formato de texto
+estruturado. É o modo preferido para quem já conhece o
+sistema ou quer configurações mais avançadas.
+
+[>] Para ativar: no topo da tela de criação de agente,
+    clique na aba "YAML" (ao lado de "Form").
+    Um editor de texto aparecerá com a estrutura do arquivo.
+
+ENTENDENDO A ESTRUTURA YAML CAMPO A CAMPO:
+Veja o exemplo completo abaixo, com cada linha explicada:
+
+  ┌────────────────────────────────────────────────────┐
+  │ name: planner                                      │
+  │ provider: deepseek                                 │
+  │ model: deepseek-chat                               │
+  │ system_prompt: |                                   │
+  │   Você é o Planner.                                │
+  │   Gere um plano curto para explicar "universos"    │
+  │   e "multiagents" no deepH.                        │
+  │   Responda em passos objetivos.                    │
+  │ skills:                                            │
+  │   - echo                                           │
+  │ io:                                                │
+  │   inputs:                                          │
+  │     - name: task                                   │
+  │       accepts: [text/plain]                        │
+  │       required: true                               │
+  │       max_tokens: 220                              │
+  │   outputs:                                         │
+  │     - name: plan                                   │
+  │       produces: [plan/summary, summary/text]       │
+  │ metadata:                                          │
+  │   context_moment: discovery                        │
+  │   context_max_input_tokens: "900"                  │
+  └────────────────────────────────────────────────────┘
+
+EXPLICAÇÃO LINHA A LINHA:
+
+  name: planner
+    → O nome do agente. Sem espaços, sem acentos.
+      Este será o nome do arquivo (agents/planner.yaml).
+
+  provider: deepseek
+    → Qual empresa de IA fornece o "cérebro".
+      Valores possíveis: deepseek, openai, anthropic,
+      groq, ollama.
+
+  model: deepseek-chat
+    → O modelo específico dentro do provedor escolhido.
+      Para DeepSeek: deepseek-chat ou deepseek-reasoner.
+      Para OpenAI: gpt-4o, gpt-4o-mini.
+
+  system_prompt: |
+    → O símbolo | (pipe) após os dois pontos indica que
+      o texto vai em múltiplas linhas. IMPORTANTE: cada
+      linha do system prompt deve ter 2 espaços de RECUO
+      (indentação) à esquerda. Não use TAB — use espaços!
+    Você é o Planner.
+    Gere um plano curto...
+      → Estas são as instruções de personalidade do agente.
+        Escreva normalmente, uma instrução por linha.
+
+  skills:
+    - echo
+    → Lista de skills ativadas. O traço (-) antes do nome
+      indica um item de lista. Escreva o nome exato da
+      skill conforme ela aparece na pasta skills/.
+      Para múltiplas skills:
+        skills:
+          - echo
+          - web_search
+
+  io:
+    → Bloco que define as entradas e saídas do agente.
+      Essencial quando este agente vai funcionar dentro
+      de um pipeline (crew sequencial).
+
+    inputs:
+      - name: task
+        → Nome do canal de entrada. "task" significa que
+          este agente recebe uma "tarefa" como entrada.
+        accepts: [text/plain]
+        → Tipos de conteúdo aceitos. Use colchetes [].
+          Para múltiplos: [text/plain, text/markdown]
+        required: true
+        → Se esta entrada é obrigatória (true) ou não
+          (false). Geralmente mantenha como true.
+        max_tokens: 220
+        → Limite máximo de tokens na entrada. 220 é
+          um valor pequeno — bom para tarefas simples.
+          Para entradas longas use 1000 ou mais.
+
+    outputs:
+      - name: plan
+        → Nome do canal de saída. "plan" indica que
+          este agente produz um "plano" como resultado.
+        produces: [plan/summary, summary/text]
+        → Tipos de conteúdo que este agente produz.
+          O próximo agente no pipeline usará esses tipos
+          para saber que tipo de dados está recebendo.
+
+  metadata:
+    context_moment: discovery
+    → Metadado que indica o "momento de contexto" deste
+      agente. "discovery" é uma etapa inicial de exploração.
+    context_max_input_tokens: "900"
+    → Máximo de tokens do histórico de contexto que o
+      agente vai receber junto com cada mensagem.
+      Coloque o valor entre aspas ("900") pois é uma
+      string no YAML, mesmo sendo um número.
+
+[!] ATENÇÃO — Regra de ouro do YAML:
+    Indentação com ESPAÇOS, nunca com TAB (botão de
+    tabulação do teclado). Um erro de indentação faz
+    o arquivo ficar inválido e o agente não será carregado.
+    Se algo não funcionar, verifique os espaços primeiro!
+
+[>] Após escrever ou editar o YAML, clique em "Deploy Agent"
+    para salvar. O sistema valida o arquivo e cria o agente.
+
 
 
 ══════════════════════════════════════════════════════════════
-PARTE 8 — ESQUADRÕES (CREWS): O PODER DA EQUIPE
+PARTE 8 — ESQUADRÕES (CREWS): VÁRIOS AGENTES EM EQUIPE
 ══════════════════════════════════════════════════════════════
 
-A grande novidade da v4.0 são os **ESQUADRÕES**.
-Em vez de falar com um agente, você fala com uma EQUIPE.
+O deepH Plus permite que você crie EQUIPES de agentes que
+trabalham juntos para resolver tarefas mais complexas.
 
-[>] EXEMPLO: Crew "build-calculator"
-Este esquadrão contém 3 agentes trabalhando em sequência:
-  1. Arquiteto: Planeja as funcionalidades.
-  2. Desenvolvedor: Escreve o código HTML/CSS/JS.
-  3. Assistente de Implantação: Abre a janela de salvar arquivo.
+Imagine uma agência de publicidade:
+  - O Pesquisador coleta dados sobre o tema.
+  - O Redator escreve o texto usando esses dados.
+  - O Revisor lê o texto do Redator e corrige eventuais erros.
 
-Para rodar este exemplo no terminal:
+Tudo isso pode ser automatizado em um único "crew"!
+
+──────────────────────────────────────────────────────────────
+8.1 — Os dois modos de coordenação de agentes:
+──────────────────────────────────────────────────────────────
+
+  MODO PARALELO (símbolo +):
+  → Vários agentes recebem a mesma tarefa e trabalham
+    AO MESMO TEMPO, de forma independente.
+  → Use quando quiser DIFERENTES PERSPECTIVAS sobre o mesmo tema.
+  → Exemplo: "pesquisador1+pesquisador2"
+    Os dois pesquisam a mesma coisa simultaneamente.
+    Você recebe os dois resultados para comparar.
+
+  MODO SEQUENCIAL (símbolo >):
+  → É uma LINHA DE MONTAGEM. O resultado do primeiro agente
+    vira a entrada do segundo, e assim por diante.
+  → Use quando cada etapa depende do que o anterior produziu.
+  → Exemplo: "planejador>codificador>revisor"
+    1. O planejador cria o plano.
+    2. O codificador recebe o plano e escreve o código.
+    3. O revisor recebe o código e faz a revisão final.
+
+  MODO MISTO (combinando + e >):
+  → Você pode misturar os dois modos na mesma execução!
+  → Exemplo: "pesquisador1+pesquisador2>redator"
+    Pesquisador1 e Pesquisador2 trabalham ao mesmo tempo,
+    depois o Redator recebe os dois resultados e cria
+    o documento final unindo tudo.
+
+──────────────────────────────────────────────────────────────
+8.2 — Visualizando e usando Esquadrões pela interface:
+──────────────────────────────────────────────────────────────
+
+[>] PASSO 1: Na barra lateral, clique em 👥 Esquadrões.
+
+[>] PASSO 2: Você verá os crews salvos que existem na pasta
+             crews/ do seu projeto. Cada crew é um arquivo
+             .yaml contendo a definição da equipe.
+
+[>] PASSO 3: Para executar um esquadrão com uma tarefa, você
+             pode usar o botão de execução disponível na
+             interface do crew, ou usar o terminal (Parte 10).
+
+──────────────────────────────────────────────────────────────
+8.3 — O Crew de exemplo "build-calculator":
+──────────────────────────────────────────────────────────────
+
+O deepH Plus pode vir com um crew de exemplo chamado
+"build-calculator". Ele demonstra um pipeline completo:
+
+  Arquiteto → Desenvolvedor → Assistente de Implantação
+
+  1. O Arquiteto: Recebe sua ideia e cria um plano técnico.
+  2. O Desenvolvedor: Lê o plano e escreve o código em HTML.
+  3. O Assistente: Abre a janela "Salvar como" do Windows
+     para você salvar o arquivo criado diretamente no PC!
+
+Para executar via terminal:
   .\deeph.exe run "build-calculator" "Crie uma calculadora neon"
 
-[*] Esquadrões usam conectores especiais:
-  "+" → Agentes rodam ao mesmo tempo.
-  ">" → Um agente passa o bastão para o próximo.
+
+══════════════════════════════════════════════════════════════
+PARTE 9 — O COACH: O ASSISTENTE DE DIAGNÓSTICO
+══════════════════════════════════════════════════════════════
+
+O Coach é um sistema de monitoramento embutido no deepH Plus
+que observa silenciosamente as execuções dos seus agentes e
+oferece sugestões automáticas de melhoria.
+
+O Coach pode te avisar sobre:
+  - Prompts que poderiam ser mais eficientes.
+  - Modelos mais baratos para a mesma tarefa.
+  - Configurações que podem estar causando lentidão.
+
+[*] O Coach aparece com dicas logo após execuções de agentes.
+
+Para interagir com o Coach via terminal:
+  Ver estatísticas de uso:
+    .\deeph.exe coach stats
+
+  Resetar todas as dicas e começar do zero:
+    .\deeph.exe coach reset --all
+
+  Desativar o Coach durante uma execução:
+    .\deeph.exe run "guide" "Minha tarefa" --coach=false
 
 
 ══════════════════════════════════════════════════════════════
-PARTE 9 — O COACH: DIAGNÓSTICO EM TEMPO REAL
+PARTE 10 — USANDO NO TERMINAL (PARA USUÁRIOS AVANÇADOS)
 ══════════════════════════════════════════════════════════════
 
-O deepH Plus agora vem com o **COACH**.
-Ele monitora as execuções e dá dicas se algo não estiver 100%.
+Se você quer mais controle ou automatizar seus fluxos de
+trabalho, o deepH Plus oferece uma interface completa
+via terminal (linha de comando).
 
-  • Ver estatísticas: .\deeph.exe coach stats
-  • Resetar dicas: .\deeph.exe coach reset --all
+──────────────────────────────────────────────────────────────
+10.1 — Como abrir o terminal na pasta correta:
+──────────────────────────────────────────────────────────────
 
-O Coach ajuda você a otimizar seus prompts e economizar tokens.
+[>] PASSO 1: Pressione [Windows + X] no teclado.
+[>] PASSO 2: Clique em "Terminal" ou "Windows PowerShell".
+[>] PASSO 3: Na janela do terminal que abrir, navegue até
+             a pasta do deepH digitando:
+               cd C:\Users\BOSS\deepH
+             Pressione ENTER.
+[>] PASSO 4: Você verá o caminho mudar para:
+               PS C:\Users\BOSS\deepH>
+             Agora está na pasta correta para usar os comandos!
 
+──────────────────────────────────────────────────────────────
+10.2 — Comandos principais:
+──────────────────────────────────────────────────────────────
 
-══════════════════════════════════════════════════════════════
-PARTE 10 — USANDO NO TERMINAL (AVANÇADO)
-══════════════════════════════════════════════════════════════
+ABRIR A INTERFACE VISUAL (mesmo que o start_ui.bat):
+  .\deeph.exe ui
 
-  RODAR UM AGENTE:
-  .\deeph.exe run "guide" "Tarefa aqui"
+RODAR UM ÚNICO AGENTE COM UMA TAREFA:
+  .\deeph.exe run "nome_do_agente" "Sua tarefa aqui"
+  Exemplo:
+  .\deeph.exe run "guide" "Explique o que é criptomoeda"
 
-  VER PLANO DE EXECUÇÃO (TRACE):
-  .\deeph.exe trace "agente1+agente2" "Tarefa"
+DOIS AGENTES EM PARALELO (ao mesmo tempo):
+  .\deeph.exe run "agente1+agente2" "Sua tarefa"
 
-  LISTAR TUDO:
-  .\deeph.exe crew list
+TRÊS AGENTES EM SEQUÊNCIA (pipeline):
+  .\deeph.exe run "planejador>dev>revisor" "Crie uma API REST"
+
+VER O PLANO DE EXECUÇÃO SEM RODAR (modo trace):
+  .\deeph.exe trace "planejador+leitor>revisor" "Minha tarefa"
+  → O trace mostra COMO a tarefa seria dividida,
+    sem gastar créditos de API. Ótimo para revisar o fluxo!
+
+LISTAR TODOS OS AGENTES CRIADOS:
   .\deeph.exe agent list
-  .\deeph.exe type list  (Explora os tipos de dados)
+
+LISTAR TODOS OS CREWS EXISTENTES:
+  .\deeph.exe crew list
+
+INSTALAR UM KIT PRONTO:
+  .\deeph.exe kit add nome-do-kit
+
+──────────────────────────────────────────────────────────────
+10.3 — Salvando a resposta em um arquivo de texto:
+──────────────────────────────────────────────────────────────
+
+[>] Execute com o redirecionamento de saída:
+  .\deeph.exe run "guide" "Crie um relatório sobre IA" > resultado.txt
+
+Isso vai salvar toda a resposta do agente no arquivo
+"resultado.txt" na pasta do deepH. Muito útil para
+automatizar geração de relatórios ou conteúdos repetitivos!
 
 
 ══════════════════════════════════════════════════════════════
-PARTE 11 — PROVEDORES DE IA
+PARTE 11 — QUAL PROVEDOR DE IA DEVO USAR?
 ══════════════════════════════════════════════════════════════
 
-  • DeepSeek: Melhor custo-benefício (Super recomendo!).
-  • Groq: Ultra velocidade (Respostas instantâneas).
-  • Ollama: 100% grátis e offline (Roda no seu hardware).
-  • OpenAI/Anthropic: O "topo" da inteligência atual.
+Cada provedor tem pontos fortes. Veja um guia prático:
+
+──────────────────────────────────────────────────────────────
+SE VOCÊ QUER O MELHOR CUSTO-BENEFÍCIO:
+──────────────────────────────────────────────────────────────
+  → USE: DeepSeek (deepseek-chat)
+  Por quê? É incrivelmente barato (frações de centavo) e
+  produz respostas de altíssima qualidade. É o padrão do
+  deepH Plus por uma razão — usamos ele como exemplo em
+  quase tudo. Excelente para textos, análise e código.
+
+──────────────────────────────────────────────────────────────
+SE VOCÊ QUER A MÁXIMA VELOCIDADE:
+──────────────────────────────────────────────────────────────
+  → USE: Groq (llama-3.3-70b-versatile)
+  Por quê? O Groq tem uma infraestrutura especializada que
+  entrega respostas MUITO mais rápido que os concorrentes.
+  Além disso, tem uma generosa cota gratuita mensal.
+
+──────────────────────────────────────────────────────────────
+SE VOCÊ QUER PRIVACIDADE TOTAL SEM INTERNET:
+──────────────────────────────────────────────────────────────
+  → USE: Ollama (modelo llama3 ou mistral)
+  Por quê? O Ollama roda a IA DENTRO do seu computador,
+  sem nenhuma conexão com a internet. Seus dados nunca
+  saem da sua máquina. Não precisa de chave de API.
+  Desvantagem: exige um computador com mais memória RAM
+  (8GB+ recomendado). Respostas podem ser mais lentas.
+
+──────────────────────────────────────────────────────────────
+SE VOCÊ QUER A INTELIGÊNCIA MAIS AVANÇADA DISPONÍVEL:
+──────────────────────────────────────────────────────────────
+  → USE: OpenAI GPT-4o ou Anthropic Claude 3.5 Sonnet
+  Por quê? São os modelos mais sofisticados do mercado.
+  Excelentes para raciocínio complexo, criatividade e
+  análises que exigem alta capacidade. Custo mais alto.
+
+Tabela resumida:
+  Provedor   | Custo    | Velocidade | Qualidade | Offline?
+  ───────────┼──────────┼────────────┼───────────┼─────────
+  DeepSeek   | ★★★★★   | ★★★★       | ★★★★★     | Não
+  Groq       | ★★★★★   | ★★★★★      | ★★★★      | Não
+  OpenAI     | ★★★      | ★★★★       | ★★★★★     | Não
+  Anthropic  | ★★★      | ★★★        | ★★★★★     | Não
+  Ollama     | Grátis   | ★★ (PC)    | ★★★       | SIM
 
 
 ══════════════════════════════════════════════════════════════
-PARTE 12 — SOLUÇÃO DE PROBLEMAS
+PARTE 12 — KITS PRONTOS
 ══════════════════════════════════════════════════════════════
 
-  P: A página não abre?
-  R: O start_ui.bat foi fechado? Reabra e aguarde 5 segundos.
+Kits são "pacotes prontos" de agentes e configurações para
+casos de uso específicos. Em vez de criar tudo do zero,
+você instala um kit e já tem um setup completo!
 
-  P: Chat não responde?
-  R: Verifique sua API Key e saldo no provedor.
+──────────────────────────────────────────────────────────────
+12.1 — Ver quais kits estão disponíveis:
+──────────────────────────────────────────────────────────────
 
-  P: Erro de "Port already in use"?
-  R: Feche o deeph.exe pelo Gerenciador de Tarefas e tente de novo.
+[>] Abra o terminal na pasta deepH (veja Parte 10.1).
+[>] Execute:
+      .\deeph.exe kit list
+    Você verá uma lista de kits com nome, descrição, número
+    de agentes e skills incluídos.
 
+──────────────────────────────────────────────────────────────
+12.2 — Instalar um kit (passo a passo):
+──────────────────────────────────────────────────────────────
+
+[>] PASSO 1: Certifique-se que o workspace foi inicializado
+             pelo menos uma vez (já basta ter aberto o
+             start_ui.bat uma vez).
+
+[>] PASSO 2: No terminal, execute:
+               .\deeph.exe kit add nome-do-kit
+             Substitua "nome-do-kit" pelo nome real do kit.
+             Exemplo:
+               .\deeph.exe kit add reviewpack
+
+[>] PASSO 3: O sistema vai instalar automaticamente todos
+             os agentes, skills e configurações do kit.
+             Ao terminar, ele mostrará um resumo e os
+             próximos passos recomendados.
+
+[>] PASSO 4: Execute os passos sugeridos pelo sistema, como:
+               .\deeph.exe validate
+               .\deeph.exe crew list
+
+[*] Kits que incluem crews podem ser acionados com a
+    sintaxe @nome-do-kit:
+      .\deeph.exe run "@reviewpack" "Revise este código"
+
+
+══════════════════════════════════════════════════════════════
+PARTE 13 — SOLUÇÃO DE PROBLEMAS COMUNS
+══════════════════════════════════════════════════════════════
+
+──────────────────────────────────────────────────────────────
+PROBLEMA: O navegador não abriu automaticamente após o
+          start_ui.bat.
+──────────────────────────────────────────────────────────────
+CAUSA: O sistema iniciou mas o navegador não abriu sozinho.
+SOLUÇÃO:
+  [>] Aguarde 5 a 10 segundos para garantir que o motor
+      iniciou completamente.
+  [>] Abra o seu navegador manualmente (Chrome, Edge, etc).
+  [>] Na barra de endereços, apague o conteúdo e escreva:
+        http://localhost:7730
+  [>] Pressione ENTER. O painel do deepH Plus deve carregar!
+
+──────────────────────────────────────────────────────────────
+PROBLEMA: A página em branco ou mostra "Não foi possível
+          conectar".
+──────────────────────────────────────────────────────────────
+CAUSA: A janela preta (motor) foi fechada ou nunca iniciou.
+SOLUÇÃO:
+  [>] Verifique se existe uma janela preta do terminal ativa.
+      Olhe na barra de tarefas do Windows. Ela pode estar
+      minimizada (virada para baixo como ícone).
+  [>] Se a janela preta não existir mais: clique duas vezes
+      no start_ui.bat novamente para reiniciar o motor.
+  [>] Aguarde a mensagem "UI Server running..." aparecer
+      na janela preta antes de acessar o navegador.
+
+──────────────────────────────────────────────────────────────
+PROBLEMA: Erro de "Port already in use" na janela preta.
+──────────────────────────────────────────────────────────────
+CAUSA: A porta 7730 está ocupada por uma instância anterior
+       do deepH que não foi fechada completamente.
+SOLUÇÃO:
+  [>] Pressione CTRL + SHIFT + ESC para abrir o Gerenciador
+      de Tarefas do Windows.
+  [>] Clique na aba "Processos".
+  [>] Procure por "deeph.exe" ou "deeph" na lista.
+  [>] Clique sobre ele com o botão direito e escolha
+      "Finalizar Tarefa".
+  [>] Feche o Gerenciador de Tarefas.
+  [>] Abra o start_ui.bat novamente normalmente.
+
+──────────────────────────────────────────────────────────────
+PROBLEMA: Chat não responde ou mostra "Erro na API".
+──────────────────────────────────────────────────────────────
+CAUSA: Chave de API incorreta, expirada ou sem créditos.
+SOLUÇÃO:
+  [>] Clique em ⚙️ Configurações na barra lateral.
+  [>] Verifique a chave do provedor que o agente usa.
+  [>] Acesse o site do provedor (ex: platform.deepseek.com),
+      faça login e confirme:
+      - A conta tem créditos disponíveis?
+      - A chave não foi deletada na plataforma deles?
+  [>] Se necessário, crie uma nova chave no site do provedor
+      e substitua no deepH Plus.
+  [>] Certifique-se de que o agente usa o MESMO provedor
+      cuja chave está configurada. Por exemplo: se o agente
+      usa "deepseek" mas você configurou apenas a chave
+      "openai", o agente não vai funcionar.
+
+──────────────────────────────────────────────────────────────
+PROBLEMA: As respostas estão muito lentas.
+──────────────────────────────────────────────────────────────
+CAUSA: O modelo escolhido é pesado, ou a conexão está lenta.
+SOLUÇÃO:
+  [>] Tente trocar o provedor do agente para GROQ — é
+      muito mais rápido e tem cota gratuita generosa.
+  [>] Se usar OpenAI, troque "gpt-4o" por "gpt-4o-mini".
+  [>] Verifique a velocidade da sua internet. Teste em
+      outro dispositivo se necessário.
+
+──────────────────────────────────────────────────────────────
+PROBLEMA: A interface visual está sem estilo (texto puro,
+          fundo preto sem o design premium).
+──────────────────────────────────────────────────────────────
+CAUSA: O navegador pode estar carregando uma versão antiga
+       do painel guardada em cache.
+SOLUÇÃO:
+  [>] No navegador, com a aba do deepH Plus aberta, pressione:
+        CTRL + SHIFT + R (no Windows, força atualização sem cache)
+  [>] Se não resolver, pressione CTRL + F5.
+  [>] Se ainda não resolver, feche a aba, abra uma nova e
+      acesse http://localhost:7730 novamente.
+
+──────────────────────────────────────────────────────────────
+PROBLEMA: Um agente que criei não aparece no Dashboard.
+──────────────────────────────────────────────────────────────
+CAUSA: O arquivo .yaml pode ter sido salvo com erro, ou
+       o painel precisa ser atualizado.
+SOLUÇÃO:
+  [>] Pressione F5 no navegador para recarregar a página.
+      O Dashboard relê todos os agentes na pasta agents/.
+  [>] Se ainda não aparecer, verifique se o arquivo existe:
+        C:\Users\BOSS\deepH\agents\[nome-do-agente].yaml
+  [>] Abra o arquivo com o Bloco de Notas e verifique se
+      há algum erro óbvio de formatação (como tab no lugar
+      de espaços, ou campos faltando).
 
 ==============================================================
-  ✦  FIM DO TUTORIAL — deepH Plus versão 4.0  ✦
+      ✦  FIM DO TUTORIAL — deepH Plus v4.0  ✦
+
   "Seus agentes, suas regras, seu computador."
 ==============================================================
