@@ -1,8 +1,17 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { fetchAgents, runTeam, fetchCrews, type Agent, type Crew, type RunMode } from "@/lib/api";
-import { Play, Square, Users, ArrowRight, CheckSquare, Square as UncheckedSquare, Layers, Network } from "lucide-react";
+import { fetchAgents, runTeam, fetchCrews, type Agent, type Crew, type RunMode, type RunEventDagPlan, type RunEventUniverseHandoff } from "@/lib/api";
+import { Play, Square, Users, ArrowRight, CheckSquare, Square as UncheckedSquare, Layers, Network, Terminal, GitMerge } from "lucide-react";
+import { UniverseGraph, type UniverseNodeData, type HandoffEdgeData } from "@/components/universe-graph";
+import { type Node, type Edge } from "@xyflow/react";
+
+export interface GraphData {
+    nodes: Node<UniverseNodeData>[];
+    edges: Edge<HandoffEdgeData>[];
+    activeNodes: string[];
+    completedNodes: string[];
+}
 
 interface AgentOutput {
     agent: string;
@@ -21,6 +30,8 @@ export default function RunPage() {
     const [running, setRunning] = useState(false);
     const [results, setResults] = useState<AgentOutput[]>([]);
     const abortRef = useRef<(() => void) | null>(null);
+    const [activeTab, setActiveTab] = useState<"console" | "graph">("console");
+    const [graphData, setGraphData] = useState<GraphData | null>(null);
 
     useEffect(() => {
         fetchAgents().then(setAgents).catch(console.error);
@@ -50,8 +61,47 @@ export default function RunPage() {
             onCrewStart: (e: { crew: string, universes: number }) => {
                 setResults(prev => [...prev, { agent: `[Multiverse: ${e.crew}]`, text: `Starting ${e.universes} universes...`, running: false }]);
             },
+            onDagPlan: (e: RunEventDagPlan) => {
+                setGraphData({
+                    nodes: e.nodes.map(n => ({
+                        id: n.id,
+                        position: { x: 0, y: 0 },
+                        type: "universe",
+                        data: {
+                            label: n.label || n.id,
+                            description: n.spec !== "-" ? n.spec : undefined,
+                            status: "waiting"
+                        }
+                    })) as Node<UniverseNodeData>[],
+                    edges: e.edges.map(ed => ({
+                        id: `${ed.from}-${ed.to}-${ed.channel}`,
+                        source: ed.from,
+                        target: ed.to,
+                        animated: true,
+                        type: "handoff",
+                        data: {
+                            label: ed.channel || "handoff"
+                        }
+                    })) as Edge<HandoffEdgeData>[],
+                    activeNodes: [],
+                    completedNodes: []
+                });
+                setActiveTab("graph");
+            },
             onAgentStart: ({ agent }: { agent: string }) => {
                 setResults(prev => [...prev, { agent, text: "", running: true }]);
+                setGraphData(prev => {
+                    if (!prev) return null;
+                    const activeNodes = Array.from(new Set([...prev.activeNodes, agent]));
+                    return {
+                        ...prev,
+                        activeNodes,
+                        nodes: prev.nodes.map(n => ({
+                            ...n,
+                            data: { ...n.data, status: activeNodes.includes(n.id) ? "running" : n.data.status }
+                        })) as Node<UniverseNodeData>[]
+                    };
+                });
             },
             onAgentResult: ({ agent, text }: { agent: string, text: string }) => {
                 setResults(prev => {
@@ -69,6 +119,23 @@ export default function RunPage() {
                     }
                     return [...prev, { agent, text }];
                 });
+                setGraphData(prev => {
+                    if (!prev) return null;
+                    const activeNodes = prev.activeNodes.filter(n => n !== agent);
+                    const completedNodes = Array.from(new Set([...prev.completedNodes, agent]));
+                    return {
+                        ...prev,
+                        activeNodes,
+                        completedNodes,
+                        nodes: prev.nodes.map(n => ({
+                            ...n,
+                            data: { ...n.data, status: completedNodes.includes(n.id) ? "done" : activeNodes.includes(n.id) ? "running" : n.data.status }
+                        })) as Node<UniverseNodeData>[]
+                    };
+                });
+            },
+            onUniverseHandoff: (e: RunEventUniverseHandoff) => {
+                setResults(prev => [...prev, { agent: `[Handoff]`, text: `${e.from} ➔ ${e.to} via ${e.channel} (${e.chars} chars)`, running: false }]);
             },
             onAgentError: ({ agent, error }: { agent: string, error: string }) => {
                 setResults(prev => {
@@ -85,6 +152,20 @@ export default function RunPage() {
                         return next;
                     }
                     return [...prev, { agent, text: "", error }];
+                });
+                setGraphData(prev => {
+                    if (!prev) return null;
+                    const activeNodes = prev.activeNodes.filter(n => n !== agent);
+                    const completedNodes = Array.from(new Set([...prev.completedNodes, agent]));
+                    return {
+                        ...prev,
+                        activeNodes,
+                        completedNodes,
+                        nodes: prev.nodes.map(n => ({
+                            ...n,
+                            data: { ...n.data, status: n.id === agent ? "error" : n.data.status }
+                        })) as Node<UniverseNodeData>[]
+                    };
                 });
             },
             onDone: () => setRunning(false),
@@ -266,8 +347,34 @@ export default function RunPage() {
                 </div>
             </div>
 
+            {/* Tab selector for results */}
+            {(results.length > 0 || graphData) && (
+                <div className="flex items-center gap-4 border-b border-primary/10 pb-2 mb-4">
+                    <button
+                        onClick={() => setActiveTab("console")}
+                        className={`flex items-center gap-2 pb-2 px-2 text-sm font-medium transition-all border-b-2 -mb-[9px] ${activeTab === "console" ? "text-primary border-primary" : "text-slate-400 border-transparent hover:text-slate-300"}`}
+                    >
+                        <Terminal className="w-4 h-4" />
+                        Console Logs
+                    </button>
+                    {graphData && (
+                        <button
+                            onClick={() => setActiveTab("graph")}
+                            className={`flex items-center gap-2 pb-2 px-2 text-sm font-medium transition-all border-b-2 -mb-[9px] ${activeTab === "graph" ? "text-primary border-primary" : "text-slate-400 border-transparent hover:text-slate-300"}`}
+                        >
+                            <GitMerge className="w-4 h-4" />
+                            Flow View
+                        </button>
+                    )}
+                </div>
+            )}
+
             {/* Results */}
-            {
+            {activeTab === "graph" && graphData ? (
+                <div className="border border-primary/10 rounded-2xl overflow-hidden bg-background-dark/20" style={{ height: "600px" }}>
+                    <UniverseGraph {...(graphData as any)} />
+                </div>
+            ) : (
                 results.length > 0 && (
                     <div className="flex flex-col gap-4">
                         {results.map((r, i) => (
@@ -300,7 +407,7 @@ export default function RunPage() {
                         ))}
                     </div>
                 )
-            }
+            )}
         </div >
     );
 }

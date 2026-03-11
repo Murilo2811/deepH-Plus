@@ -58,10 +58,43 @@ type RunBranch struct {
 	InputAugmentNote      string
 }
 
-// Callbacks for SSE streaming
+// PlanView is a JSON-serialisable snapshot of the DAG topology.
+type PlanView struct {
+	Nodes []PlanNode `json:"nodes"`
+	Edges []PlanEdge `json:"edges"`
+}
+
+// PlanNode represents a single universe in the DAG.
+type PlanNode struct {
+	ID        string   `json:"id"`
+	Label     string   `json:"label"`
+	Spec      string   `json:"spec"`
+	DependsOn []string `json:"depends_on"`
+}
+
+// PlanEdge represents a dependency edge between two universes.
+type PlanEdge struct {
+	From    string `json:"from"`
+	To      string `json:"to"`
+	Kind    string `json:"kind"`
+	Channel string `json:"channel"`
+}
+
+// HandoffEvent is emitted when data flows from one universe to another.
+type HandoffEvent struct {
+	From    string `json:"from"`
+	To      string `json:"to"`
+	Channel string `json:"channel"`
+	Kind    string `json:"kind"`
+	Chars   int    `json:"chars"`
+}
+
+// Callbacks for SSE streaming.
 type Callbacks struct {
 	OnStart    func(idx int, u UniverseState)
 	OnComplete func(idx int, br RunBranch)
+	OnPlan     func(plan PlanView)
+	OnHandoff  func(h HandoffEvent)
 }
 
 func PlanExecution(universes []UniverseState) (*Plan, error) {
@@ -171,11 +204,43 @@ func PlanExecution(universes []UniverseState) (*Plan, error) {
 	return mv, nil
 }
 
+// BuildPlanView converts a Plan into a JSON-serialisable PlanView.
+func BuildPlanView(plan *Plan) PlanView {
+	nodes := make([]PlanNode, len(plan.Universes))
+	for i, u := range plan.Universes {
+		nodes[i] = PlanNode{
+			ID:        u.ID,
+			Label:     u.Label,
+			Spec:      u.Config.Spec,
+			DependsOn: u.Config.DependsOn,
+		}
+		if nodes[i].DependsOn == nil {
+			nodes[i].DependsOn = []string{}
+		}
+	}
+	edges := make([]PlanEdge, len(plan.Handoffs))
+	for i, h := range plan.Handoffs {
+		edges[i] = PlanEdge{
+			From:    h.FromID,
+			To:      h.ToID,
+			Kind:    h.Kind,
+			Channel: h.Channel,
+		}
+	}
+	return PlanView{Nodes: nodes, Edges: edges}
+}
+
 func RunDAG(ctx context.Context, workspace string, p *project.Project, universes []UniverseState, callbacks Callbacks) ([]RunBranch, *Plan, error) {
 	mvPlan, err := PlanExecution(universes)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	// T2: Emit DAG plan before execution starts.
+	if callbacks.OnPlan != nil {
+		callbacks.OnPlan(BuildPlanView(mvPlan))
+	}
+
 	out := make([]RunBranch, len(universes))
 	if len(universes) == 0 {
 		return out, mvPlan, nil
@@ -217,6 +282,27 @@ func RunDAG(ctx context.Context, workspace string, p *project.Project, universes
 			br.IncomingChannels = chans
 			br.IncomingContributions = contribs
 			br.InputAugmented = len(chans) > 0
+
+			// Emit handoff events for each resolved incoming channel.
+			if callbacks.OnHandoff != nil && contribs > 0 {
+				for _, h := range mvPlan.incoming[u.Index] {
+					if h.FromIndex >= 0 && h.FromIndex < len(snapshotDone) && snapshotDone[h.FromIndex] {
+						chars := 0
+						if h.FromIndex < len(snapshot) {
+							for _, res := range snapshot[h.FromIndex].Report.Results {
+								chars += len(res.Output)
+							}
+						}
+						callbacks.OnHandoff(HandoffEvent{
+							From:    h.FromID,
+							To:      h.ToID,
+							Channel: h.Channel,
+							Kind:    h.Kind,
+							Chars:   chars,
+						})
+					}
+				}
+			}
 
 			eng, err := runtime.New(workspace, p)
 			if err != nil {

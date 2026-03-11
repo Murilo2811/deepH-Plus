@@ -1,0 +1,3 @@
+name: build-calculator-2
+description: 'DAG do Multiverso: Planeja, constrói e salva uma calculadora web com base no input do usuário.'
+spec: calc_architect>calc_developer>crud_frontend>calc_saver

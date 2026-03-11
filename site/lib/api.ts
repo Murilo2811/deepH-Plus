@@ -227,9 +227,24 @@ export type RunMode = 'sequential' | 'parallel' | 'crew';
 
 export interface RunEventCrewStart { crew: string; universes: number; }
 export interface RunEventAgentStart { agent: string; }
-export interface RunEventAgentResult { agent: string; text: string; }
+export interface RunEventAgentResult { agent: string; text: string; duration_ms?: number; }
 export interface RunEventAgentError { agent: string; error: string; }
 export interface RunEventDone { status: string; }
+
+// DAG topology emitted before crew execution begins.
+export interface RunEventDagPlan {
+    nodes: Array<{ id: string; label: string; spec: string; depends_on: string[] }>;
+    edges: Array<{ from: string; to: string; kind: string; channel: string }>;
+}
+
+// Emitted when data flows from one universe to another.
+export interface RunEventUniverseHandoff {
+    from: string;
+    to: string;
+    channel: string;
+    kind: string;
+    chars: number;
+}
 
 export function runTeam(
     agents: string[],
@@ -241,6 +256,8 @@ export function runTeam(
         onAgentResult: (e: RunEventAgentResult) => void;
         onAgentError?: (e: RunEventAgentError) => void;
         onDone?: (e: RunEventDone) => void;
+        onDagPlan?: (e: RunEventDagPlan) => void;
+        onUniverseHandoff?: (e: RunEventUniverseHandoff) => void;
     },
     crew?: string
 ): () => void {
@@ -281,6 +298,8 @@ export function runTeam(
                     else if (eventType === 'agent_error') callbacks.onAgentError?.(payload);
                     else if (eventType === 'error') callbacks.onAgentError?.({ agent: 'System', error: payload.error || "Unknown Error" });
                     else if (eventType === 'done') callbacks.onDone?.(payload);
+                    else if (eventType === 'dag_plan') callbacks.onDagPlan?.(payload);
+                    else if (eventType === 'universe_handoff') callbacks.onUniverseHandoff?.(payload);
                 } catch { /* ignore parse errors */ }
             }
         }

@@ -108,8 +108,18 @@ func (s *Server) handleRun(w http.ResponseWriter, r *http.Request) {
 					if len(br.Report.Results) > 0 {
 						last = br.Report.Results[len(br.Report.Results)-1].Output
 					}
-					sendEvent("agent_result", map[string]any{"agent": br.Universe.ID, "text": last})
+					sendEvent("agent_result", map[string]any{
+						"agent":       br.Universe.ID,
+						"text":        last,
+						"duration_ms": br.DurationMS,
+					})
 				}
+			},
+			OnPlan: func(plan orchestrator.PlanView) {
+				sendEvent("dag_plan", plan)
+			},
+			OnHandoff: func(h orchestrator.HandoffEvent) {
+				sendEvent("universe_handoff", h)
 			},
 		}
 
