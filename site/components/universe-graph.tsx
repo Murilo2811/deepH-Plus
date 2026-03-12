@@ -39,45 +39,49 @@ export interface UniverseNodeData extends Record<string, unknown> {
 const UniverseNodeComponent = ({ data }: NodeProps<Node<UniverseNodeData>>) => {
   const { label, status, duration } = data;
 
-  let bgClass = "bg-background/80";
-  let borderClass = "border-border";
-  let textClass = "text-foreground";
-  let icon = <CircleDashed className="h-5 w-5 text-muted-foreground" />;
+  let cardClass = "sketch-card transition-all duration-300";
+  let textClass = "text-sketch-charcoal font-medium";
+  let icon = <CircleDashed className="h-5 w-5 opacity-40" />;
 
   switch (status) {
     case "running":
-      bgClass = "bg-primary/20 animate-pulse";
-      borderClass = "border-primary shadow-[0_0_15px_rgba(var(--primary),0.5)]";
-      textClass = "text-primary font-semibold";
-      icon = <Loader2 className="h-5 w-5 text-primary animate-spin" />;
+      cardClass = "sketch-card-yellow animate-pulse scale-[1.02] border-sketch-charcoal";
+      textClass = "text-sketch-charcoal font-bold";
+      icon = <Loader2 className="h-5 w-5 text-sketch-charcoal animate-spin" />;
       break;
     case "done":
-      bgClass = "bg-green-500/10";
-      borderClass = "border-green-500/50";
-      textClass = "text-green-500 font-semibold";
-      icon = <CheckCircle2 className="h-5 w-5 text-green-500" />;
+      cardClass = "sketch-card-teal bg-[#26C2B9]/15 border-sketch-charcoal";
+      textClass = "text-sketch-teal font-extrabold";
+      icon = <CheckCircle2 className="h-5 w-5 text-sketch-teal" />;
       break;
     case "error":
-      bgClass = "bg-destructive/10";
-      borderClass = "border-destructive/50";
-      textClass = "text-destructive font-semibold";
-      icon = <AlertTriangle className="h-5 w-5 text-destructive" />;
+      cardClass = "sketch-card bg-red-50 border-red-500 border-dashed";
+      textClass = "text-red-600 font-bold";
+      icon = <AlertTriangle className="h-5 w-5 text-red-500" />;
       break;
   }
 
   return (
-    <div
-      className={`relative flex min-w-[180px] flex-col rounded-xl border p-4 backdrop-blur-md transition-all duration-300 ${bgClass} ${borderClass}`}
-    >
-      <Handle type="target" position={Position.Left} className="!bg-muted-foreground" />
+    <div className={`relative flex min-w-[200px] flex-col ${cardClass}`}>
+      <Handle 
+        type="target" 
+        position={Position.Left} 
+        className="!bg-sketch-charcoal !w-3 !h-3 !border-none !rounded-none" 
+        style={{ borderRadius: '50% 40% 60% 30%' }}
+      />
       <div className="flex items-center gap-3">
-        {icon}
-        <div className="flex flex-col">
-          <span className={`text-sm ${textClass}`}>{label}</span>
-          {duration && <span className="text-xs text-muted-foreground">{duration}</span>}
+        <div className="flex-shrink-0">{icon}</div>
+        <div className="flex flex-col min-w-0">
+          <span className={`text-sm truncate ${textClass}`}>{label}</span>
+          {duration && <span className="text-[10px] font-bold text-sketch-charcoal-soft uppercase tracking-tight">{duration}</span>}
         </div>
       </div>
-      <Handle type="source" position={Position.Right} className="!bg-muted-foreground" />
+      <Handle 
+        type="source" 
+        position={Position.Right} 
+        className="!bg-sketch-charcoal !w-3 !h-3 !border-none !rounded-none"
+        style={{ borderRadius: '40% 60% 30% 50%' }}
+      />
     </div>
   );
 };
@@ -119,10 +123,11 @@ const HandoffEdgeComponent = ({
         markerEnd={markerEnd}
         style={{
           ...style,
-          strokeWidth: isActive ? 3 : 2,
-          stroke: isActive ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))",
-          strokeDasharray: isActive ? "5 5" : "none",
-          animation: isActive ? "dashdraw 1s linear infinite" : "none",
+          strokeWidth: isActive ? 4 : 2,
+          stroke: isActive ? "#26C2B9" : "#222B31",
+          strokeDasharray: isActive ? "8 6" : "none",
+          opacity: isActive ? 1 : 0.4,
+          animation: isActive ? "dashdraw 0.8s linear infinite" : "none",
         }}
       />
     </>
@@ -203,7 +208,7 @@ export function UniverseGraph({ nodes: initialNodes, edges: initialEdges }: Univ
   }, [initialNodes, initialEdges, setNodes, setEdges]);
 
   return (
-    <div className="h-full w-full rounded-xl border bg-card/30 overflow-hidden relative group">
+    <div className="h-full w-full rounded-2xl border-[2.5px] border-sketch-charcoal bg-[#F5FAF9] overflow-hidden relative group sketch-filter">
       <style>
         {`
           @keyframes dashdraw {

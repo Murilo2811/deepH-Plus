@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { fetchAgents, runTeam, fetchCrews, type Agent, type Crew, type RunMode, type RunEventDagPlan, type RunEventUniverseHandoff } from "@/lib/api";
-import { Play, Square, Users, ArrowRight, CheckSquare, Square as UncheckedSquare, Layers, Network, Terminal, GitMerge } from "lucide-react";
+import { Play, Square, Users, ArrowRight, CheckSquare, Square as UncheckedSquare, Layers, Network, Terminal, GitMerge, Loader2 } from "lucide-react";
 import { UniverseGraph, type UniverseNodeData, type HandoffEdgeData } from "@/components/universe-graph";
 import { type Node, type Edge } from "@xyflow/react";
 
@@ -59,7 +59,7 @@ export default function RunPage() {
 
         const callbacks = {
             onCrewStart: (e: { crew: string, universes: number }) => {
-                setResults(prev => [...prev, { agent: `[Multiverse: ${e.crew}]`, text: `Starting ${e.universes} universes...`, running: false }]);
+                setResults(prev => [...prev, { agent: `[Multiverse: ${e.crew}]`, text: `Iniciando ${e.universes} universos...`, running: false }]);
             },
             onDagPlan: (e: RunEventDagPlan) => {
                 setGraphData({
@@ -177,237 +177,209 @@ export default function RunPage() {
     const canRun = task.trim() !== "" && !running && (mode === "crew" ? !!selectedCrew : selected.length > 0);
 
     return (
-        <div className="flex flex-col gap-8 p-6 max-w-4xl mx-auto">
-            {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold text-primary">Modo Equipe</h1>
-                <p className="text-sm text-slate-400 mt-1">Execute múltiplos agentes em sequência ou paralelo</p>
+        <div className="flex flex-col gap-10 p-8 max-w-5xl mx-auto animate-in">
+            {/* Header Area */}
+            <div className="relative">
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[var(--sketch-charcoal)] sketch-heading">
+                    Modo <span className="underline decoration-sketch-yellow decoration-4 underline-offset-4">Equipe</span>
+                </h1>
+                <p className="mt-4 text-[var(--sketch-charcoal)] font-medium max-w-2xl">
+                    Coordene múltiplos agentes em paralelo ou sequência para resolver tarefas complexas.
+                </p>
+                <div className="absolute -top-4 -right-4 w-12 h-12 bg-sketch-yellow opacity-20 rounded-full blur-xl pointer-events-none" />
             </div>
 
-            {/* Config Panel */}
-            <div className="rounded-2xl border border-primary/10 bg-background-dark/40 p-6 flex flex-col gap-6">
-                {/* Mode Picker */}
-                <div>
-                    <h2 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
-                        <Layers className="w-4 h-4 text-primary" />
-                        Modo de Execução
-                    </h2>
-                    <div className="flex gap-3">
-                        {(["sequential", "parallel", "crew"] as RunMode[]).map(m => (
-                            <button
-                                key={m}
-                                onClick={() => setMode(m)}
-                                className={`flex-1 py-2 rounded-xl border text-sm font-medium transition-all ${mode === m
-                                    ? "border-primary bg-primary/10 text-primary"
-                                    : "border-primary/10 hover:border-primary/30 text-slate-400"
-                                    }`}
-                            >
-                                <div className="flex items-center justify-center gap-2">
-                                    {m === "crew" && <Network className="w-4 h-4" />}
-                                    {m === "crew" ? "Multiverso (DAG)" : m === "sequential" ? "Sequencial" : "Paralelo"}
-                                </div>
-                                <div className="text-xs font-normal opacity-70 mt-0.5">
-                                    {m === "crew" ? "Orquestração Inteligente" : m === "sequential" ? "Saída de um alimenta o próximo" : "Todos ao mesmo tempo"}
-                                </div>
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Scope Selector */}
-                {mode === "crew" ? (
+            {/* Config & Input Section */}
+            <div className="sketch-card-teal relative">
+                <div className="flex flex-col gap-8">
+                    {/* Execution Strategy */}
                     <div>
-                        <h2 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
-                            <Network className="w-4 h-4 text-primary" />
-                            Selecione um Crew (Multiverso)
-                        </h2>
-                        {crews.length === 0 ? (
-                            <p className="text-sm text-slate-500">Nenhum crew encontrado. Crie um crew primeiro.</p>
-                        ) : (
-                            <div className="grid grid-cols-2 gap-2">
-                                {crews.map(crew => {
-                                    const isSelected = selectedCrew === crew.name;
-                                    return (
+                        <div className="flex items-center gap-2 mb-4">
+                            <Layers className="w-5 h-5 text-[var(--sketch-teal)]" />
+                            <h2 className="sketch-label">Estratégia de Execução</h2>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {(["sequential", "parallel", "crew"] as RunMode[]).map(m => (
+                                <button
+                                    key={m}
+                                    onClick={() => setMode(m)}
+                                    className={`relative p-4 text-left transition-all sketch-card h-full ${mode === m
+                                        ? "ring-2 ring-[var(--sketch-teal)] translate-y-[-2px] bg-[var(--sketch-yellow-pale)]"
+                                        : "bg-white opacity-70 grayscale-[0.5] hover:opacity-100 hover:grayscale-0 shadow-sm"
+                                        }`}
+                                >
+                                    <div className="font-bold text-[var(--sketch-charcoal)] flex items-center gap-2">
+                                        {m === "crew" && <Network className="w-4 h-4" />}
+                                        {m === "crew" ? "Multiverso (DAG)" : m === "sequential" ? "Sequencial" : "Paralelo"}
+                                    </div>
+                                    <div className="text-xs text-[var(--sketch-charcoal)] mt-1 leading-relaxed">
+                                        {m === "crew" ? "Orquestração inteligente com grafo multiverso." : m === "sequential" ? "A saída de um agente alimenta o próximo." : "Todos os agentes executam simultaneamente."}
+                                    </div>
+                                    {mode === m && (
+                                        <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[var(--sketch-teal)]" />
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Agent/Crew Selection */}
+                    <div>
+                        <div className="flex items-center gap-2 mb-4">
+                            {mode === "crew" ? <Network className="w-5 h-5 text-[var(--sketch-teal)]" /> : <Users className="w-5 h-5 text-[var(--sketch-teal)]" />}
+                            <h2 className="sketch-label">
+                                {mode === "crew" ? "Selecione a Equipe (Crew)" : `Selecionar Agentes (${selected.length})`}
+                            </h2>
+                        </div>
+
+                        {mode === "crew" ? (
+                            crews.length === 0 ? (
+                                <div className="p-4 sketch-card-yellow text-sm italic">Nenhum multiverso configurado.</div>
+                            ) : (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                    {crews.map(crew => (
                                         <button
                                             key={crew.name}
                                             onClick={() => setSelectedCrew(crew.name)}
-                                            className={`text-left p-3 rounded-xl border transition-all ${isSelected
-                                                ? "border-primary/60 bg-primary/10 text-primary"
-                                                : "border-primary/10 hover:border-primary/30 text-slate-300"
-                                                }`}
+                                            className={`p-3 text-left transition-all sketch-card group ${selectedCrew === crew.name ? "bg-[var(--sketch-yellow)] border-[var(--sketch-charcoal)]" : "bg-white"}`}
                                         >
                                             <div className="flex items-center gap-2">
-                                                {isSelected
-                                                    ? <CheckSquare className="w-4 h-4 shrink-0" />
-                                                    : <UncheckedSquare className="w-4 h-4 shrink-0 text-slate-500" />
-                                                }
-                                                <div className="min-w-0">
-                                                    <div className="font-medium text-sm truncate">{crew.name}</div>
-                                                    {crew.description && (
-                                                        <div className="text-xs text-slate-500 truncate">{crew.description}</div>
-                                                    )}
-                                                </div>
+                                                {selectedCrew === crew.name ? <CheckSquare className="w-4 h-4" /> : <UncheckedSquare className="w-4 h-4 text-slate-400 group-hover:text-slate-600" />}
+                                                <span className="font-bold text-sm truncate">{crew.name}</span>
                                             </div>
                                         </button>
-                                    );
-                                })}
+                                    ))}
+                                </div>
+                            )
+                        ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                {agents.map(agent => (
+                                    <button
+                                        key={agent.name}
+                                        onClick={() => toggleAgent(agent.name)}
+                                        className={`p-3 text-left transition-all sketch-card group ${selected.includes(agent.name) ? "bg-[var(--sketch-yellow)] border-[var(--sketch-charcoal)]" : "bg-white"}`}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            {selected.includes(agent.name) ? <CheckSquare className="w-4 h-4" /> : <UncheckedSquare className="w-4 h-4 text-slate-400 group-hover:text-slate-600" />}
+                                            <span className="font-bold text-sm truncate">{agent.name}</span>
+                                        </div>
+                                    </button>
+                                ))}
                             </div>
                         )}
                     </div>
-                ) : (
-                    <>
-                        {/* Agent Selector */}
-                        <div>
-                            <h2 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
-                                <Users className="w-4 h-4 text-primary" />
-                                Selecione os Agentes ({selected.length} escolhidos)
-                            </h2>
-                            {agents.length === 0 ? (
-                                <p className="text-sm text-slate-500">Nenhum agente encontrado. Crie um agente primeiro.</p>
-                            ) : (
-                                <div className="grid grid-cols-2 gap-2">
-                                    {agents.map(agent => {
-                                        const isSelected = selected.includes(agent.name);
-                                        return (
-                                            <button
-                                                key={agent.name}
-                                                onClick={() => toggleAgent(agent.name)}
-                                                className={`text-left p-3 rounded-xl border transition-all ${isSelected
-                                                    ? "border-primary/60 bg-primary/10 text-primary"
-                                                    : "border-primary/10 hover:border-primary/30 text-slate-300"
-                                                    }`}
-                                            >
-                                                <div className="flex items-center gap-2">
-                                                    {isSelected
-                                                        ? <CheckSquare className="w-4 h-4 shrink-0" />
-                                                        : <UncheckedSquare className="w-4 h-4 shrink-0 text-slate-500" />
-                                                    }
-                                                    <div className="min-w-0">
-                                                        <div className="font-medium text-sm truncate">{agent.name}</div>
-                                                        {agent.description && (
-                                                            <div className="text-xs text-slate-500 truncate">{agent.description}</div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        );
-                                    })}
+
+                    {/* Sequence Visualizer */}
+                    {selected.length > 1 && mode === "sequential" && (
+                        <div className="p-4 bg-[var(--sketch-yellow-pale)] border-2 border-dashed border-[var(--sketch-charcoal)/30] rounded-xl flex flex-wrap items-center gap-3">
+                            <span className="text-[10px] font-black uppercase text-[var(--sketch-charcoal)] mr-1">Fluxo:</span>
+                            {selected.map((name, i) => (
+                                <div key={name} className="flex items-center gap-2">
+                                    <span className="sketch-badge">{name}</span>
+                                    {i < selected.length - 1 && <ArrowRight className="w-3 h-3 opacity-50" />}
                                 </div>
-                            )}
+                            ))}
                         </div>
-
-                        {/* Selected order (sequential) */}
-                        {selected.length > 1 && mode === "sequential" && (
-                            <div>
-                                <h2 className="text-xs font-semibold text-slate-400 mb-2">Ordem de execução</h2>
-                                <div className="flex flex-wrap items-center gap-1">
-                                    {selected.map((name, i) => (
-                                        <span key={name} className="flex items-center gap-1">
-                                            <span className="text-xs px-2 py-1 rounded-lg bg-primary/10 text-primary border border-primary/20">{name}</span>
-                                            {i < selected.length - 1 && <ArrowRight className="w-3 h-3 text-slate-500" />}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </>
-                )}
-
-                {/* Task Input */}
-                <div>
-                    <h2 className="text-sm font-semibold text-slate-300 mb-2">Tarefa</h2>
-                    <textarea
-                        value={task}
-                        onChange={e => setTask(e.target.value)}
-                        placeholder="Descreva o que a equipe deve fazer..."
-                        rows={3}
-                        className="w-full rounded-xl border border-primary/10 bg-background-dark/60 text-slate-200 placeholder-slate-500 text-sm px-4 py-3 resize-none focus:outline-none focus:border-primary/40 transition-colors"
-                    />
-                </div>
-
-                {/* Run / Stop */}
-                <div className="flex gap-3">
-                    <button
-                        onClick={handleRun}
-                        disabled={!canRun}
-                        className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary text-background-dark font-semibold text-sm disabled:opacity-40 hover:bg-primary/90 transition-all shadow-[0_0_15px_rgba(15,240,146,0.25)]"
-                    >
-                        <Play className="w-4 h-4" />
-                        Executar Equipe
-                    </button>
-                    {running && (
-                        <button
-                            onClick={handleStop}
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-red-500/40 text-red-400 hover:bg-red-500/10 text-sm transition-all"
-                        >
-                            <Square className="w-4 h-4" />
-                            Parar
-                        </button>
                     )}
+
+                    {/* Task Description */}
+                    <div className="space-y-3">
+                        <label className="sketch-label block">Descrição da Tarefa</label>
+                        <textarea
+                            value={task}
+                            onChange={e => setTask(e.target.value)}
+                            placeholder="Descreva o que os agentes devem realizar..."
+                            rows={4}
+                            className="sketch-input resize-none"
+                        />
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-wrap gap-4 pt-2">
+                        <button
+                            onClick={handleRun}
+                            disabled={!canRun}
+                            className={`sketch-btn-primary ${!canRun ? "opacity-40 cursor-not-allowed" : "animate-wiggle"}`}
+                        >
+                            {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+                            {running ? "Executando..." : "Lançar Execução"}
+                        </button>
+                        {running && (
+                            <button
+                                onClick={handleStop}
+                                className="sketch-btn-ghost text-red-600 border-red-400"
+                            >
+                                <Square className="w-4 h-4 fill-red-600" />
+                                Abortar
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
 
-            {/* Tab selector for results */}
+            {/* Results Section */}
             {(results.length > 0 || graphData) && (
-                <div className="flex items-center gap-4 border-b border-primary/10 pb-2 mb-4">
-                    <button
-                        onClick={() => setActiveTab("console")}
-                        className={`flex items-center gap-2 pb-2 px-2 text-sm font-medium transition-all border-b-2 -mb-[9px] ${activeTab === "console" ? "text-primary border-primary" : "text-slate-400 border-transparent hover:text-slate-300"}`}
-                    >
-                        <Terminal className="w-4 h-4" />
-                        Console Logs
-                    </button>
-                    {graphData && (
+                <div className="space-y-6">
+                    {/* View Toggle */}
+                    <div className="flex gap-4 border-b-2 border-dashed border-[var(--sketch-charcoal)] pb-2 overflow-x-auto no-scrollbar">
                         <button
-                            onClick={() => setActiveTab("graph")}
-                            className={`flex items-center gap-2 pb-2 px-2 text-sm font-medium transition-all border-b-2 -mb-[9px] ${activeTab === "graph" ? "text-primary border-primary" : "text-slate-400 border-transparent hover:text-slate-300"}`}
+                            onClick={() => setActiveTab("console")}
+                            className={`flex items-center gap-2 px-4 py-2 font-bold text-sm transition-all whitespace-nowrap ${activeTab === "console" ? "text-[var(--sketch-teal)] underline underline-offset-8 decoration-4" : "text-[var(--sketch-charcoal)] opacity-70 hover:opacity-100"}`}
                         >
-                            <GitMerge className="w-4 h-4" />
-                            Flow View
+                            <Terminal className="w-4 h-4" />
+                            Log da Equipe
                         </button>
+                        {graphData && (
+                            <button
+                                onClick={() => setActiveTab("graph")}
+                                className={`flex items-center gap-2 px-4 py-2 font-bold text-sm transition-all whitespace-nowrap ${activeTab === "graph" ? "text-[var(--sketch-teal)] underline underline-offset-8 decoration-4" : "text-[var(--sketch-charcoal-soft)] opacity-60 hover:opacity-100"}`}
+                            >
+                                <GitMerge className="w-4 h-4" />
+                                Visualização Multiverso
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Console View */}
+                    {activeTab === "console" && (
+                        <div className="space-y-4 animate-in">
+                            {results.map((r, i) => (
+                                <div
+                                    key={i}
+                                    className={`sketch-card ${r.error ? "border-red-500 shadow-red-500/20" : r.running ? "border-[var(--sketch-teal)] ring-1 ring-[var(--sketch-teal)]" : ""}`}
+                                >
+                                    <div className="flex items-center justify-between mb-3">
+                                        <span className="sketch-badge">{r.agent}</span>
+                                        {r.running && (
+                                            <div className="flex gap-1.5">
+                                                <div className="w-2 h-2 rounded-full bg-[var(--sketch-teal)] animate-bounce" style={{ animationDelay: "0ms" }} />
+                                                <div className="w-2 h-2 rounded-full bg-[var(--sketch-teal)] animate-bounce" style={{ animationDelay: "150ms" }} />
+                                                <div className="w-2 h-2 rounded-full bg-[var(--sketch-teal)] animate-bounce" style={{ animationDelay: "300ms" }} />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="rounded-lg p-1">
+                                        {r.error ? (
+                                            <p className="text-red-500 font-medium text-sm p-2">{r.error}</p>
+                                        ) : (
+                                            <pre className="text-sm overflow-x-auto p-4 bg-slate-50 border border-slate-200 rounded-lg whitespace-pre-wrap font-mono leading-relaxed text-slate-700">
+                                                {r.text}
+                                            </pre>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Graph View */}
+                    {activeTab === "graph" && graphData && (
+                        <div className="sketch-card p-0 overflow-hidden h-[600px] border-4 animate-in">
+                            <UniverseGraph {...(graphData as any)} />
+                        </div>
                     )}
                 </div>
             )}
-
-            {/* Results */}
-            {activeTab === "graph" && graphData ? (
-                <div className="border border-primary/10 rounded-2xl overflow-hidden bg-background-dark/20" style={{ height: "600px" }}>
-                    <UniverseGraph {...(graphData as any)} />
-                </div>
-            ) : (
-                results.length > 0 && (
-                    <div className="flex flex-col gap-4">
-                        {results.map((r, i) => (
-                            <div
-                                key={i}
-                                className={`rounded-2xl border p-4 transition-all ${r.error
-                                    ? "border-red-500/30 bg-red-500/5"
-                                    : r.running
-                                        ? "border-primary/30 bg-primary/5 animate-pulse"
-                                        : "border-primary/10 bg-background-dark/40"
-                                    }`}
-                            >
-                                <div className="flex items-center gap-2 mb-2">
-                                    <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-lg">{r.agent}</span>
-                                    {r.running && <span className="text-xs text-slate-400 animate-pulse">Processando...</span>}
-                                    {r.error && <span className="text-xs text-red-400">Erro</span>}
-                                </div>
-                                {r.error ? (
-                                    <p className="text-sm text-red-400">{r.error}</p>
-                                ) : r.running ? (
-                                    <div className="flex gap-1">
-                                        {[0, 1, 2].map(d => (
-                                            <div key={d} className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: `${d * 0.15}s` }} />
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <pre className="text-sm text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">{r.text}</pre>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                )
-            )}
-        </div >
+        </div>
     );
 }

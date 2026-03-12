@@ -86,37 +86,47 @@ function ChatInterface() {
     }, [messages]);
 
     return (
-        <div className="flex flex-col h-full bg-[#0a0c0b]">
+        <div className="flex flex-col h-full bg-transparent overflow-hidden">
             {/* Context Header */}
-            <div className="px-6 py-4 border-b border-primary/10 bg-background-dark flex items-center justify-between sticky top-0 z-10">
+            <div className="px-6 py-3 border-b-2 border-sketch-charcoal/10 bg-white/40 backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center border border-primary/20">
-                        <Bot className="w-5 h-5 text-primary" />
+                    <div className="w-10 h-10 bg-sketch-teal-dark/10 rounded-lg flex items-center justify-center border-2 border-sketch-teal-dark/30 sketch-card shadow-sketch-sm">
+                        <Bot className="w-5 h-5 text-sketch-teal-dark" />
                     </div>
                     <div>
-                        <h2 className="text-lg font-bold text-slate-100 font-display tracking-tight">{agentName}</h2>
-                        <div className="flex items-center gap-1.5 text-[10px] text-primary uppercase tracking-widest font-medium">
-                            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                            Neural Link Active
+                        <h2 className="text-lg font-bold text-sketch-charcoal font-display tracking-tight leading-tight">{agentName}</h2>
+                        <div className="flex items-center gap-1.5 text-[10px] text-sketch-teal-dark uppercase tracking-widest font-semibold">
+                            <span className="w-2 h-2 rounded-full bg-sketch-teal-dark animate-pulse shadow-[0_0_5px_rgba(38,194,185,0.5)]"></span>
+                            Link Ativo
                         </div>
                     </div>
+                </div>
+                <div className="flex gap-2">
+                    <button className="p-2 text-sketch-charcoal/40 hover:text-sketch-teal-dark transition-colors">
+                        <Share className="w-4 h-4" />
+                    </button>
+                    <button className="p-2 text-sketch-charcoal/40 hover:text-sketch-teal-dark transition-colors">
+                        <Copy className="w-4 h-4" />
+                    </button>
                 </div>
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-8 min-h-0 bg-transparent">
+            <div className="flex-1 overflow-y-auto p-6 space-y-8 min-h-0 custom-scrollbar">
                 {messages.length === 0 && !isLoading && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="flex flex-col items-center justify-center h-full text-slate-400 space-y-4"
+                        className="flex flex-col items-center justify-center h-full text-sketch-charcoal/40 space-y-6"
                     >
-                        <div className="w-16 h-16 rounded-2xl bg-surface-dark border border-primary/10 flex items-center justify-center shadow-[0_0_30px_rgba(15,240,146,0.05)]">
-                            <Bot className="w-8 h-8 text-primary/50" />
+                        <div className="w-20 h-20 rounded-3xl bg-white sketch-card border-2 border-sketch-charcoal/10 flex items-center justify-center shadow-sketch-md">
+                            <Bot className="w-10 h-10 text-sketch-teal-dark/50" />
                         </div>
                         <div className="text-center">
-                            <h3 className="text-lg font-medium text-slate-100 font-display">Inicie a Sessão</h3>
-                            <p className="text-sm mt-1 max-w-sm">O agente <strong>{agentName}</strong> está aguardando suas diretrizes.</p>
+                            <h3 className="text-xl font-bold text-sketch-charcoal font-display">Olá! Como posso ajudar hoje?</h3>
+                            <p className="text-sm mt-2 max-w-sm text-sketch-charcoal/60 leading-relaxed font-medium">
+                                Estou pronto para colaborar. Digite sua mensagem abaixo para começar.
+                            </p>
                         </div>
                     </motion.div>
                 )}
@@ -125,44 +135,42 @@ function ChatInterface() {
                     {messages.map((m: any, index: number) => (
                         <motion.div
                             key={m.id}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className={`flex gap-4 max-w-3xl ${m.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}
+                            initial={{ opacity: 0, y: 15, rotate: m.role === 'user' ? 0.5 : -0.5 }}
+                            animate={{ opacity: 1, y: 0, rotate: 0 }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}
+                            className={`flex gap-4 max-w-4xl ${m.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}
                         >
                             {/* Avatar */}
-                            <div className={`w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center border ${m.role === 'user'
-                                ? 'bg-slate-800 border-slate-700'
-                                : 'bg-primary/10 border-primary/20'
+                            <div className={`w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center border-2 shadow-sketch-sm ${m.role === 'user'
+                                ? 'bg-sketch-yellow/20 border-sketch-yellow/40'
+                                : 'bg-sketch-teal-dark/10 border-sketch-teal-dark/30'
                                 }`}>
                                 {m.role === 'user' ? (
-                                    <User className="w-5 h-5 text-slate-300" />
+                                    <User className="w-5 h-5 text-sketch-charcoal" />
                                 ) : (
-                                    <Bot className="w-5 h-5 text-primary" />
+                                    <Bot className="w-5 h-5 text-sketch-teal-dark" />
                                 )}
                             </div>
 
-                            {/* Message Bubble container */}
-                            <div className={`flex flex-col gap-2 ${m.role === 'user' ? 'items-end' : ''}`}>
-                                <div className="flex items-center gap-2">
+                            {/* Message Container */}
+                            <div className={`flex flex-col gap-1.5 ${m.role === 'user' ? 'items-end' : ''}`}>
+                                <div className="flex items-center gap-2 px-1">
                                     {m.role === 'user' ? (
                                         <>
-                                            <span className="text-[10px] text-slate-500 uppercase tracking-wider">Você</span>
-                                            <span className="text-sm font-bold">Admin</span>
+                                            <span className="text-[10px] text-sketch-charcoal/40 uppercase tracking-wider font-bold">Você</span>
                                         </>
                                     ) : (
                                         <>
-                                            <span className="text-sm font-bold text-primary">{agentName}</span>
-                                            <span className="text-[10px] text-slate-500 uppercase tracking-wider">Assistant</span>
+                                            <span className="text-sm font-bold text-sketch-teal-dark">{agentName}</span>
                                         </>
                                     )}
                                 </div>
 
-                                <div className={`p-5 text-[15px] leading-relaxed max-w-[85vw] md:max-w-2xl overflow-hidden ${m.role === 'user'
-                                    ? 'bg-primary text-background-dark rounded-xl rounded-tr-none shadow-[0_4px_20px_rgba(15,240,146,0.15)] font-medium'
-                                    : 'glass dark:bg-primary/5 rounded-xl rounded-tl-none border border-primary/10 text-slate-200'
+                                <div className={`p-5 text-[15px] leading-relaxed shadow-sketch-sm border-2 ${m.role === 'user'
+                                    ? 'bg-sketch-yellow/10 border-sketch-yellow/50 rounded-2xl rounded-tr-none'
+                                    : 'bg-white border-sketch-charcoal/10 rounded-2xl rounded-tl-none'
                                     }`}>
-                                    <div className={`prose prose-sm overflow-hidden ${m.role === 'user' ? 'prose-invert prose-p:text-background-dark max-w-none' : 'dark:prose-invert max-w-none prose-pre:bg-background-dark/50 prose-pre:border prose-pre:border-primary/20 text-slate-200 prose-p:text-slate-200 prose-a:text-primary'} break-words whitespace-pre-wrap`}>
+                                    <div className={`prose prose-sm overflow-hidden ${m.role === 'user' ? 'prose-p:text-sketch-charcoal' : 'prose-p:text-sketch-charcoal prose-pre:bg-sketch-teal-dark/5 prose-pre:border-2 prose-pre:border-sketch-teal-dark/10'} max-w-none break-words whitespace-pre-wrap font-medium`}>
                                         <Markdown>
                                             {m.content}
                                         </Markdown>
@@ -170,16 +178,16 @@ function ChatInterface() {
                                 </div>
 
                                 {m.role === 'assistant' && index === messages.length - 1 && (
-                                    <div className="flex gap-4 mt-1">
+                                    <div className="flex gap-4 px-2 mt-1">
                                         <button
                                             onClick={() => navigator.clipboard.writeText(m.content)}
-                                            className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-primary transition-colors"
+                                            className="flex items-center gap-1.5 text-xs text-sketch-charcoal/40 hover:text-sketch-teal-dark transition-colors font-bold"
                                         >
                                             <Copy className="w-3.5 h-3.5" /> Copiar
                                         </button>
                                         <button
                                             onClick={() => reload()}
-                                            className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-primary transition-colors"
+                                            className="flex items-center gap-1.5 text-xs text-sketch-charcoal/40 hover:text-sketch-teal-dark transition-colors font-bold"
                                         >
                                             <RefreshCcw className="w-3.5 h-3.5" /> Regenerar
                                         </button>
@@ -192,19 +200,15 @@ function ChatInterface() {
 
                 {isLoading && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-4 max-w-3xl">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex-shrink-0 flex items-center justify-center border border-primary/20">
-                            <Bot className="w-5 h-5 text-primary" />
+                        <div className="w-10 h-10 rounded-xl bg-sketch-teal-dark/10 flex-shrink-0 flex items-center justify-center border-2 border-sketch-teal-dark/30 shadow-sketch-sm">
+                            <Bot className="w-5 h-5 text-sketch-teal-dark" />
                         </div>
                         <div className="flex flex-col gap-2">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm font-bold text-primary">{agentName}</span>
-                                <span className="text-[10px] text-slate-500 uppercase tracking-wider">Processando</span>
-                            </div>
-                            <div className="glass dark:bg-primary/5 p-5 rounded-xl rounded-tl-none border border-primary/10 flex items-center gap-2 h-14">
-                                <div className="flex gap-1">
-                                    <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-primary rounded-full" />
-                                    <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-primary/60 rounded-full" />
-                                    <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-primary/30 rounded-full" />
+                            <div className="glass-sketch p-5 rounded-2xl rounded-tl-none border-2 border-sketch-teal-dark/20 flex items-center gap-2 h-14 bg-white/40">
+                                <div className="flex gap-1.5">
+                                    <motion.div animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 0.8 }} className="w-2 h-2 bg-sketch-teal-dark rounded-full" />
+                                    <motion.div animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 0.8, delay: 0.2 }} className="w-2 h-2 bg-sketch-teal-dark/60 rounded-full" />
+                                    <motion.div animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 0.8, delay: 0.4 }} className="w-2 h-2 bg-sketch-teal-dark/30 rounded-full" />
                                 </div>
                             </div>
                         </div>
@@ -214,10 +218,10 @@ function ChatInterface() {
             </div>
 
             {/* Input Area */}
-            <div className="p-6 bg-background-dark/95 backdrop-blur-xl shrink-0 z-20 sticky bottom-0">
-                <div className="max-w-4xl mx-auto relative">
-                    <form onSubmit={handleSubmit} className="flex items-end gap-3 p-4 bg-surface-dark border border-primary/10 rounded-xl focus-within:border-primary/50 transition-colors shadow-sm relative">
-                        <button type="button" className="p-2 text-slate-400 hover:text-primary transition-colors flex items-center justify-center shrink-0">
+            <div className="p-6 bg-gradient-to-t from-white via-white/80 to-transparent backdrop-blur-sm shrink-0 z-20 sticky bottom-0">
+                <div className="max-w-4xl mx-auto relative group">
+                    <form onSubmit={handleSubmit} className="flex items-end gap-3 p-4 bg-white border-2 border-sketch-charcoal/30 rounded-2xl shadow-sketch-md group-focus-within:border-sketch-teal group-focus-within:rotate-[-0.2deg] transition-all duration-300 relative">
+                        <button type="button" className="p-2.5 text-sketch-charcoal/40 hover:text-sketch-teal-dark transition-colors flex items-center justify-center shrink-0 hover:rotate-6">
                             <Paperclip className="w-5 h-5" />
                         </button>
 
@@ -230,26 +234,26 @@ function ChatInterface() {
                                     if (input.trim()) handleSubmit(e as any);
                                 }
                             }}
-                            className="flex-1 bg-transparent border-none focus:ring-0 text-slate-100 placeholder-slate-500 text-[15px] resize-none py-2 min-h-[44px] max-h-48 outline-none w-full"
-                            placeholder={`Message ${agentName} Core...`}
+                            className="flex-1 bg-transparent border-none focus:ring-0 text-sketch-charcoal placeholder-sketch-charcoal/30 text-[15px] resize-none py-2 min-h-[44px] max-h-48 outline-none w-full font-medium"
+                            placeholder={`Escreva para ${agentName}...`}
                             rows={1}
                         />
 
-                        <div className="flex items-center gap-2 shrink-0 h-10">
-                            <button type="button" className="p-2 text-slate-400 hover:text-primary transition-colors flex items-center justify-center">
+                        <div className="flex items-center gap-3 shrink-0 h-10">
+                            <button type="button" className="p-2.5 text-sketch-charcoal/40 hover:text-sketch-teal-dark transition-colors flex items-center justify-center hover:rotate-[-6deg]">
                                 <Mic className="w-5 h-5" />
                             </button>
                             <button
                                 type="submit"
                                 disabled={isLoading || !input.trim()}
-                                className="bg-primary text-background-dark w-10 h-10 rounded flex items-center justify-center shadow-[0_0_15px_rgba(15,240,146,0.2)] hover:scale-105 active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                                className="bg-sketch-teal text-white w-11 h-11 rounded-xl flex items-center justify-center shadow-sketch-sm hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed shrink-0 border-2 border-sketch-teal hover:rotate-[2deg]"
                             >
-                                <ArrowUp className="w-5 h-5 font-bold" />
+                                <ArrowUp className="w-5 h-5 font-black stroke-[3px]" />
                             </button>
                         </div>
                     </form>
-                    <p className="text-[10px] text-center mt-3 text-slate-500 uppercase tracking-widest font-medium">
-                        System Status: Optimal | Encrypted Local Session
+                    <p className="text-[9px] text-center mt-3 text-sketch-charcoal/30 uppercase tracking-[0.2em] font-black">
+                        Status: Operando em Fluxo Criativo | Sessão Segura
                     </p>
                 </div>
             </div>
@@ -260,8 +264,8 @@ function ChatInterface() {
 export default function ChatPage() {
     return (
         <Suspense fallback={
-            <div className="flex h-screen items-center justify-center bg-[#0a0c0b] text-primary">
-                Loading Chat Interface...
+            <div className="flex h-screen items-center justify-center bg-white text-sketch-teal-dark font-display font-bold text-xl animate-pulse">
+                Desenhando Interface...
             </div>
         }>
             <ChatInterface />

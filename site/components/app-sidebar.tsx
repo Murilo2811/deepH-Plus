@@ -8,62 +8,72 @@ export function AppSidebar() {
     const pathname = usePathname();
 
     const navItems = [
-        { href: "/", icon: Zap, label: "Dashboard" },
-        { href: "/chat", icon: MessageSquare, label: "Chat" },
-        { href: "/run", icon: Play, label: "Modo Equipe" },
-        { href: "/crews", icon: Users, label: "Times" },
-        { href: "/skills", icon: Wrench, label: "Skills" },
-        { href: "/config", icon: Settings, label: "Settings" },
-        { href: "/help", icon: BookOpen, label: "Help Guide" },
+        { href: "/",       icon: Zap,          label: "Dashboard" },
+        { href: "/chat",   icon: MessageSquare, label: "Chat" },
+        { href: "/run",    icon: Play,          label: "Modo Equipe" },
+        { href: "/crews",  icon: Users,         label: "Times" },
+        { href: "/skills", icon: Wrench,        label: "Skills" },
+        { href: "/config", icon: Settings,      label: "Settings" },
+        { href: "/help",   icon: BookOpen,      label: "Help Guide" },
     ];
 
     return (
-        <aside className="w-20 md:w-24 border-r border-white/5 flex flex-col items-center py-6 gap-6 bg-background-surface/50 backdrop-blur-xl relative z-40">
+        <aside className="w-20 md:w-24 flex flex-col items-center py-5 gap-4 bg-sketch-paper-warm relative"
+               style={{ borderRight: '2.5px solid #222B31', boxShadow: 'inset -2px 0 10px rgba(0,0,0,0.05)' }}>
+
             {navItems.map((item) => {
                 const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
                 const Icon = item.icon;
 
-                if (isActive) {
-                    return (
-                        <Link href={item.href} key={item.href} title={item.label}>
-                            <div className="relative group cursor-pointer">
-                                {/* Active State Background Glow */}
-                                <div className="absolute inset-0 bg-cyan/20 blur-xl rounded-xl"></div>
-                                
-                                <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-cyan/20 to-cyan/5 border border-cyan/30 flex items-center justify-center shadow-[0_0_20px_rgba(0,240,255,0.15)] interactive-glow">
-                                    <Icon className="w-6 h-6 text-cyan" />
-                                </div>
-                                
-                                {/* Active Indicator Dot */}
-                                <div className="absolute -right-1 -top-1 w-3 h-3 bg-cyan rounded-full border-2 border-background-dark shadow-[0_0_10px_rgba(0,240,255,0.8)]"></div>
-                            </div>
-                        </Link>
-                    );
-                }
-
                 return (
                     <Link href={item.href} key={item.href} title={item.label}>
-                        <div className="relative w-12 h-12 rounded-xl border border-transparent hover:border-white/10 hover:bg-white/5 transition-all duration-300 flex items-center justify-center cursor-pointer group">
-                            {/* Hover Glow Effect */}
-                            <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 blur-md rounded-xl transition-opacity duration-300"></div>
-                            <Icon className="relative w-6 h-6 text-slate-400 group-hover:text-white transition-colors duration-300 group-hover:scale-110 transform" />
-                        </div>
+                        {isActive ? (
+                            /* ACTIVE: filled teal circle */
+                            <div className="sketch-nav-active cursor-pointer bg-sketch-teal-dark border-2 border-sketch-charcoal shadow-[2px_2px_0_0_rgba(34,43,49,1)]" title={item.label}>
+                                <Icon className="w-5 h-5 text-white" strokeWidth={2.5} />
+                            </div>
+                        ) : (
+                            /* INACTIVE: yellow-pale bg with charcoal icon */
+                            <div className="sketch-nav-inactive cursor-pointer" title={item.label}>
+                                <Icon className="w-5 h-5" style={{ strokeWidth: 2 }} />
+                            </div>
+                        )}
                     </Link>
-                )
+                );
             })}
 
-            <div className="mt-auto">
-                <Link href="/agents/new" title="New Agent">
-                    <button className="relative w-12 h-12 rounded-xl border border-dashed border-cyan/30 flex items-center justify-center bg-cyan/5 hover:bg-cyan/10 hover:border-cyan/50 transition-all duration-300 group overflow-hidden">
-                        {/* Shimmer Effect */}
-                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-r from-transparent via-cyan/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
-                        <Plus className="relative w-6 h-6 text-cyan/70 group-hover:text-cyan transition-colors" />
+            {/* New Agent button — charcoal dashed ring */}
+            <div className="mt-auto pb-2">
+                <Link href="/agents/new" title="Novo Agente">
+                    <button
+                        className="flex items-center justify-center w-12 h-12 transition-all duration-200 group"
+                        style={{
+                            background: 'transparent',
+                            border: '2.5px dashed #222B31',
+                            borderRadius: '50% 46% 54% 48% / 48% 54% 46% 52%',
+                        }}
+                        onMouseEnter={e => {
+                            (e.currentTarget as HTMLElement).style.background = '#F9E05E';
+                            (e.currentTarget as HTMLElement).style.border = '2.5px solid #222B31';
+                        }}
+                        onMouseLeave={e => {
+                            (e.currentTarget as HTMLElement).style.background = 'transparent';
+                            (e.currentTarget as HTMLElement).style.border = '2.5px dashed #222B31';
+                        }}
+                    >
+                        <Plus className="w-5 h-5 transition-transform duration-200 group-hover:rotate-90 group-hover:scale-110"
+                              style={{ color: '#222B31', strokeWidth: 2.5 }} />
                     </button>
                 </Link>
             </div>
-            
-            {/* Sidebar Right Border Gradient */}
-            <div className="absolute right-0 top-0 h-full w-[1px] bg-gradient-to-b from-transparent via-white/5 to-transparent"></div>
+
+            {/* Sketch side border accent — wavy teal line */}
+            <div className="absolute right-0 top-0 h-full overflow-hidden pointer-events-none" style={{ width: '3px' }}>
+                <svg width="3" height="100%" viewBox="0 0 3 800" preserveAspectRatio="none">
+                    <path d="M1.5 0 Q3 20 1.5 40 Q0 60 1.5 80 Q3 100 1.5 120 Q0 140 1.5 160 Q3 180 1.5 200 Q0 220 1.5 240 Q3 260 1.5 280 Q0 300 1.5 320 Q3 340 1.5 360 Q0 380 1.5 400 Q3 420 1.5 440 Q0 460 1.5 480 Q3 500 1.5 520 Q0 540 1.5 560 Q3 580 1.5 600 Q0 620 1.5 640 Q3 660 1.5 680 Q0 700 1.5 720 Q3 740 1.5 760 Q0 780 1.5 800"
+                          stroke="var(--sketch-teal-dark)" strokeWidth="2" fill="none" opacity="0.4" />
+                </svg>
+            </div>
         </aside>
     );
 }

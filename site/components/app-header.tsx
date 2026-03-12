@@ -1,48 +1,65 @@
 "use client";
 
-"use client";
-
 import { usePathname } from "next/navigation";
-import { Grid } from "lucide-react";
 
 export function AppHeader() {
     const pathname = usePathname();
 
     return (
-        <header className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-background-surface/80 backdrop-blur-xl sticky top-0 z-50">
-            {/* Logo and Brand Section */}
-            <div className="flex items-center gap-4">
-                <div className="relative group">
-                    <div className="absolute inset-0 bg-cyan/20 blur-xl rounded-full group-hover:bg-cyan/40 transition-colors duration-500"></div>
-                    <div className="relative p-2.5 rounded-xl bg-background-elevated border border-white/10 flex items-center justify-center interactive-glow">
-                        <Grid className="text-cyan w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                    </div>
+        <header className="flex items-center justify-between px-6 py-3 bg-white sticky top-0 z-50 relative" style={{
+            borderBottom: '2.5px solid #222B31',
+        }}>
+            {/* Logo Section */}
+            <div className="flex items-center gap-3">
+                {/* Sketch circle logo */}
+                <div className="relative flex-shrink-0" style={{ animation: 'wiggleLoop 3s ease-in-out infinite' }}>
+                    <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+                        {/* outer ring charcoal */}
+                        <circle cx="19" cy="19" r="17" stroke="#222B31" strokeWidth="2.5"
+                            strokeDasharray="4 1.5" transform="rotate(-8 19 19)" />
+                        {/* filled teal circle */}
+                        <circle cx="19" cy="19" r="12" fill="#26C2B9" stroke="#222B31" strokeWidth="2" />
+                        {/* inner spark */}
+                        <circle cx="19" cy="19" r="5" fill="#FFF9C4" />
+                    </svg>
                 </div>
+
                 <div>
-                    <h1 className="text-xl font-display font-bold tracking-tight text-white flex items-center gap-2">
-                        deepH Plus
-                        <span className="text-[10px] bg-cyan/10 text-cyan px-2 py-0.5 rounded-full font-mono font-medium border border-cyan/20 uppercase tracking-widest hidden sm:inline-block">
-                            v5.0
-                        </span>
+                    <h1 className="text-lg font-bold tracking-tight leading-tight text-sketch-charcoal font-display uppercase">
+                        deepH
+                        <span className="ml-1.5 font-extrabold text-sketch-teal-dark">Plus</span>
                     </h1>
+                    <span className="block text-[9px] font-bold uppercase tracking-[0.15em]" style={{ color: '#3D4E57' }}>
+                        v5.0 · Agent Hub
+                    </span>
                 </div>
             </div>
 
-            {/* System Status Section */}
-            <div className="flex items-center gap-5">
-                <div className="hidden md:flex flex-col items-end">
-                    <h2 className="text-xs font-semibold tracking-wide text-white">System Active</h2>
-                    <p className="text-[10px] uppercase tracking-widest text-cyan/70 font-mono mt-0.5">Neural Core Online</p>
+            {/* Right: Status indicator */}
+            <div className="flex items-center gap-3">
+                <div className="hidden sm:flex flex-col items-end">
+                    <span className="text-xs font-semibold text-sketch-charcoal">Sistema Ativo</span>
+                    <span className="text-[9px] uppercase tracking-widest font-bold text-sketch-teal-dark">Neural Core Online</span>
                 </div>
-                <div className="relative flex items-center justify-center h-8 w-8 rounded-full bg-cyan/5 border border-cyan/20">
-                    <span className="animate-pulse-glow absolute inline-flex h-full w-full rounded-full bg-cyan/20"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan"></span>
+
+                {/* Sketch status dot */}
+                <div className="relative">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <circle cx="16" cy="16" r="13" fill="#FFF9C4" stroke="#222B31" strokeWidth="2.5"
+                            strokeDasharray="3 1" transform="rotate(10 16 16)" />
+                        <circle cx="16" cy="16" r="6" fill="var(--sketch-teal-dark)" stroke="var(--sketch-charcoal)" strokeWidth="2">
+                            <animate attributeName="r" values="6;7;6" dur="2s" repeatCount="indefinite" />
+                        </circle>
+                    </svg>
                 </div>
             </div>
-            
-            {/* Animated Bottom Border */}
-            <div className="absolute bottom-0 left-0 w-full h-[1px] overflow-hidden">
-                <div className="w-1/3 h-full bg-gradient-to-r from-transparent via-cyan to-transparent opacity-50 absolute left-0 animate-[shimmer_3s_infinite]"></div>
+
+            {/* Bottom sketch border wavy */}
+            <div className="absolute bottom-0 left-0 w-full overflow-hidden pointer-events-none" style={{ height: '3px' }}>
+                <svg width="100%" height="3" viewBox="0 0 1000 3" preserveAspectRatio="none">
+                    <path d="M0 1.5 Q50 0 100 1.5 Q150 3 200 1.5 Q250 0 300 1.5 Q350 3 400 1.5 Q450 0 500 1.5 Q550 3 600 1.5 Q650 0 700 1.5 Q750 3 800 1.5 Q850 0 900 1.5 Q950 3 1000 1.5"
+                          stroke="#26C2B9" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.5" />
+                </svg>
             </div>
         </header>
     );

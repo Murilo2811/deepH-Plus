@@ -1,102 +1,212 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: 'Space Grotesk';
-  src: url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-}
+/* ── SVG Crayon-Texture Filter ──────────────────────────────────────────── */
+.sketch-filter { filter: url(#crayon-texture); }
 
-@font-face {
-  font-family: 'Inter';
-  src: url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-}
-
+/* ── Base Reset: Light / Organic Theme ─────────────────────────────────── */
 @layer base {
   :root {
-    --background: 240 10% 4%;
-    --foreground: 0 0% 98%;
-    --radius: 0.375rem;
+    --sketch-teal:        #26C2B9;
+    --sketch-teal-dark:   #1A857F;
+    --sketch-yellow:      #F9E05E;
+    --sketch-yellow-pale: #FFF9C4;
+    --sketch-charcoal:    #222B31;
+    --sketch-charcoal-soft: #3D4E57;
+    --sketch-bg:          #FFFFFF;
+    --sketch-bg-off:      #F5FAF9;
+    --sketch-paper-warm:  #FFF9E5;
+    --sketch-paper-cool:  #F8F9FA;
   }
 
   html {
-    color-scheme: dark;
-    scroll-behavior: smooth;
+    background-color: var(--sketch-bg);
+    color: var(--sketch-charcoal);
+    font-family: 'Poppins', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
 
   body {
-    background-color: #000000;
-    color: #F8FAFC;
-    font-family: 'Inter', system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    min-height: max(884px, 100dvh);
+    background-color: var(--sketch-bg);
+    color: var(--sketch-charcoal);
     overflow-x: hidden;
   }
 
-  /* Accessible Focus styles */
-  *:focus-visible {
-    outline: none;
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-    --tw-ring-color: #00E5FF;
-    --tw-ring-offset-width: 2px;
-    --tw-ring-offset-color: #000000;
-  }
-
-  /* Custom Scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
+  /* scrollbar — subtle */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 9999px;
+    background: rgba(38,194,185,0.35);
+    border-radius: 3px;
   }
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-  ::selection {
-    background: rgba(0, 229, 255, 0.25);
-    color: #00E5FF;
+  ::-webkit-scrollbar-thumb:hover { background: rgba(38,194,185,0.6); }
+
+  /* code/pre blocks stay dark for readability */
+  pre, code:not(.sketch-inline) {
+    font-family: 'JetBrains Mono', monospace;
+    background: #1A2029;
+    color: #7DE8E3;
+    border-radius: 0.5rem;
   }
 }
 
+/* ── Sketch Component Classes ───────────────────────────────────────────── */
 @layer components {
-  /* Modern Glassmorphism System */
-  .glass-panel {
-    @apply bg-background-surface/80 backdrop-blur-xl border border-white/5 shadow-2xl;
+
+  /* --- Cards --- */
+  .sketch-card {
+    @apply bg-white rounded-2xl p-5 transition-all duration-200;
+    border: 2.5px solid var(--sketch-charcoal);
+    border-radius: 12px 14px 10px 13px / 13px 11px 14px 12px;
+    box-shadow: 4px 4px 0px 0px var(--sketch-charcoal);
   }
-  
-  .glass-card {
-    @apply bg-background-elevated/60 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300;
+  .sketch-card:hover {
+    transform: translate(-1px, -2px);
+    box-shadow: 5px 6px 0px 0px var(--sketch-charcoal);
   }
 
-  .interactive-glow:hover {
-    box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
+  .sketch-card-yellow {
+    @apply sketch-card;
+    background: var(--sketch-yellow-pale);
   }
 
-  /* Legacy aliases for compatibility */
-  .glass {
-    @apply bg-white/5 backdrop-blur-xl;
+  .sketch-card-teal {
+    @apply sketch-card;
+    background: rgba(38, 194, 185, 0.08);
   }
-  .glass-input {
-    @apply bg-transparent border-none focus:ring-0 text-slate-100 placeholder-slate-500 transition-all duration-200 outline-none;
+
+  /* --- Buttons --- */
+  .sketch-btn-primary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 font-bold text-sm transition-all duration-150;
+    background: var(--sketch-teal);
+    color: #fff;
+    border: 2.5px solid var(--sketch-charcoal);
+    border-radius: 10px 12px 11px 13px / 12px 10px 12px 11px;
+    box-shadow: 3px 3px 0px 0px var(--sketch-charcoal);
+  }
+  .sketch-btn-primary:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px 0px var(--sketch-charcoal);
+    background: #1DA8A0;
+  }
+  .sketch-btn-primary:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px 0px var(--sketch-charcoal);
+  }
+
+  .sketch-btn-ring {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 font-bold text-sm transition-all duration-150;
+    background: var(--sketch-yellow);
+    color: var(--sketch-charcoal);
+    border: 2.5px solid var(--sketch-charcoal);
+    border-radius: 13px 11px 12px 10px / 11px 13px 10px 12px;
+    box-shadow: 3px 3px 0px 0px var(--sketch-charcoal);
+  }
+  .sketch-btn-ring:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px 0px var(--sketch-charcoal);
+  }
+  .sketch-btn-ring:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px 0px var(--sketch-charcoal);
+  }
+
+  .sketch-btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 font-semibold text-sm transition-all duration-150;
+    background: transparent;
+    color: var(--sketch-charcoal);
+    border: 2px solid var(--sketch-charcoal);
+    border-radius: 8px 11px 9px 12px / 11px 8px 12px 9px;
+    box-shadow: 2px 2px 0px 0px var(--sketch-charcoal);
+  }
+  .sketch-btn-ghost:hover {
+    background: var(--sketch-yellow-pale);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px 0px var(--sketch-charcoal);
+  }
+
+  /* --- Sidebar Nav Icons --- */
+  /* Filled teal circle → active state */
+  .sketch-nav-active {
+    @apply flex items-center justify-center w-12 h-12 transition-all duration-200;
+    background: var(--sketch-teal);
+    border: 2.5px solid var(--sketch-charcoal);
+    border-radius: 50% 46% 54% 48% / 48% 54% 46% 52%;
+    box-shadow: 2px 2px 0px 0px var(--sketch-charcoal);
+    color: #fff;
+  }
+
+  /* Charcoal ring + yellow fill → inactive */
+  .sketch-nav-inactive {
+    @apply flex items-center justify-center w-12 h-12 transition-all duration-200;
+    background: var(--sketch-yellow-pale);
+    border: 2.5px solid transparent;
+    border-radius: 50% 48% 46% 50% / 52% 46% 54% 48%;
+    color: var(--sketch-charcoal-soft);
+  }
+  .sketch-nav-inactive:hover {
+    background: var(--sketch-yellow);
+    border: 2.5px solid var(--sketch-charcoal);
+    border-radius: 46% 54% 50% 48% / 54% 46% 48% 52%;
+    box-shadow: 2px 2px 0px 0px var(--sketch-charcoal);
+    color: var(--sketch-charcoal);
+    transform: rotate(-3deg);
+  }
+
+  /* --- Tag / Badge --- */
+  .sketch-badge {
+    @apply inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5;
+    background: var(--sketch-yellow);
+    color: var(--sketch-charcoal);
+    border: 2px solid var(--sketch-charcoal);
+    border-radius: 999px 980px 990px 970px / 980px 999px 970px 990px;
+  }
+
+  /* --- Input fields --- */
+  .sketch-input {
+    @apply w-full px-4 py-2.5 font-medium text-sm bg-white outline-none transition-all;
+    color: var(--sketch-charcoal);
+    border: 2px solid var(--sketch-charcoal);
+    border-radius: 8px 10px 9px 11px / 10px 8px 11px 9px;
+    box-shadow: 2px 2px 0 0 var(--sketch-charcoal);
+  }
+  .sketch-input::placeholder {
+    color: var(--sketch-charcoal-soft);
+    opacity: 0.65;
+  }
+  .sketch-input:focus {
+    box-shadow: 3px 3px 0 0 var(--sketch-teal);
+    border-color: var(--sketch-teal);
+  }
+
+  /* --- Divider --- */
+  .sketch-divider {
+    border: none;
+    border-top: 2px dashed rgba(34, 43, 49, 0.2);
+    margin: 1.5rem 0;
+  }
+
+  /* --- Section label --- */
+  .sketch-label {
+    @apply text-xs font-bold uppercase tracking-widest;
+    color: var(--sketch-charcoal-soft);
+    letter-spacing: 0.12em;
   }
 }
 
+/* ── Utilities ──────────────────────────────────────────────────────────── */
 @layer utilities {
-  .cyan-glow {
-    box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
-  }
-  .bg-grid-pattern {
-    background-size: 40px 40px;
-    background-image: 
-      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  .animate-in     { animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .animate-wiggle { animation: wiggle 0.4s ease-in-out; }
+  .doodle-float   { animation: float 5s ease-in-out infinite; }
+
+  /* keep text wrapping + no overflow for sketch buttons */
+  .no-overflow    { overflow: visible; }
+
+  /* crayon stroke feel via subtle text-shadow */
+  .sketch-heading {
+    text-shadow: 1.5px 1.5px 0px rgba(34,43,49,0.12);
   }
 }
