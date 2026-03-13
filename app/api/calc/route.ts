@@ -1,103 +1,151 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { evaluateExpression } from '@/lib/evaluator';
-import { addToHistory } from './history/route';
+import { evaluateExpression, EvaluationResult, EvaluationError } from '@/lib/evaluator';
+
+// In-memory history storage (in a real app, use a database)
+const calculationHistory: Array<{
+  expression: string;
+  result: number;
+  timestamp: string;
+}> = [];
+
+const MAX_HISTORY_SIZE = 50;
 
 /**
  * POST handler for evaluating mathematical expressions
- * @param request - Next.js request object
- * @returns JSON response with result or error
  */
 export async function POST(request: NextRequest) {
   try {
-    // 1. Parse and validate request body
+    // Parse request body
     let body;
     try {
       body = await request.json();
     } catch (error) {
       return NextResponse.json(
-        { error: 'Invalid JSON in request body' },
+        {
+          error: 'Invalid JSON in request body',
+          code: 'INVALID_EXPRESSION',
+          details: { error: error instanceof Error ? error.message : String(error) }
+        },
         { status: 400 }
       );
     }
 
-    // 2. Validate request structure
+    // Validate request body structure
     if (!body || typeof body !== 'object') {
       return NextResponse.json(
-        { error: 'Request body must be a JSON object' },
+        {
+          error: 'Request body must be a JSON object',
+          code: 'INVALID_EXPRESSION'
+        },
         { status: 400 }
       );
     }
 
     const { expression } = body;
 
-    // 3. Validate expression field
+    // Check if expression is provided
+    if (!expression) {
+      return NextResponse.json(
+        {
+          error: 'Missing required field: expression',
+          code: 'INVALID_EXPRESSION'
+        },
+        { status: 400 }
+      );
+    }
+
+    // Check if expression is a string
     if (typeof expression !== 'string') {
       return NextResponse.json(
-        { error: 'Expression must be a string' },
+        {
+          error: 'Expression must be a string',
+          code: 'INVALID_EXPRESSION',
+          details: { type: typeof expression }
+        },
         { status: 400 }
       );
     }
 
-    if (!expression.trim()) {
+    // Check if expression is empty
+    if (expression.trim().length === 0) {
       return NextResponse.json(
-        { error: 'Expression cannot be empty' },
+        {
+          error: 'Expression cannot be empty',
+          code: 'INVALID_EXPRESSION'
+        },
         { status: 400 }
       );
     }
 
-    // 4. Evaluate the expression safely
-    const evaluation = evaluateExpression(expression.trim());
+    // Evaluate the expression using our safe evaluator
+    const evaluation = evaluateExpression(expression);
 
-    // 5. Handle evaluation errors
-    if (evaluation.error) {
+    // Handle evaluation errors
+    if ('code' in evaluation) {
+      const errorResponse = evaluation as EvaluationError;
+      
       // Determine appropriate status code based on error type
-      const statusCode = evaluation.error.includes('invalid characters') ||
-                        evaluation.error.includes('Unbalanced parentheses') ||
-                        evaluation.error.includes('Invalid expression syntax') ||
-                        evaluation.error.includes('Expression too long')
-        ? 400 // Bad Request for syntax errors
-        : 422; // Unprocessable Entity for evaluation errors
-
-      return NextResponse.json(
-        { error: evaluation.error },
-        { status: statusCode }
-      );
+      let statusCode = 500;
+      if (errorResponse.code === 'INVALID_EXPRESSION') {
+        statusCode = 400;
+      } else if (errorResponse.code === 'UNSAFE_EXPRESSION') {
+        statusCode = 422;
+      }
+      
+      return NextResponse.json(errorResponse, { status: statusCode });
     }
 
-    // 6. Store successful calculation in history
-    addToHistory(expression.trim(), evaluation.result);
+    // Success case
+    const successResult = evaluation as EvaluationResult;
+    
+    // Add to history
+    const historyItem = {
+      expression,
+      result: successResult.result,
+      timestamp: new Date().toISOString()
+    };
+    
+    calculationHistory.unshift(historyItem);
+    
+    // Keep history size limited
+    if (calculationHistory.length > MAX_HISTORY_SIZE) {
+      calculationHistory.length = MAX_HISTORY_SIZE;
+    }
 
-    // 7. Return successful response
-    return NextResponse.json(
-      { result: evaluation.result },
-      { status: 200 }
-    );
+    // Return successful response
+    return NextResponse.json(successResult, { status: 200 });
 
   } catch (error) {
     // Handle unexpected errors
     console.error('Unexpected error in calculator API:', error);
     
     return NextResponse.json(
-      { error: 'Internal server error' },
+      {
+        error: 'Internal server error',
+        code: 'INTERNAL_ERROR',
+        details: {
+          message: error instanceof Error ? error.message : 'Unknown error',
+          timestamp: new Date().toISOString()
+        }
+      },
       { status: 500 }
     );
   }
 }
 
 /**
- * GET handler (optional - not in OpenAPI contract but useful for testing)
- * Returns API information
+ * OPTIONS handler for CORS preflight requests
  */
-export async function GET() {
-  return NextResponse.json({
-    message: 'Calculator API',
-    endpoints: {
-      POST: '/api/calc - Evaluate mathematical expression',
-      GET: '/api/calc/history - Get calculation history'
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
     },
-    usage: {
-      POST: 'Send JSON with { "expression": "2 + 3 * 4" }',
-      allowed_characters: 'Numbers, +, -, *, /, (, ), ., and spaces'
-    }
   });
 }
+
+// Export the history array for use in the history endpoint
+export { calculationHistory };

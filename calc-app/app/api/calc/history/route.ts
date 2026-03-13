@@ -1,21 +1,24 @@
 import { NextResponse } from 'next/server';
-import { getHistory } from '@/lib/history';
 
 export async function GET() {
   try {
-    const history = getHistory();
-    return NextResponse.json({ history });
-  } catch (error) {
+    // Initialize history if not exists
+    if (!global.calcHistory) {
+      global.calcHistory = [];
+    }
+
+    // Return history (limited to last 20 entries for performance)
+    const history = global.calcHistory.slice(0, 20);
+    
+    return NextResponse.json({
+      history,
+      count: history.length,
+      total: global.calcHistory.length,
+    });
+  } catch (error: any) {
     return NextResponse.json(
-      { error: 'Failed to retrieve history' },
+      { error: 'Failed to fetch history' },
       { status: 500 }
     );
   }
-}
-
-export async function POST() {
-  return NextResponse.json(
-    { message: 'Use GET method to retrieve calculation history' },
-    { status: 405 }
-  );
 }

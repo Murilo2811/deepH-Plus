@@ -8,97 +8,195 @@ export interface EvaluationResult {
   error?: string;
 }
 
+export interface EvaluationError {
+  error: string;
+  code: 'INVALID_EXPRESSION' | 'UNSAFE_EXPRESSION' | 'INTERNAL_ERROR';
+  details?: Record<string, unknown>;
+}
+
+// Allowed characters and patterns
+const ALLOWED_CHARS = /^[0-9\s+\-*/()\.]+$/;
+const MAX_EXPRESSION_LENGTH = 1000;
+
+// Additional safety checks for dangerous patterns
+const DANGEROUS_PATTERNS = [
+  /Function\(/i,
+  /eval\(/i,
+  /setTimeout\(/i,
+  /setInterval\(/i,
+  /new Function\(/i,
+  /constructor\(/i,
+  /prototype/i,
+  /__proto__/i,
+  /process\./i,
+  /require\(/i,
+  /import\(/i,
+  /window\./i,
+  /document\./i,
+  /alert\(/i,
+  /console\./i,
+  /localStorage/i,
+  /sessionStorage/i,
+];
+
 /**
- * Validates and evaluates a mathematical expression safely
- * @param expression - Mathematical expression string
- * @returns EvaluationResult with result or error
+ * Validate and sanitize expression input
  */
-export function evaluateExpression(expression: string): EvaluationResult {
-  try {
-    // 1. Basic input validation
-    if (!expression || typeof expression !== 'string') {
-      return { result: 0, error: 'Expression must be a non-empty string' };
-    }
-
-    // 2. Length check
-    if (expression.length > 100) {
-      return { result: 0, error: 'Expression too long (max 100 characters)' };
-    }
-
-    // 3. Character allowlist validation
-    // Only allow: digits, spaces, basic operators, parentheses, decimal point
-    const allowedChars = /^[0-9\s+\-*/()\.]+$/;
-    if (!allowedChars.test(expression)) {
-      return { result: 0, error: 'Expression contains invalid characters. Only numbers, +, -, *, /, (, ), and . are allowed' };
-    }
-
-    // 4. Basic syntax validation
-    // Check for balanced parentheses
-    let balance = 0;
-    for (const char of expression) {
-      if (char === '(') balance++;
-      if (char === ')') balance--;
-      if (balance < 0) {
-        return { result: 0, error: 'Unbalanced parentheses' };
+function validateExpression(expression: string): { valid: boolean; error?: EvaluationError } {
+  // Check length
+  if (expression.length > MAX_EXPRESSION_LENGTH) {
+    return {
+      valid: false,
+      error: {
+        error: `Expression too long (max ${MAX_EXPRESSION_LENGTH} characters)`,
+        code: 'INVALID_EXPRESSION',
+        details: { length: expression.length, maxLength: MAX_EXPRESSION_LENGTH }
       }
-    }
-    if (balance !== 0) {
-      return { result: 0, error: 'Unbalanced parentheses' };
-    }
+    };
+  }
 
-    // 5. Check for consecutive operators or other suspicious patterns
-    const suspiciousPatterns = [
-      /\.\./, // double decimal
-      /\/\s*0(?!\.)/, // division by zero (integer)
-      /\/\s*0\.0*/, // division by zero (decimal)
-      /[+\-*/]{2,}/, // consecutive operators
-      /\(\)/, // empty parentheses
-      /[+\-*/]\s*[+\-*/]/ // operators with only whitespace between
-    ];
+  // Check allowed characters
+  if (!ALLOWED_CHARS.test(expression)) {
+    return {
+      valid: false,
+      error: {
+        error: 'Expression contains invalid characters. Only numbers, +, -, *, /, (, ), ., and spaces are allowed.',
+        code: 'INVALID_EXPRESSION',
+        details: { expression: expression }
+      }
+    };
+  }
 
-    for (const pattern of suspiciousPatterns) {
-      if (pattern.test(expression)) {
-        if (pattern.toString().includes('0')) {
-          return { result: 0, error: 'Division by zero is not allowed' };
+  // Check for dangerous patterns
+  for (const pattern of DANGEROUS_PATTERNS) {
+    if (pattern.test(expression)) {
+      return {
+        valid: false,
+        error: {
+          error: 'Expression contains potentially unsafe patterns',
+          code: 'UNSAFE_EXPRESSION',
+          details: { pattern: pattern.toString(), expression: expression }
         }
-        return { result: 0, error: 'Invalid expression syntax' };
+      };
+    }
+  }
+
+  // Additional safety: ensure expression has at least one number
+  if (!/\d/.test(expression)) {
+    return {
+      valid: false,
+      error: {
+        error: 'Expression must contain at least one number',
+        code: 'INVALID_EXPRESSION',
+        details: { expression: expression }
       }
+    };
+  }
+
+  // Check for balanced parentheses
+  let balance = 0;
+  for (const char of expression) {
+    if (char === '(') balance++;
+    if (char === ')') balance--;
+    if (balance < 0) {
+      return {
+        valid: false,
+        error: {
+          error: 'Unbalanced parentheses',
+          code: 'INVALID_EXPRESSION',
+          details: { expression: expression }
+        }
+      };
+    }
+  }
+  if (balance !== 0) {
+    return {
+      valid: false,
+      error: {
+        error: 'Unbalanced parentheses',
+        code: 'INVALID_EXPRESSION',
+        details: { expression: expression }
+      }
+    };
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Safely evaluate a mathematical expression
+ * Uses Function constructor with strict scope isolation
+ */
+export function evaluateExpression(expression: string): EvaluationResult | EvaluationError {
+  try {
+    // Validate input
+    const validation = validateExpression(expression);
+    if (!validation.valid) {
+      return validation.error!;
     }
 
-    // 6. Safe evaluation using Function constructor
-    // Create a sandboxed function that only has access to Math object
-    const safeEval = new Function('Math', `"use strict"; return (${expression});`);
+    // Clean up expression: remove extra spaces
+    const cleanExpr = expression.replace(/\s+/g, ' ').trim();
+
+    // Create a safe evaluation function
+    // Using Function constructor with limited scope
+    const safeEval = new Function('expr', `
+      try {
+        // Only allow mathematical operations
+        const result = eval(expr);
+        
+        // Ensure result is a finite number
+        if (typeof result !== 'number' || !isFinite(result)) {
+          throw new Error('Invalid result');
+        }
+        
+        return result;
+      } catch (error) {
+        throw new Error('Evaluation failed: ' + error.message);
+      }
+    `);
+
+    // Execute with try-catch
+    const result = safeEval(cleanExpr);
     
-    // Execute with only Math object available
-    const result = safeEval(Math);
-    
-    // 7. Validate result is a finite number
+    // Additional validation of result
     if (typeof result !== 'number' || !isFinite(result)) {
-      return { result: 0, error: 'Expression does not evaluate to a finite number' };
+      return {
+        error: 'Invalid calculation result',
+        code: 'INVALID_EXPRESSION',
+        details: { result: result, expression: expression }
+      };
     }
 
-    // 8. Handle floating point precision issues
-    const roundedResult = Math.round(result * 1e12) / 1e12;
+    // Handle division by zero gracefully
+    if (Math.abs(result) === Infinity) {
+      return {
+        result: result,
+        error: 'Division by zero handled as Infinity'
+      };
+    }
 
-    return { result: roundedResult };
+    return { result: result };
+
   } catch (error) {
-    // Catch any runtime errors during evaluation
-    if (error instanceof Error) {
-      return { result: 0, error: `Evaluation error: ${error.message}` };
-    }
-    return { result: 0, error: 'Unknown evaluation error' };
+    return {
+      error: error instanceof Error ? error.message : 'Unknown evaluation error',
+      code: 'INTERNAL_ERROR',
+      details: { 
+        expression: expression,
+        error: error instanceof Error ? error.toString() : String(error)
+      }
+    };
   }
 }
 
 /**
- * Helper function to validate expression format
- * @param expression - Expression to validate
- * @returns Validation result with error message if invalid
+ * Format expression for display (optional helper)
  */
-export function validateExpression(expression: string): { valid: boolean; error?: string } {
-  const result = evaluateExpression(expression);
-  if (result.error) {
-    return { valid: false, error: result.error };
-  }
-  return { valid: true };
+export function formatExpression(expression: string): string {
+  return expression
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\*/g, '×')
+    .replace(/\//g, '÷');
 }

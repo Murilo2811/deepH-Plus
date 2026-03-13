@@ -1,51 +1,69 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-// Import the shared history array from the main route
-// In a real application, this would be in a shared module or database
-// For this implementation, we'll recreate it here since modules are separate
-let calculationHistory: Array<{
-  expression: string;
-  result: number;
-  timestamp: string;
-}> = [];
-
-// Maximum history size
-const MAX_HISTORY_SIZE = 100;
+import { calculationHistory } from '../route';
 
 /**
  * GET handler for retrieving calculation history
- * @param request - Next.js request object
- * @returns JSON response with history array
  */
 export async function GET(request: NextRequest) {
   try {
-    // 1. Get query parameters (optional)
-    const searchParams = request.nextUrl.searchParams;
-    const limitParam = searchParams.get('limit');
-    
-    let limit = MAX_HISTORY_SIZE;
-    if (limitParam) {
-      const parsedLimit = parseInt(limitParam, 10);
-      if (!isNaN(parsedLimit) && parsedLimit > 0 && parsedLimit <= MAX_HISTORY_SIZE) {
-        limit = parsedLimit;
+    // Get query parameters for pagination/filtering (optional)
+    const { searchParams } = new URL(request.url);
+    const limit = searchParams.get('limit');
+    const offset = searchParams.get('offset');
+
+    // Parse limit parameter with validation
+    let parsedLimit = 50; // Default limit
+    if (limit) {
+      const limitNum = parseInt(limit, 10);
+      if (!isNaN(limitNum) && limitNum > 0 && limitNum <= 100) {
+        parsedLimit = limitNum;
+      } else {
+        return NextResponse.json(
+          {
+            error: 'Invalid limit parameter. Must be a number between 1 and 100.',
+            code: 'INVALID_PARAMETER',
+            details: { limit }
+          },
+          { status: 400 }
+        );
       }
     }
 
-    // 2. Return history (most recent first)
-    // Note: In a real application with separate processes, we'd use a shared database
-    // For this demo, we're using in-memory storage that resets on server restart
-    
-    // Since we can't share memory between route handlers in Next.js,
-    // we'll return an empty array with a note about the limitation
-    // In production, you would use a database or Redis
-    
+    // Parse offset parameter with validation
+    let parsedOffset = 0; // Default offset
+    if (offset) {
+      const offsetNum = parseInt(offset, 10);
+      if (!isNaN(offsetNum) && offsetNum >= 0) {
+        parsedOffset = offsetNum;
+      } else {
+        return NextResponse.json(
+          {
+            error: 'Invalid offset parameter. Must be a non-negative number.',
+            code: 'INVALID_PARAMETER',
+            details: { offset }
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Apply pagination
+    const paginatedHistory = calculationHistory.slice(
+      parsedOffset,
+      parsedOffset + parsedLimit
+    );
+
+    // Return history with metadata
     return NextResponse.json(
       {
-        message: 'History endpoint',
-        note: 'In a production environment, history would be stored in a database. This demo uses in-memory storage per route handler.',
-        history: calculationHistory.slice(0, limit),
-        total: calculationHistory.length,
-        limit: limit
+        data: paginatedHistory,
+        metadata: {
+          total: calculationHistory.length,
+          limit: parsedLimit,
+          offset: parsedOffset,
+          hasMore: parsedOffset + parsedLimit < calculationHistory.length,
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 200 }
     );
@@ -55,41 +73,29 @@ export async function GET(request: NextRequest) {
     console.error('Unexpected error in history API:', error);
     
     return NextResponse.json(
-      { result: null, error: 'Internal server error' },
+      {
+        error: 'Internal server error',
+        code: 'INTERNAL_ERROR',
+        details: {
+          message: error instanceof Error ? error.message : 'Unknown error',
+          timestamp: new Date().toISOString()
+        }
+      },
       { status: 500 }
     );
   }
 }
 
 /**
- * Helper function to add items to history (called from main calculator route)
- * In a real implementation, this would be in a shared module
+ * OPTIONS handler for CORS preflight requests
  */
-export function addToHistory(expression: string, result: number): void {
-  const historyItem = {
-    expression: expression.trim(),
-    result: result,
-    timestamp: new Date().toISOString()
-  };
-
-  calculationHistory.unshift(historyItem); // Add to beginning for most recent first
-
-  // Limit history size
-  if (calculationHistory.length > MAX_HISTORY_SIZE) {
-    calculationHistory.length = MAX_HISTORY_SIZE;
-  }
-}
-
-/**
- * Helper function to get history
- */
-export function getHistory(limit: number = MAX_HISTORY_SIZE) {
-  return calculationHistory.slice(0, limit);
-}
-
-/**
- * Helper function to clear history (useful for testing)
- */
-export function clearHistory(): void {
-  calculationHistory = [];
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
 }

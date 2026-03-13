@@ -1,6 +1,0 @@
-name: test-crew
-description: Crew de teste simples com agente guide
-spec: guide
-universes:
-  - name: orientacao
-    spec: guide

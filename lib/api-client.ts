@@ -1,84 +1,107 @@
-import { CalculatorOperation, CalculationHistory, CalculateResponse, ApiResponse } from '@/types/calculator';
+// API Client for Calculator CRUD operations
+export interface Calculation {
+  id: string;
+  expression: string;
+  result: number;
+  timestamp: string;
+  userId?: string;
+}
 
-const API_BASE_URL = '/api';
+export interface CreateCalculationDto {
+  expression: string;
+  userId?: string;
+}
 
-async function apiRequest<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint}`;
-  
-  const defaultOptions: RequestInit = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    ...options,
-  };
+export interface UpdateCalculationDto {
+  expression?: string;
+}
 
-  try {
-    const response = await fetch(url, defaultOptions);
+class ApiClient {
+  private baseUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+
+  // Create a new calculation
+  async createCalculation(data: CreateCalculationDto): Promise<Calculation> {
+    const response = await fetch(`${this.baseUrl}/calculations`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to create calculation: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  // Get all calculations
+  async getCalculations(): Promise<Calculation[]> {
+    const response = await fetch(`${this.baseUrl}/calculations`);
     
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.error || errorData.message || `HTTP error! status: ${response.status}`
-      );
+      throw new Error(`Failed to fetch calculations: ${response.statusText}`);
     }
 
-    const data: ApiResponse<T> = await response.json();
+    return response.json();
+  }
+
+  // Get a single calculation by ID
+  async getCalculation(id: string): Promise<Calculation> {
+    const response = await fetch(`${this.baseUrl}/calculations/${id}`);
     
-    if (!data.success) {
-      throw new Error(data.error || data.message || 'API request failed');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch calculation: ${response.statusText}`);
     }
 
-    return data.data as T;
-  } catch (error) {
-    console.error(`API request failed for ${endpoint}:`, error);
-    throw error;
+    return response.json();
+  }
+
+  // Update a calculation
+  async updateCalculation(id: string, data: UpdateCalculationDto): Promise<Calculation> {
+    const response = await fetch(`${this.baseUrl}/calculations/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to update calculation: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  // Delete a calculation
+  async deleteCalculation(id: string): Promise<void> {
+    const response = await fetch(`${this.baseUrl}/calculations/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete calculation: ${response.statusText}`);
+    }
+  }
+
+  // Evaluate an expression directly
+  async evaluateExpression(expression: string): Promise<{ result: number }> {
+    const response = await fetch(`${this.baseUrl}/calculations/evaluate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ expression }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to evaluate expression: ${response.statusText}`);
+    }
+
+    return response.json();
   }
 }
 
-export async function calculate(operation: CalculatorOperation): Promise<CalculateResponse> {
-  return apiRequest<CalculateResponse>('/calculate', {
-    method: 'POST',
-    body: JSON.stringify(operation),
-  });
-}
-
-export async function getHistory(): Promise<CalculationHistory[]> {
-  const response = await apiRequest<{ calculations: CalculationHistory[] }>('/history');
-  return response.calculations || [];
-}
-
-export async function getHistoryById(id: string): Promise<CalculationHistory> {
-  return apiRequest<CalculationHistory>(`/history/${id}`);
-}
-
-export async function deleteHistory(id: string): Promise<void> {
-  await apiRequest(`/history/${id}`, {
-    method: 'DELETE',
-  });
-}
-
-export async function clearHistory(): Promise<void> {
-  await apiRequest('/history/clear', {
-    method: 'DELETE',
-  });
-}
-
-export async function getStats(): Promise<{
-  totalCalculations: number;
-  successfulCalculations: number;
-  failedCalculations: number;
-  mostUsedOperation: string;
-}> {
-  return apiRequest('/stats');
-}
-
-// Utility function for real-time updates (WebSocket/SSE would be better)
-export async function subscribeToUpdates(callback: (update: CalculationHistory) => void) {
-  // This is a placeholder for real-time updates
-  // In a real app, you would use WebSocket or Server-Sent Events
-  console.log('Real-time updates not implemented');
-}
+export const apiClient = new ApiClient();

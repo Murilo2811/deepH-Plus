@@ -1,440 +1,158 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
+import { apiClient } from '@/lib/api-client';
 
-type Operation = 'add' | 'subtract' | 'multiply' | 'divide' | null;
+interface CalculatorProps {
+  onCalculate?: (expression: string, result: number) => void;
+}
 
-export default function Calculator() {
-  const [currentInput, setCurrentInput] = useState<string>('0');
-  const [previousInput, setPreviousInput] = useState<string | null>(null);
-  const [operation, setOperation] = useState<Operation>(null);
-  const [waitingForNewInput, setWaitingForNewInput] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+export default function Calculator({ onCalculate }: CalculatorProps) {
+  const [expression, setExpression] = useState('');
+  const [result, setResult] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const resetCalculator = useCallback(() => {
-    setCurrentInput('0');
-    setPreviousInput(null);
-    setOperation(null);
-    setWaitingForNewInput(false);
-    setIsLoading(false);
-    setError('');
-  }, []);
+  const handleButtonClick = (value: string) => {
+    setExpression(prev => prev + value);
+    setError(null);
+  };
 
-  const appendNumber = useCallback((num: string) => {
-    if (waitingForNewInput) {
-      setCurrentInput(num);
-      setWaitingForNewInput(false);
-    } else {
-      setCurrentInput(prev => prev === '0' ? num : prev + num);
-    }
-    setError('');
-  }, [waitingForNewInput]);
+  const handleClear = () => {
+    setExpression('');
+    setResult(null);
+    setError(null);
+  };
 
-  const addDecimal = useCallback(() => {
-    if (waitingForNewInput) {
-      setCurrentInput('0.');
-      setWaitingForNewInput(false);
-    } else if (!currentInput.includes('.')) {
-      setCurrentInput(prev => prev + '.');
-    }
-    setError('');
-  }, [currentInput, waitingForNewInput]);
+  const handleBackspace = () => {
+    setExpression(prev => prev.slice(0, -1));
+    setError(null);
+  };
 
-  const setOperationHandler = useCallback((op: Operation) => {
-    if (isLoading) return;
-
-    if (operation !== null && !waitingForNewInput) {
-      calculateResult();
-    }
-
-    setPreviousInput(currentInput);
-    setOperation(op);
-    setWaitingForNewInput(true);
-    setError('');
-  }, [currentInput, isLoading, operation, waitingForNewInput]);
-
-  const calculateResult = useCallback(async () => {
-    if (operation === null || previousInput === null || isLoading) {
-      return;
-    }
-
-    const a = parseFloat(previousInput);
-    const b = parseFloat(currentInput);
-
-    if (isNaN(a) || isNaN(b)) {
-      setError('Invalid numbers');
+  const handleEvaluate = async () => {
+    if (!expression.trim()) {
+      setError('Please enter an expression');
       return;
     }
 
     setIsLoading(true);
-    setError('');
+    setError(null);
 
     try {
-      // API call to backend
-      const response = await fetch('/api/calculate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          a,
-          b,
-          operation: operation.toUpperCase(),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Calculation failed');
-      }
-
-      const data = await response.json();
+      const evaluation = await apiClient.evaluateExpression(expression);
+      setResult(evaluation.result);
       
-      setCurrentInput(data.result.toString());
-      setPreviousInput(null);
-      setOperation(null);
-      setWaitingForNewInput(true);
-    } catch (err: any) {
-      setError(err.message || 'Calculation error');
+      if (onCalculate) {
+        onCalculate(expression, evaluation.result);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to evaluate expression');
     } finally {
       setIsLoading(false);
     }
-  }, [currentInput, previousInput, operation, isLoading]);
+  };
 
-  // Keyboard support
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const key = event.key;
+  const handleSave = async () => {
+    if (!expression.trim() || result === null) {
+      setError('Please evaluate an expression first');
+      return;
+    }
 
-      if (key >= '0' && key <= '9') {
-        appendNumber(key);
-      } else if (key === '.') {
-        addDecimal();
-      } else if (key === '+') {
-        setOperationHandler('add');
-      } else if (key === '-') {
-        setOperationHandler('subtract');
-      } else if (key === '*') {
-        setOperationHandler('multiply');
-      } else if (key === '/') {
-        event.preventDefault();
-        setOperationHandler('divide');
-      } else if (key === 'Enter' || key === '=') {
-        calculateResult();
-      } else if (key === 'Escape' || key === 'Delete') {
-        resetCalculator();
-      } else if (key === 'Backspace') {
-        if (currentInput.length > 1) {
-          setCurrentInput(prev => prev.slice(0, -1));
-        } else {
-          setCurrentInput('0');
-        }
-      }
-    };
+    setIsLoading(true);
+    setError(null);
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [appendNumber, addDecimal, setOperationHandler, calculateResult, resetCalculator, currentInput]);
-
-  const getOperationSymbol = (op: Operation) => {
-    switch (op) {
-      case 'add': return '+';
-      case 'subtract': return '−';
-      case 'multiply': return '×';
-      case 'divide': return '÷';
-      default: return '';
+    try {
+      await apiClient.createCalculation({ expression });
+      setError(null);
+      alert('Calculation saved successfully!');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save calculation');
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const buttons = [
+    ['7', '8', '9', '/'],
+    ['4', '5', '6', '*'],
+    ['1', '2', '3', '-'],
+    ['0', '.', '=', '+'],
+  ];
+
   return (
-    <div className="calculator">
-      <style jsx>{`
-        :root {
-          --bg-primary: #1a1a1a;
-          --bg-display: #2d2d2d;
-          --bg-number: #3a3a3a;
-          --bg-operation: #ff9500;
-          --bg-clear: #ff3b30;
-          --bg-equals: #34c759;
-          --text-primary: #ffffff;
-          --text-secondary: #cccccc;
-          --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .calculator {
-          background-color: var(--bg-primary);
-          border-radius: 20px;
-          padding: 24px;
-          max-width: 400px;
-          width: 100%;
-          box-shadow: var(--shadow);
-        }
-
-        .display {
-          background-color: var(--bg-display);
-          border-radius: 12px;
-          padding: 24px 20px;
-          margin-bottom: 24px;
-          text-align: right;
-          min-height: 140px;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-          overflow: hidden;
-        }
-
-        .previous-operation {
-          font-size: 1.25rem;
-          color: var(--text-secondary);
-          margin-bottom: 8px;
-          min-height: 1.75rem;
-          font-family: 'Courier New', monospace;
-          word-break: break-all;
-        }
-
-        .current-input {
-          font-size: 2.5rem;
-          font-weight: 300;
-          font-family: 'Courier New', monospace;
-          word-break: break-all;
-          line-height: 1.2;
-        }
-
-        .keypad {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 12px;
-        }
-
-        @media (max-width: 640px) {
-          .keypad {
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-          }
-        }
-
-        .button {
-          border: none;
-          border-radius: 12px;
-          font-size: 1.5rem;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.15s ease;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          aspect-ratio: 1;
-          user-select: none;
-        }
-
-        .button:hover {
-          filter: brightness(1.15);
-          transform: translateY(-2px);
-        }
-
-        .button:active {
-          transform: translateY(0);
-          filter: brightness(0.95);
-        }
-
-        .button.number {
-          background-color: var(--bg-number);
-          color: var(--text-primary);
-        }
-
-        .button.operation {
-          background-color: var(--bg-operation);
-          color: white;
-        }
-
-        .button.clear {
-          background-color: var(--bg-clear);
-          color: white;
-        }
-
-        .button.equals {
-          background-color: var(--bg-equals);
-          color: white;
-        }
-
-        .button.span-two {
-          grid-column: span 2;
-          aspect-ratio: auto;
-        }
-
-        .button:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-          transform: none !important;
-        }
-
-        .loading {
-          opacity: 0.7;
-          position: relative;
-        }
-
-        .loading::after {
-          content: '';
-          position: absolute;
-          width: 20px;
-          height: 20px;
-          border: 2px solid rgba(255, 255, 255, 0.3);
-          border-top-color: white;
-          border-radius: 50%;
-          animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        .error-message {
-          color: #ff6b6b;
-          text-align: center;
-          margin-top: 16px;
-          min-height: 1.5rem;
-          font-size: 0.95rem;
-        }
-      `}</style>
-
-      <div className="display">
-        <div className="previous-operation">
-          {previousInput !== null && operation !== null && (
-            `${previousInput} ${getOperationSymbol(operation)}`
-          )}
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <div className="mb-4">
+        <div className="text-2xl font-bold text-gray-800 mb-2">Calculator</div>
+        
+        {/* Display */}
+        <div className="mb-4 p-4 bg-gray-100 rounded-lg">
+          <div className="text-right text-gray-600 text-sm mb-1">Expression:</div>
+          <div className="text-right text-2xl font-mono mb-2 min-h-[2rem]">
+            {expression || '0'}
+          </div>
+          <div className="text-right text-gray-600 text-sm mb-1">Result:</div>
+          <div className="text-right text-3xl font-bold text-blue-600 min-h-[3rem]">
+            {result !== null ? result : '0'}
+          </div>
         </div>
-        <div className="current-input">{currentInput}</div>
+
+        {/* Error Display */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
       </div>
 
-      <div className="keypad">
-        <button 
-          className="button clear span-two" 
-          onClick={resetCalculator}
-          disabled={isLoading}
-        >
-          C
-        </button>
-        <button 
-          className="button operation" 
-          onClick={() => setOperationHandler('divide')}
-          disabled={isLoading}
-        >
-          ÷
-        </button>
-        <button 
-          className="button operation" 
-          onClick={() => setOperationHandler('multiply')}
-          disabled={isLoading}
-        >
-          ×
-        </button>
+      {/* Calculator Buttons */}
+      <div className="grid grid-cols-4 gap-2 mb-4">
+        {buttons.flat().map((btn) => (
+          <button
+            key={btn}
+            onClick={() => btn === '=' ? handleEvaluate() : handleButtonClick(btn)}
+            disabled={isLoading}
+            className={`p-4 text-xl font-semibold rounded-lg transition-colors ${
+              btn === '='
+                ? 'bg-green-500 hover:bg-green-600 text-white'
+                : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+            } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {btn}
+          </button>
+        ))}
+      </div>
 
-        <button 
-          className="button number" 
-          onClick={() => appendNumber('7')}
+      {/* Control Buttons */}
+      <div className="flex gap-2">
+        <button
+          onClick={handleClear}
           disabled={isLoading}
+          className="flex-1 p-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold disabled:opacity-50"
         >
-          7
+          Clear
         </button>
-        <button 
-          className="button number" 
-          onClick={() => appendNumber('8')}
+        <button
+          onClick={handleBackspace}
           disabled={isLoading}
+          className="flex-1 p-3 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-semibold disabled:opacity-50"
         >
-          8
+          ⌫ Backspace
         </button>
-        <button 
-          className="button number" 
-          onClick={() => appendNumber('9')}
-          disabled={isLoading}
+        <button
+          onClick={handleSave}
+          disabled={isLoading || result === null}
+          className="flex-1 p-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold disabled:opacity-50"
         >
-          9
-        </button>
-        <button 
-          className="button operation" 
-          onClick={() => setOperationHandler('subtract')}
-          disabled={isLoading}
-        >
-          −
-        </button>
-
-        <button 
-          className="button number" 
-          onClick={() => appendNumber('4')}
-          disabled={isLoading}
-        >
-          4
-        </button>
-        <button 
-          className="button number" 
-          onClick={() => appendNumber('5')}
-          disabled={isLoading}
-        >
-          5
-        </button>
-        <button 
-          className="button number" 
-          onClick={() => appendNumber('6')}
-          disabled={isLoading}
-        >
-          6
-        </button>
-        <button 
-          className="button operation" 
-          onClick={() => setOperationHandler('add')}
-          disabled={isLoading}
-        >
-          +
-        </button>
-
-        <button 
-          className="button number" 
-          onClick={() => appendNumber('1')}
-          disabled={isLoading}
-        >
-          1
-        </button>
-        <button 
-          className="button number" 
-          onClick={() => appendNumber('2')}
-          disabled={isLoading}
-        >
-          2
-        </button>
-        <button 
-          className="button number" 
-          onClick={() => appendNumber('3')}
-          disabled={isLoading}
-        >
-          3
-        </button>
-        <button 
-          className={`button equals ${isLoading ? 'loading' : ''}`}
-          onClick={calculateResult}
-          disabled={isLoading}
-          style={{ gridRow: 'span 2' }}
-        >
-          {!isLoading && '='}
-        </button>
-
-        <button 
-          className="button number span-two" 
-          onClick={() => appendNumber('0')}
-          disabled={isLoading}
-        >
-          0
-        </button>
-        <button 
-          className="button number" 
-          onClick={addDecimal}
-          disabled={isLoading}
-        >
-          .
+          Save
         </button>
       </div>
 
-      {error && (
-        <div className="error-message">{error}</div>
+      {/* Loading State */}
+      {isLoading && (
+        <div className="mt-4 text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          <span className="ml-2 text-gray-600">Processing...</span>
+        </div>
       )}
     </div>
   );
