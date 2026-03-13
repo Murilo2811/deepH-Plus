@@ -32,6 +32,7 @@ export interface Agent {
     startup_calls?: SkillCall[];
     timeout_ms?: number;
     metadata?: Record<string, string>;
+    source?: "standard" | "user";
 }
 
 export async function fetchAgents(): Promise<Agent[]> {
@@ -66,6 +67,7 @@ export interface Skill {
     description: string;
     filename: string;
     content: string;
+    source?: "standard" | "user";
 }
 
 export async function fetchSkills(): Promise<Skill[]> {
@@ -178,6 +180,7 @@ export interface Crew {
     description?: string;
     spec: string;
     universes?: Array<{ name: string; spec: string;[key: string]: unknown }>;
+    source?: "standard" | "user";
 }
 
 export async function fetchCrews(): Promise<Crew[]> {
@@ -306,4 +309,16 @@ export function runTeam(
     })().catch(() => { /* ignore abort */ });
 
     return () => controller.abort();
+}
+
+export interface StandardLibrary {
+    agents: Agent[];
+    crews: Crew[];
+    skills: Skill[];
+}
+
+export async function fetchStandardLibrary(): Promise<StandardLibrary> {
+    const res = await fetch(`${API_BASE}/api/standard-library`);
+    if (!res.ok) throw new Error("Failed to fetch standard library");
+    return res.json();
 }

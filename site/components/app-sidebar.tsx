@@ -2,13 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Zap, MessageSquare, Settings, Plus, BookOpen, Play, Users, Wrench } from "lucide-react";
+import { Zap, MessageSquare, Settings, Plus, BookOpen, Play, Users, Wrench, LayoutGrid, Box } from "lucide-react";
+import { LibraryModal } from "./library-modal";
+import { useState } from "react";
 
 export function AppSidebar() {
     const pathname = usePathname();
+    const [libraryOpen, setLibraryOpen] = useState(false);
 
     const navItems = [
         { href: "/",       icon: Zap,          label: "Dashboard" },
+        { href: "/standard-library", icon: Box, label: "Standard Library" },
         { href: "/chat",   icon: MessageSquare, label: "Chat" },
         { href: "/run",    icon: Play,          label: "Modo Equipe" },
         { href: "/crews",  icon: Users,         label: "Times" },
@@ -41,6 +45,8 @@ export function AppSidebar() {
                     </Link>
                 );
             })}
+
+            <LibraryModal open={libraryOpen} onOpenChange={setLibraryOpen} />
 
             {/* New Agent button — charcoal dashed ring */}
             <div className="mt-auto pb-2">

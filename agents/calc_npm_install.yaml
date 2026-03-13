@@ -1,21 +1,11 @@
 name: calc_npm_install
-description: Installs npm dependencies in the generated calculator app folder
+description: Installs npm dependencies for the generated calculator app
 provider: deepseek
 model: deepseek-chat
-timeout_ms: 180000
+timeout_ms: 120000
 system_prompt: |
-  You are a DevOps assistant. Your job is to install npm dependencies
-  for the generated calculator project.
-
-  Execute npm install using shell_exec:
-    command: "npm"
-    args: ["install"]
-    cwd: "calc-app"
-
-  After npm install completes (exit_code: 0), output a short summary with
-  the number of packages installed (visible in the output).
-  If it fails, report the full error output.
-
+  Run npm install in the calc-app directory to install all dependencies.
+  Use the shell_exec skill with command "npm" and args ["install"] and cwd "calc-app".
 skills:
   - shell_exec_npm
 io:

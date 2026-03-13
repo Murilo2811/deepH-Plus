@@ -57,14 +57,16 @@
 
   /* --- Cards --- */
   .sketch-card {
-    @apply bg-white rounded-2xl p-5 transition-all duration-200;
-    border: 2.5px solid var(--sketch-charcoal);
+    @apply bg-white rounded-2xl p-5 transition-all duration-300;
+    border: 3.5px solid var(--sketch-charcoal);
     border-radius: 12px 14px 10px 13px / 13px 11px 14px 12px;
-    box-shadow: 4px 4px 0px 0px var(--sketch-charcoal);
+    box-shadow: 6px 6px 0px 0px var(--sketch-charcoal);
+    position: relative;
+    overflow: hidden;
   }
   .sketch-card:hover {
-    transform: translate(-1px, -2px);
-    box-shadow: 5px 6px 0px 0px var(--sketch-charcoal);
+    transform: translate(-2px, -3px);
+    box-shadow: 8px 10px 0px 0px var(--sketch-charcoal);
   }
 
   .sketch-card-yellow {
@@ -79,38 +81,34 @@
 
   /* --- Buttons --- */
   .sketch-btn-primary {
-    @apply inline-flex items-center gap-2 px-5 py-2.5 font-bold text-sm transition-all duration-150;
+    @apply inline-flex items-center gap-3 px-6 py-3 font-black text-sm transition-all duration-150 uppercase tracking-widest;
     background: var(--sketch-teal);
     color: #fff;
-    border: 2.5px solid var(--sketch-charcoal);
+    border: 3.5px solid var(--sketch-charcoal);
     border-radius: 10px 12px 11px 13px / 12px 10px 12px 11px;
-    box-shadow: 3px 3px 0px 0px var(--sketch-charcoal);
+    box-shadow: 5px 5px 0px 0px var(--sketch-charcoal);
   }
   .sketch-btn-primary:hover {
     transform: translate(-1px, -1px);
-    box-shadow: 4px 4px 0px 0px var(--sketch-charcoal);
-    background: #1DA8A0;
+    box-shadow: 6px 6px 0px 0px var(--sketch-charcoal);
+    background: var(--sketch-teal-dark);
   }
   .sketch-btn-primary:active {
-    transform: translate(1px, 1px);
-    box-shadow: 1px 1px 0px 0px var(--sketch-charcoal);
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px 0px var(--sketch-charcoal);
   }
 
   .sketch-btn-ring {
-    @apply inline-flex items-center gap-2 px-5 py-2.5 font-bold text-sm transition-all duration-150;
+    @apply inline-flex items-center gap-3 px-6 py-3 font-black text-sm transition-all duration-150 uppercase tracking-widest;
     background: var(--sketch-yellow);
     color: var(--sketch-charcoal);
-    border: 2.5px solid var(--sketch-charcoal);
+    border: 3.5px solid var(--sketch-charcoal);
     border-radius: 13px 11px 12px 10px / 11px 13px 10px 12px;
-    box-shadow: 3px 3px 0px 0px var(--sketch-charcoal);
+    box-shadow: 5px 5px 0px 0px var(--sketch-charcoal);
   }
   .sketch-btn-ring:hover {
     transform: translate(-1px, -1px);
-    box-shadow: 4px 4px 0px 0px var(--sketch-charcoal);
-  }
-  .sketch-btn-ring:active {
-    transform: translate(1px, 1px);
-    box-shadow: 1px 1px 0px 0px var(--sketch-charcoal);
+    box-shadow: 6px 6px 0px 0px var(--sketch-charcoal);
   }
 
   .sketch-btn-ghost {
@@ -140,59 +138,64 @@
 
   /* Charcoal ring + yellow fill → inactive */
   .sketch-nav-inactive {
-    @apply flex items-center justify-center w-12 h-12 transition-all duration-200;
-    background: var(--sketch-yellow-pale);
-    border: 2.5px solid transparent;
+    @apply flex items-center justify-center w-14 h-14 transition-all duration-200;
+    background: var(--sketch-paper-cool);
+    border: 3px solid transparent;
     border-radius: 50% 48% 46% 50% / 52% 46% 54% 48%;
     color: var(--sketch-charcoal-soft);
   }
   .sketch-nav-inactive:hover {
     background: var(--sketch-yellow);
-    border: 2.5px solid var(--sketch-charcoal);
-    border-radius: 46% 54% 50% 48% / 54% 46% 48% 52%;
-    box-shadow: 2px 2px 0px 0px var(--sketch-charcoal);
+    border: 3.5px solid var(--sketch-charcoal);
+    box-shadow: 4px 4px 0px 0px var(--sketch-charcoal);
     color: var(--sketch-charcoal);
-    transform: rotate(-3deg);
+    transform: rotate(-3deg) scale(1.1);
   }
 
   /* --- Tag / Badge --- */
   .sketch-badge {
-    @apply inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5;
+    @apply inline-block text-[11px] font-black uppercase tracking-widest px-3 py-1;
     background: var(--sketch-yellow);
     color: var(--sketch-charcoal);
-    border: 2px solid var(--sketch-charcoal);
+    border: 3px solid var(--sketch-charcoal);
     border-radius: 999px 980px 990px 970px / 980px 999px 970px 990px;
+    box-shadow: 2px 2px 0px 0px var(--sketch-charcoal);
   }
 
   /* --- Input fields --- */
   .sketch-input {
-    @apply w-full px-4 py-2.5 font-medium text-sm bg-white outline-none transition-all;
+    @apply w-full px-5 py-3 font-bold text-sm bg-white outline-none transition-all;
     color: var(--sketch-charcoal);
-    border: 2px solid var(--sketch-charcoal);
+    border: 3px solid var(--sketch-charcoal);
     border-radius: 8px 10px 9px 11px / 10px 8px 11px 9px;
-    box-shadow: 2px 2px 0 0 var(--sketch-charcoal);
+    box-shadow: 4px 4px 0 0 var(--sketch-charcoal);
   }
   .sketch-input::placeholder {
     color: var(--sketch-charcoal-soft);
     opacity: 0.65;
   }
   .sketch-input:focus {
-    box-shadow: 3px 3px 0 0 var(--sketch-teal);
+    box-shadow: 5px 5px 0 0 var(--sketch-teal);
     border-color: var(--sketch-teal);
+    transform: translate(-1px, -1px);
   }
 
   /* --- Divider --- */
   .sketch-divider {
     border: none;
-    border-top: 2px dashed rgba(34, 43, 49, 0.2);
+    border-top: 3px dashed rgba(34, 43, 49, 0.4);
     margin: 1.5rem 0;
   }
 
   /* --- Section label --- */
   .sketch-label {
-    @apply text-xs font-bold uppercase tracking-widest;
-    color: var(--sketch-charcoal-soft);
-    letter-spacing: 0.12em;
+    @apply text-xs font-black uppercase tracking-[0.2em];
+    color: var(--sketch-charcoal);
+    background: var(--sketch-yellow-pale);
+    padding: 2px 8px;
+    border: 2px solid var(--sketch-charcoal);
+    border-radius: 4px 6px 3px 5px;
+    display: inline-block;
   }
 }
 

@@ -418,3 +418,144 @@ func GetKit(name string) (KitTemplate, error) {
 	}
 	return k, nil
 }
+
+// StandardAsset represents an agent, crew, or skill extracted from the built-in catalog.
+type StandardAsset struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Source      string `json:"source"` // always "standard"
+	Kit         string `json:"kit"`    // originating kit name
+	Content     string `json:"content,omitempty"`
+	Type        string `json:"type"` // "agent" or "crew"
+}
+
+// StandardAgents returns all agent definitions embedded in the built-in kits.
+func StandardAgents() []StandardAsset {
+	seen := map[string]bool{}
+	var out []StandardAsset
+	for _, kit := range kitTemplates {
+		for _, f := range kit.Files {
+			if !isAgentFile(f.Path) {
+				continue
+			}
+			name := extractYAMLField(f.Content, "name")
+			if name == "" || seen[name] {
+				continue
+			}
+			seen[name] = true
+			out = append(out, StandardAsset{
+				Name:        name,
+				Description: extractYAMLField(f.Content, "description"),
+				Source:      "standard",
+				Kit:         kit.Name,
+				Content:     f.Content,
+				Type:        "agent",
+			})
+		}
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].Name < out[j].Name })
+	return out
+}
+
+// StandardCrews returns all crew definitions embedded in the built-in kits.
+func StandardCrews() []StandardAsset {
+	seen := map[string]bool{}
+	var out []StandardAsset
+	for _, kit := range kitTemplates {
+		for _, f := range kit.Files {
+			if !isCrewFile(f.Path) {
+				continue
+			}
+			name := extractYAMLField(f.Content, "name")
+			if name == "" || seen[name] {
+				continue
+			}
+			seen[name] = true
+			out = append(out, StandardAsset{
+				Name:        name,
+				Description: extractYAMLField(f.Content, "description"),
+				Source:      "standard",
+				Kit:         kit.Name,
+				Content:     f.Content,
+				Type:        "crew",
+			})
+		}
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].Name < out[j].Name })
+	return out
+}
+
+// StandardKits returns all kits with source:"standard" for the standard library.
+func StandardKits() []StandardAsset {
+	kits := ListKits()
+	out := make([]StandardAsset, len(kits))
+	for i, k := range kits {
+		out[i] = StandardAsset{
+			Name:        k.Name,
+			Description: k.Description,
+			Source:      "standard",
+			Type:        "kit",
+		}
+	}
+	return out
+}
+
+func isAgentFile(path string) bool {
+	return len(path) > 7 && path[:7] == "agents/"
+}
+
+func isCrewFile(path string) bool {
+	return len(path) > 6 && path[:6] == "crews/"
+}
+
+// extractYAMLField does a quick line-scan for "field: value" in YAML content.
+// Good enough for the simple flat templates in the catalog.
+func extractYAMLField(content, field string) string {
+	prefix := field + ":"
+	for _, line := range splitLines(content) {
+		trimmed := trimLeftSpace(line)
+		if len(trimmed) > len(prefix) && trimmed[:len(prefix)] == prefix {
+			return trimString(trimmed[len(prefix):])
+		}
+	}
+	return ""
+}
+
+func splitLines(s string) []string {
+	var lines []string
+	start := 0
+	for i := 0; i < len(s); i++ {
+		if s[i] == '\n' {
+			line := s[start:i]
+			if len(line) > 0 && line[len(line)-1] == '\r' {
+				line = line[:len(line)-1]
+			}
+			lines = append(lines, line)
+			start = i + 1
+		}
+	}
+	if start < len(s) {
+		lines = append(lines, s[start:])
+	}
+	return lines
+}
+
+func trimLeftSpace(s string) string {
+	i := 0
+	for i < len(s) && (s[i] == ' ' || s[i] == '\t') {
+		i++
+	}
+	return s[i:]
+}
+
+func trimString(s string) string {
+	start := 0
+	for start < len(s) && (s[start] == ' ' || s[start] == '\t' || s[start] == '"' || s[start] == '\'') {
+		start++
+	}
+	end := len(s)
+	for end > start && (s[end-1] == ' ' || s[end-1] == '\t' || s[end-1] == '"' || s[end-1] == '\'' || s[end-1] == '\r') {
+		end--
+	}
+	return s[start:end]
+}

@@ -139,8 +139,15 @@ func TestHandleAgents(t *testing.T) {
 
 	var agents []project.AgentConfig
 	json.NewDecoder(rr.Body).Decode(&agents)
-	if len(agents) != 1 || agents[0].Name != "test-agent" {
-		t.Errorf("expected 1 agent named test-agent, got %v", agents)
+	found := false
+	for _, a := range agents {
+		if a.Name == "test-agent" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("expected to find test-agent, got %v", agents)
 	}
 
 	// Test POST /api/agents (Create new)

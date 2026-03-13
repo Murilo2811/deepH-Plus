@@ -33,13 +33,16 @@ const config: Config = {
                     "teal-light": "#7DE8E3",   // hover / lighter variant
                     yellow:       "#F9E05E",   // accent: ring fills, highlights
                     "yellow-pale":"#FFF9C4",   // decorative card fills
-                    charcoal:     "#222B31",   // outlines, text, rings
+                    charcoal:     "#1A2126",   // Outlined mais profundo para melhor contraste
                     "charcoal-soft":"#3D4E57", // secondary text
                     bg:           "#FFFFFF",   // page background
                     "bg-off":     "#F9F9F9",   // slight off-white for sections (updated value)
                     "bg-card":    "#FFFFFF",   // card fill
                     paper:        "#FFF9E5",   // Tom de papel quente
                     "paper-cool": "#F8F9FA",   // Tom de papel frio
+                    green:        "#4ADE80",   // Verde vívido para status
+                    pink:         "#F472B6",   // Rosa vívido
+                    blue:         "#60A5FA",   // Azul vívido
                 },
 
                 // ── Pastel & Paper (Used in Crayon Style) ────────────────

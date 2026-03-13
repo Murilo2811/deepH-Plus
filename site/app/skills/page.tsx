@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { fetchSkills, createOrUpdateSkill, deleteSkill, type Skill } from "@/lib/api";
-import { Wrench, Plus, Trash2, Save, XCircle, Pencil, Code2 } from "lucide-react";
+import { Wrench, Plus, Trash2, Save, XCircle, Pencil, Code2, Shield } from "lucide-react";
+import { SourceBadge } from "@/components/source-badge";
 
 export default function SkillsPage() {
     const [skills, setSkills] = useState<Skill[]>([]);
@@ -12,6 +13,9 @@ export default function SkillsPage() {
     const [deleting, setDeleting] = useState<string | null>(null);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+
+    const editingSkill = skills.find(s => s.name === editingSkillName);
+    const isReadOnly = editingSkill?.source === "standard";
 
     useEffect(() => {
         loadSkills();
@@ -84,35 +88,36 @@ export default function SkillsPage() {
     }
 
     return (
-        <div className="flex flex-col gap-8 p-6 max-w-5xl mx-auto">
+        <div className="flex flex-col gap-8 p-6 max-w-6xl mx-auto pt-10 pb-32">
             {/* Header */}
             <div>
-                <h1 className="text-3xl md:text-4xl font-display font-bold text-slate-50 uppercase tracking-tighter drop-shadow-md flex items-center gap-3">
-                    <Wrench className="w-8 h-8 text-cyan" />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-blue-500">Skills</span>
-                    <span className="text-slate-200">& Ferramentas</span>
+                <h1 className="text-4xl md:text-6xl font-display font-black text-charcoal uppercase tracking-tighter drop-shadow-sm flex items-center gap-4 relative z-10 w-fit">
+                    <Wrench className="w-10 h-10 text-charcoal md:w-14 md:h-14 rotate-[-10deg]" />
+                    Standard <span className="text-charcoal underline decoration-sketch-blue-dark decoration-wavy underline-offset-4">Library</span>
+                    <div className="h-4 w-[110%] bg-sketch-yellow/40 absolute bottom-1 -left-2 -z-10 rotate-[-1deg]"></div>
                 </h1>
-                <p className="text-cyan border border-cyan/20 bg-cyan/5 px-2 py-0.5 rounded-full mt-2 font-medium tracking-widest text-[10px] uppercase inline-block">
-                    Skills YAML locais salvas em <code className="font-mono">skills/</code>
+                <p className="text-charcoal bg-sketch-yellow border-2 border-charcoal border-dashed px-4 py-2 mt-6 font-bold tracking-widest text-xs uppercase inline-block shadow-sketch-sm rotate-1">
+                    Skills YAML locais salvas em <code className="font-mono bg-paper px-2 py-0.5 rounded border border-charcoal/30">.agent/skills/</code>
                 </p>
             </div>
 
-            <div className="grid md:grid-cols-[1fr_320px] gap-6">
+            <div className="grid md:grid-cols-[1fr_380px] gap-8">
                 {/* Editor */}
-                <div className="rounded-2xl border border-white/5 bg-background-elevated/50 shadow-2xl backdrop-blur-sm p-5 flex flex-col gap-5 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-56 h-56 bg-cyan/5 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
-                    <div className="flex justify-between items-center mb-1 relative">
-                        <h2 className="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                            <Code2 className="w-4 h-4 text-cyan" />
+                <div className="sketch-card p-6 md:p-8 flex flex-col gap-6 relative overflow-visible bg-paper z-10">
+                    <div className="flex justify-between items-center relative z-10">
+                        <h2 className="text-xl font-black text-charcoal font-display uppercase tracking-wider flex items-center gap-3">
+                            <div className="p-2 bg-sketch-blue/30 rounded-lg border-2 border-charcoal rotate-[-5deg]">
+                                <Code2 className="w-6 h-6 text-charcoal" />
+                            </div>
                             {editingSkillName ? `Editando: ${editingSkillName}` : "Criar Nova Skill YAML"}
                         </h2>
                     </div>
 
-                    <div className="flex-1 flex flex-col gap-2 min-h-[450px]">
-                        <div className="flex rounded-xl overflow-hidden border border-white/5 bg-background/60 flex-1">
-                            <div className="py-3 px-2 bg-black/30 select-none border-r border-white/5 min-w-[2.5rem] text-right">
+                    <div className="flex-1 flex flex-col gap-3 min-h-[450px]">
+                        <div className="flex rounded-xl overflow-hidden border-2 border-charcoal bg-white shadow-inner flex-1 group focus-within:ring-4 focus-within:ring-sketch-blue/30 transition-all">
+                            <div className="py-4 px-3 bg-pastel-yellow/40 border-r-2 border-charcoal min-w-[3rem] text-right font-bold text-charcoal/50 select-none">
                                 {yamlStr.split("\n").map((_, idx) => (
-                                    <div key={idx} className="text-slate-500 text-[11px] font-mono leading-[1.625rem]">
+                                    <div key={idx} className="text-[13px] font-mono leading-[1.75re]">
                                         {idx + 1}
                                     </div>
                                 ))}
@@ -121,59 +126,68 @@ export default function SkillsPage() {
                                 value={yamlStr}
                                 onChange={e => { setYamlStr(e.target.value); setError(""); }}
                                 spellCheck={false}
-                                className="flex-1 bg-transparent text-cyan p-3 font-mono text-xs leading-[1.625rem] resize-y focus:outline-none min-h-[450px] w-full"
+                                className="flex-1 bg-transparent text-charcoal font-bold p-4 font-mono text-[14px] leading-[1.75rem] resize-y focus:outline-none min-h-[450px] w-full"
                                 style={{ tabSize: 2 }}
                             />
                         </div>
-                        <p className="text-[11px] text-slate-500 text-center mt-1">
-                            ✏️ Você deve especificar o tipo da skill: bash, cmd, pwsh, python, javascript, node, ou http.
+                        {isReadOnly && (
+                            <div className="text-xs font-bold text-teal-600 bg-teal-50 border-2 border-teal-200 p-2 rounded-lg flex items-center gap-2 mb-2 animate-in fade-in slide-in-from-top-2">
+                                <Shield className="w-4 h-4" />
+                                <span>Esta skill faz parte da Standard Library e é somente leitura.</span>
+                            </div>
+                        )}
+                        <p className="text-xs font-bold text-charcoal/60 text-center mt-2 flex items-center justify-center gap-2">
+                            <span className="text-base">💡</span> Dica: Defina o tipo (bash, python, http, etc.) para a skill.
                         </p>
                     </div>
 
-                    {error && <p className="text-xs text-red-400 bg-red-400/10 border border-red-400/30 p-2 rounded">{error}</p>}
-                    {success && <p className="text-xs text-green-400 bg-green-400/10 border border-green-400/30 p-2 rounded">{success}</p>}
+                    {error && <div className="text-sm font-bold text-charcoal bg-sketch-pink/80 border-2 border-charcoal p-4 rounded-xl rotate-1 shadow-sketch-sm">{error}</div>}
+                    {success && <div className="text-sm font-bold text-charcoal bg-sketch-green/80 border-2 border-charcoal p-4 rounded-xl -rotate-1 shadow-sketch-sm">{success}</div>}
 
-                    <div className="flex gap-2 mt-auto">
+                    <div className="flex gap-4 mt-auto">
                         <button
                             onClick={resetForm}
-                            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-600 text-slate-400 text-sm hover:border-slate-400 hover:text-slate-200 transition-all"
+                            className="sketch-button bg-paper flex items-center justify-center gap-2 px-6 py-4 text-charcoal font-black"
                         >
-                            {editingSkillName ? <XCircle className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                            {editingSkillName ? "Cancelar Edição" : "Nova Skill"}
+                            {editingSkillName ? <XCircle className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                            <span className="hidden sm:inline">{editingSkillName ? "Cancelar" : "Novo"}</span>
                         </button>
                         <button
                             onClick={handleSave}
-                            disabled={saving || !yamlStr.trim()}
-                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-cyan text-background font-semibold text-sm disabled:opacity-40 hover:opacity-90 transition-all shadow-[0_0_15px_rgba(0,229,255,0.2)]"
+                            disabled={saving || !yamlStr.trim() || isReadOnly}
+                            className="sketch-button bg-sketch-blue flex-1 flex items-center justify-center gap-3 px-8 py-4 text-charcoal font-black disabled:opacity-50 text-lg group"
                         >
-                            <Save className="w-4 h-4" />
+                            <Save className="w-6 h-6 group-hover:scale-110 transition-transform" />
                             {saving ? "Salvando..." : editingSkillName ? "Atualizar Skill" : "Salvar Skill"}
                         </button>
                     </div>
                 </div>
 
                 {/* List */}
-                <div className="rounded-2xl border border-white/5 bg-background-elevated/50 shadow-2xl backdrop-blur-sm p-5 flex flex-col gap-4">
-                    <h2 className="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <Wrench className="w-4 h-4 text-cyan" />
-                        Skills Disponíveis ({skills.length})
+                <div className="sketch-card p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden bg-white z-10 h-fit">
+                    <h2 className="text-xl font-black text-charcoal font-display uppercase tracking-wider flex items-center gap-3">
+                        <div className="p-2 bg-pastel-yellow/50 rounded-lg border-2 border-charcoal rotate-3">
+                            <Wrench className="w-6 h-6 text-charcoal" />
+                        </div>
+                        Catálogo ({skills.length})
                     </h2>
                     {skills.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-12 text-center">
-                            <Wrench className="w-10 h-10 text-cyan/20 mb-3" />
-                            <p className="text-sm text-slate-500">Nenhuma skill encontrada.</p>
+                        <div className="flex flex-col items-center justify-center py-20 text-center bg-pastel-yellow/10 border-4 border-dashed border-charcoal/20 rounded-2xl">
+                            <Wrench className="w-16 h-16 text-charcoal/20 mb-6 rotate-12" />
+                            <p className="text-lg font-bold text-charcoal/50">O catálogo está vazio.</p>
                         </div>
                     ) : (
-                        <div className="flex flex-col gap-2 overflow-y-auto max-h-[600px] pr-2">
+                        <div className="flex flex-col gap-4 overflow-y-auto max-h-[600px] pr-2 custom-scrollbar">
                             {skills.map(skill => {
-                                const isLocal = skill.content && skill.content.trim() !== "";
+                                const isLocal = skill.source === "user";
                                 return (
                                     <div
                                         key={skill.name}
-                                        className={`rounded-xl border p-3 transition-all cursor-pointer ${editingSkillName === skill.name
-                                            ? "border-cyan/60 bg-cyan/5"
-                                            : "border-white/5 hover:border-cyan/30"
-                                            }`}
+                                        className={`group relative rounded-xl border-2 transition-all cursor-pointer p-4 overflow-hidden ${
+                                            editingSkillName === skill.name
+                                                ? "border-charcoal bg-sketch-yellow/40 shadow-none translate-y-0.5"
+                                                : "border-charcoal/30 bg-paper hover:border-charcoal hover:bg-pastel-yellow/20 hover:-translate-y-1 hover:shadow-sketch-sm"
+                                        }`}
                                         onClick={() => {
                                             setEditingSkillName(skill.name);
                                             setYamlStr(skill.content || `name: ${skill.name}\ndescription: "${skill.description}"\n# Essa skill está em código nativo e não pode ser editada aqui.\n`);
@@ -181,27 +195,23 @@ export default function SkillsPage() {
                                             setSuccess("");
                                         }}
                                     >
-                                        <div className="flex justify-between items-start gap-2">
+                                        <div className="flex justify-between items-start gap-4 relative z-10">
                                             <div className="flex-1 min-w-0">
-                                                <div className="text-sm font-medium text-slate-200">{skill.name}</div>
-                                                {skill.description && <div className="text-xs text-slate-500 mt-0.5 line-clamp-2">{skill.description}</div>}
+                                                <div className="text-lg font-black font-display text-charcoal group-hover:text-sketch-blue-dark transition-colors">{skill.name}</div>
+                                                {skill.description && <div className="text-sm font-medium text-charcoal/70 mt-1.5 line-clamp-2 leading-snug">{skill.description}</div>}
                                             </div>
-                                            <div className="flex items-center gap-1.5 shrink-0 flex-col">
-                                                <span className={`text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-lg border ${isLocal ? 'bg-cyan/10 text-cyan border-cyan/30' : 'bg-slate-800 text-slate-400 border-slate-700'}`}>
-                                                    {isLocal ? "Local" : "Nativo"}
-                                                </span>
-                                                <div className="flex gap-1 mt-1">
-                                                    {isLocal && (
-                                                        <button
-                                                            onClick={(e) => handleDelete(skill.name, e)}
-                                                            disabled={deleting === skill.name}
-                                                            title="Excluir skill local"
-                                                            className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-400/10 transition-all disabled:opacity-40"
-                                                        >
-                                                            <Trash2 className="w-3.5 h-3.5" />
-                                                        </button>
-                                                    )}
-                                                </div>
+                                            <div className="flex items-end gap-3 shrink-0 flex-col">
+                                                <SourceBadge source={skill.source || "user"} />
+                                                {isLocal && (
+                                                    <button
+                                                        onClick={(e) => handleDelete(skill.name, e)}
+                                                        disabled={deleting === skill.name}
+                                                        title="Excluir skill local"
+                                                        className="p-2.5 rounded-xl bg-paper text-charcoal border-2 border-charcoal hover:border-charcoal hover:bg-sketch-pink shadow-sm hover:shadow-sketch-sm transition-all disabled:opacity-40 mt-1 opacity-0 group-hover:opacity-100"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
                                     </div>

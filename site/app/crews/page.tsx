@@ -2,7 +2,9 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { fetchAgents, fetchCrews, saveCrew, updateCrew, deleteCrew, type Agent, type Crew } from "@/lib/api";
-import { Users, Plus, Trash2, ArrowUp, ArrowDown, ChevronDown, ChevronUp, Save, XCircle, Pencil, FileText } from "lucide-react";
+import { Users, Plus, Trash2, ArrowUp, ArrowDown, ChevronDown, ChevronUp, Save, XCircle, Pencil, FileText, Box, Shield } from "lucide-react";
+import { LibraryModal } from "@/components/library-modal";
+import { SourceBadge } from "@/components/source-badge";
 
 function generateYaml(crew: Crew): string {
     const lines: string[] = [`name: ${crew.name}`];
@@ -31,6 +33,7 @@ function parseCrewYaml(yaml: string): Crew {
 export default function CrewsPage() {
     const [agents, setAgents] = useState<Agent[]>([]);
     const [crews, setCrews] = useState<Crew[]>([]);
+    const [libraryOpen, setLibraryOpen] = useState(false);
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [mode, setMode] = useState<"sequential" | "parallel">("sequential");
@@ -46,6 +49,12 @@ export default function CrewsPage() {
     const [editorMode, setEditorMode] = useState<"visual" | "yaml">("visual");
     const [editorYamlStr, setEditorYamlStr] = useState("");
     const [editorYamlError, setEditorYamlError] = useState("");
+
+    const isReadOnly = useMemo(() => {
+        if (!editingCrewName) return false;
+        const crew = crews.find(c => c.name === editingCrewName);
+        return crew?.source === "standard";
+    }, [editingCrewName, crews]);
 
     useEffect(() => {
         fetchAgents().then(setAgents).catch(console.error);
@@ -171,6 +180,11 @@ export default function CrewsPage() {
 
     async function handleDelete(crewName: string, e: React.MouseEvent) {
         e.stopPropagation();
+        const crew = crews.find(c => c.name === crewName);
+        if (crew?.source === "standard") {
+            setError("Não é possível excluir times da Standard Library.");
+            return;
+        }
         if (!window.confirm(`Excluir o crew "${crewName}"? Esta ação não pode ser desfeita.`)) return;
         setDeleting(crewName);
         setError("");
@@ -190,14 +204,34 @@ export default function CrewsPage() {
     return (
         <div className="flex flex-col gap-8 p-6 max-w-4xl mx-auto">
             {/* Header */}
-            <div>
-                <h1 className="text-3xl md:text-4xl font-display font-bold text-slate-50 uppercase tracking-tighter drop-shadow-md">
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-blue-500">Times</span> & Crews
-                </h1>
-                <p className="text-cyan border border-cyan/20 bg-cyan/5 px-2 py-0.5 rounded-full mt-2 font-medium tracking-widest text-[10px] uppercase inline-block">
-                    Equipes de Agentes — YAML auto-salvo em <code className="font-mono">crews/</code>
-                </p>
+            <div className="flex items-start justify-between">
+                <div>
+                    <h1 className="text-3xl md:text-4xl font-display font-bold text-slate-50 uppercase tracking-tighter drop-shadow-md">
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan to-blue-500">Times</span> & Crews
+                    </h1>
+                    <p className="text-cyan border border-cyan/20 bg-cyan/5 px-2 py-0.5 rounded-full mt-2 font-medium tracking-widest text-[10px] uppercase inline-block">
+                        Equipes de Agentes — YAML auto-salvo em <code className="font-mono">crews/</code>
+                    </p>
+                </div>
+                <button
+                    onClick={() => setLibraryOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-cyan/10 border border-cyan/30 text-cyan text-sm font-semibold hover:bg-cyan/20 transition-all shadow-[0_0_15px_rgba(0,229,255,0.1)] hover:shadow-[0_0_20px_rgba(0,229,255,0.2)]"
+                >
+                    <Box className="w-4 h-4" /> Explorar Modelos
+                </button>
             </div>
+
+            <LibraryModal
+                open={libraryOpen}
+                onOpenChange={(open) => {
+                    setLibraryOpen(open);
+                    if (!open) {
+                        // Reload crews when modal closes in case something was imported
+                        fetchCrews().then(setCrews).catch(console.error);
+                    }
+                }}
+                defaultTab="crews"
+            />
 
             <div className="grid md:grid-cols-2 gap-6">
                 {/* Builder */}
@@ -240,10 +274,17 @@ export default function CrewsPage() {
                                     value={editorYamlStr}
                                     onChange={e => { setEditorYamlStr(e.target.value); setEditorYamlError(""); }}
                                     spellCheck={false}
-                                    className="flex-1 bg-transparent text-cyan p-3 font-mono text-xs leading-[1.625rem] resize-y focus:outline-none min-h-[350px] w-full"
+                                    readOnly={isReadOnly}
+                                    className={`flex-1 bg-transparent text-cyan p-3 font-mono text-xs leading-[1.625rem] resize-y focus:outline-none min-h-[350px] w-full ${isReadOnly ? "opacity-70" : ""}`}
                                     style={{ tabSize: 2 }}
                                 />
                             </div>
+                            {isReadOnly && (
+                                <div className="text-xs font-bold text-teal-600 bg-teal-50 border-2 border-teal-200 p-2 rounded-lg flex items-center gap-2 mt-2 animate-in fade-in slide-in-from-top-2">
+                                    <Shield className="w-4 h-4" />
+                                    <span>Este time faz parte da Standard Library e é somente leitura.</span>
+                                </div>
+                            )}
                             <p className="text-[11px] text-slate-500 text-center mt-1">
                                 ✏️ Edite o YAML diretamente e clique em Salvar Time.
                             </p>
@@ -257,7 +298,8 @@ export default function CrewsPage() {
                                     value={name}
                                     onChange={e => setName(e.target.value.toLowerCase().replace(/\s+/g, "-"))}
                                     placeholder="meu-time"
-                                    className="w-full rounded-xl border border-white/5 bg-background/60 text-slate-200 text-sm px-3 py-2 focus:outline-none focus:border-cyan/40 placeholder-slate-500"
+                                    disabled={isReadOnly}
+                                    className="w-full rounded-xl border border-white/5 bg-background/60 text-slate-200 text-sm px-3 py-2 focus:outline-none focus:border-cyan/40 placeholder-slate-500 disabled:opacity-50"
                                 />
                             </div>
 
@@ -268,7 +310,8 @@ export default function CrewsPage() {
                                     value={description}
                                     onChange={e => setDescription(e.target.value)}
                                     placeholder="Descreva o objetivo do time..."
-                                    className="w-full rounded-xl border border-white/5 bg-background/60 text-slate-200 text-sm px-3 py-2 focus:outline-none focus:border-cyan/40 placeholder-slate-500"
+                                    disabled={isReadOnly}
+                                    className="w-full rounded-xl border border-white/5 bg-background/60 text-slate-200 text-sm px-3 py-2 focus:outline-none focus:border-cyan/40 placeholder-slate-500 disabled:opacity-50"
                                 />
                             </div>
 
@@ -280,7 +323,8 @@ export default function CrewsPage() {
                                         <button
                                             key={m}
                                             onClick={() => setMode(m)}
-                                            className={`flex-1 text-xs py-1.5 rounded-lg border transition-all ${mode === m ? "border-cyan text-cyan bg-cyan/10" : "border-white/5 text-slate-400 hover:border-cyan/30"}`}
+                                            disabled={isReadOnly}
+                                            className={`flex-1 text-xs py-1.5 rounded-lg border transition-all ${mode === m ? "border-cyan text-cyan bg-cyan/10" : "border-white/5 text-slate-400 hover:border-cyan/30"} disabled:opacity-50`}
                                         >
                                             {m === "sequential" ? "Sequencial (>)" : "Paralelo (+)"}
                                         </button>
@@ -301,15 +345,16 @@ export default function CrewsPage() {
                                             <div key={a.name} className="flex items-center gap-2">
                                                 <button
                                                     onClick={() => toggleAgent(a.name)}
-                                                    className={`flex-1 text-left px-3 py-1.5 rounded-lg border text-xs transition-all ${isSelected ? "border-cyan/50 bg-cyan/10 text-cyan" : "border-white/5 text-slate-300 hover:border-cyan/30"}`}
+                                                    disabled={isReadOnly}
+                                                    className={`flex-1 text-left px-3 py-1.5 rounded-lg border text-xs transition-all ${isSelected ? "border-cyan/50 bg-cyan/10 text-cyan" : "border-white/5 text-slate-300 hover:border-cyan/30"} disabled:opacity-50`}
                                                 >
                                                     {isSelected && <span className="mr-1 text-cyan/70">{idx + 1}.</span>}
                                                     {a.name}
                                                 </button>
                                                 {isSelected && mode === "sequential" && (
                                                     <div className="flex flex-col gap-0.5">
-                                                        <button onClick={() => moveAgent(idx, "up")} className="text-slate-500 hover:text-cyan transition-colors"><ArrowUp className="w-3 h-3" /></button>
-                                                        <button onClick={() => moveAgent(idx, "down")} className="text-slate-500 hover:text-cyan transition-colors"><ArrowDown className="w-3 h-3" /></button>
+                                                        <button onClick={() => moveAgent(idx, "up")} disabled={isReadOnly} className="text-slate-500 hover:text-cyan transition-colors disabled:opacity-30"><ArrowUp className="w-3 h-3" /></button>
+                                                        <button onClick={() => moveAgent(idx, "down")} disabled={isReadOnly} className="text-slate-500 hover:text-cyan transition-colors disabled:opacity-30"><ArrowDown className="w-3 h-3" /></button>
                                                     </div>
                                                 )}
                                             </div>
@@ -355,7 +400,7 @@ export default function CrewsPage() {
                         )}
                         <button
                             onClick={handleSave}
-                            disabled={saving || (editorMode === "visual" ? (!name.trim() || selectedAgents.length === 0) : !editorYamlStr.trim())}
+                            disabled={saving || isReadOnly || (editorMode === "visual" ? (!name.trim() || selectedAgents.length === 0) : !editorYamlStr.trim())}
                             className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-cyan text-background font-semibold text-sm disabled:opacity-40 hover:opacity-90 transition-all shadow-[0_0_15px_rgba(0,229,255,0.2)]"
                         >
                             <Save className="w-4 h-4" />
@@ -401,11 +446,14 @@ export default function CrewsPage() {
                                 >
                                     <div className="flex justify-between items-start gap-2">
                                         <div className="flex-1 min-w-0">
-                                            <div className="text-sm font-medium text-slate-200">{crew.name}</div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <div className="text-sm font-medium text-slate-200">{crew.name}</div>
+                                                <SourceBadge source={crew.source || "user"} />
+                                            </div>
                                             {crew.description && <div className="text-xs text-slate-500 mt-0.5 truncate">{crew.description}</div>}
                                         </div>
                                         <div className="flex items-center gap-1.5 shrink-0">
-                                            <span className="text-xs text-slate-500 bg-background-dark/60 px-2 py-0.5 rounded-lg">
+                                            <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-lg">
                                                 {crew.spec.includes(">") ? "seq" : "par"}
                                             </span>
                                             <button

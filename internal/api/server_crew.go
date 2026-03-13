@@ -9,6 +9,8 @@ import (
 	"sort"
 	"strings"
 
+	"deeph/internal/catalog"
+
 	"gopkg.in/yaml.v3"
 )
 
@@ -17,6 +19,12 @@ type crewConfig struct {
 	Description string         `yaml:"description" json:"description,omitempty"`
 	Spec        string         `yaml:"spec" json:"spec"`
 	Universes   []crewUniverse `yaml:"universes,omitempty" json:"universes,omitempty"`
+}
+
+type crewWithSource struct {
+	crewConfig
+	Source string `json:"source"`
+	Kit    string `json:"kit,omitempty"`
 }
 
 type crewUniverse struct {
@@ -80,8 +88,29 @@ func (s *Server) listCrews(w http.ResponseWriter, _ *http.Request) {
 		}
 		crews = append(crews, c)
 	}
-	sort.Slice(crews, func(i, j int) bool { return crews[i].Name < crews[j].Name })
-	json.NewEncoder(w).Encode(crews)
+
+	userNames := make(map[string]bool, len(crews))
+	result := make([]crewWithSource, 0, len(crews)+10)
+	for _, c := range crews {
+		userNames[c.Name] = true
+		result = append(result, crewWithSource{crewConfig: c, Source: "user"})
+	}
+
+	for _, sc := range catalog.StandardCrews() {
+		if userNames[sc.Name] {
+			continue
+		}
+		var cc crewConfig
+		yaml.Unmarshal([]byte(sc.Content), &cc)
+		result = append(result, crewWithSource{
+			crewConfig: cc,
+			Source:     "standard",
+			Kit:        sc.Kit,
+		})
+	}
+
+	sort.Slice(result, func(i, j int) bool { return result[i].Name < result[j].Name })
+	json.NewEncoder(w).Encode(result)
 }
 
 func (s *Server) createCrew(w http.ResponseWriter, r *http.Request) {

@@ -10,6 +10,7 @@ type SkillTemplate struct {
 	Description string `json:"description"`
 	Filename    string `json:"filename"`
 	Content     string `json:"content"`
+	Source      string `json:"source"`
 }
 
 var skillTemplates = map[string]SkillTemplate{
@@ -17,6 +18,7 @@ var skillTemplates = map[string]SkillTemplate{
 		Name:        "echo",
 		Description: "Debug skill that echoes input and args",
 		Filename:    "echo.yaml",
+		Source:      "standard",
 		Content: `name: echo
 type: echo
 description: Echoes input and args back to the runtime
@@ -26,6 +28,7 @@ description: Echoes input and args back to the runtime
 		Name:        "file_read",
 		Description: "Reads a local file inside the workspace",
 		Filename:    "file_read.yaml",
+		Source:      "standard",
 		Content: `name: file_read
 type: file_read
 description: Reads a local file from the workspace
@@ -37,6 +40,7 @@ params:
 		Name:        "file_read_range",
 		Description: "Reads a line range from a local file inside the workspace",
 		Filename:    "file_read_range.yaml",
+		Source:      "standard",
 		Content: `name: file_read_range
 type: file_read_range
 description: Reads a specific line range from a local file (lower token cost than full reads)
@@ -48,6 +52,7 @@ params:
 		Name:        "file_write_safe",
 		Description: "Writes a text file inside the workspace (safe defaults, no overwrite by default)",
 		Filename:    "file_write_safe.yaml",
+		Source:      "standard",
 		Content: `name: file_write_safe
 type: file_write_safe
 description: Writes a text file inside the workspace (relative path only, no overwrite by default)
@@ -62,6 +67,7 @@ params:
 		Name:        "http_request",
 		Description: "Generic HTTP request skill (GET by default)",
 		Filename:    "http_request.yaml",
+		Source:      "standard",
 		Content: `name: http_request
 type: http
 description: Makes an HTTP request (safe defaults; user controls URL)

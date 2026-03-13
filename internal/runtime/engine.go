@@ -891,8 +891,8 @@ func (e *Engine) lockKeyForSkillCall(agent project.AgentConfig, skillName string
 			return ""
 		}
 		return "file:" + filepath.Clean(pathVal)
-	case "shell_exec":
-		// Shell commands are not locked — each execution is independent.
+	case "shell_exec", "file_write_dialog":
+		// Shell commands and file dialogs are not locked — they are independent or interactive.
 		return ""
 	case "http":
 		if !metadataBool(agent.Metadata, "lock_http_host_tools") {
@@ -1102,6 +1102,26 @@ func toolParametersSchema(cfg project.SkillConfig) map[string]any {
 				},
 			},
 			"required":             []string{"command"},
+			"additionalProperties": false,
+		}
+	case "file_write_dialog":
+		return map[string]any{
+			"type": "object",
+			"properties": map[string]any{
+				"content": map[string]any{
+					"type":        "string",
+					"description": "Text content to save",
+				},
+				"filename": map[string]any{
+					"type":        "string",
+					"description": "Suggested filename",
+				},
+				"title": map[string]any{
+					"type":        "string",
+					"description": "Dialog title",
+				},
+			},
+			"required":             []string{"content"},
 			"additionalProperties": false,
 		}
 	case "echo":

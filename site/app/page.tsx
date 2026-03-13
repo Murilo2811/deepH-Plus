@@ -13,11 +13,15 @@ import {
   Activity,
   Clock,
   Database,
-  Sparkles
+  Sparkles,
+  Box
 } from "lucide-react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import { StatCard } from "@/components/stat-card";
+import { UniverseGraph, type UniverseNodeData, type HandoffEdgeData } from "@/components/universe-graph";
+import { motion, AnimatePresence } from "framer-motion";
+import { type Node, type Edge } from "@xyflow/react";
+import { LibraryModal } from "@/components/library-modal";
 
 function AgentCard({ agent, index, onDelete }: { agent: Agent; index: number; onDelete: (name: string) => void }) {
   const sparklines = [40, 60, 35, 80, 55, 90, 75];
@@ -41,8 +45,8 @@ function AgentCard({ agent, index, onDelete }: { agent: Agent; index: number; on
           </div>
           <div>
             <h3 className="font-display font-bold text-lg text-charcoal leading-tight group-hover:text-sketch-teal-dark transition-colors duration-300">{agent.name}</h3>
-            <p className="text-[10px] text-charcoal flex items-center gap-1 font-bold uppercase tracking-wider mt-1">
-              <span className="w-2 h-2 rounded-full bg-sketch-green inline-block border border-charcoal/50 shadow-sketch-sm"></span>
+            <p className="text-[11px] text-sketch-charcoal flex items-center gap-1.5 font-black uppercase tracking-widest mt-1.5 bg-sketch-green/10 px-2 py-0.5 rounded-full border border-sketch-charcoal/20">
+              <span className="w-2.5 h-2.5 rounded-full bg-sketch-green inline-block border-2 border-sketch-charcoal animate-pulse"></span>
               Neural Active
             </p>
           </div>
@@ -62,24 +66,24 @@ function AgentCard({ agent, index, onDelete }: { agent: Agent; index: number; on
       </div>
 
       {/* Overlay Actions on Hover */}
-      <div className="absolute inset-0 bg-paper/95 rounded-2xl opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-4 transition-opacity duration-300 z-50 border-2 border-charcoal border-dashed shadow-sketch-lg p-4">
+      <div className="absolute inset-x-2 bottom-2 top-2 bg-white/95 rounded-2xl opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-4 transition-all duration-300 z-50 border-4 border-sketch-charcoal border-dashed shadow-sketch-lg p-6 translate-y-2 group-hover:translate-y-0">
         <Link href={`/chat?agent=${agent.name}`} className="w-full">
-          <button className="sketch-button bg-sketch-blue w-full flex items-center justify-center gap-2 py-3 text-charcoal font-black">
-            <MessageSquare className="w-5 h-5" />
-            Conversar
+          <button className="sketch-button bg-sketch-teal w-full flex items-center justify-center gap-3 py-3.5 text-white font-black text-lg shadow-sketch hover:bg-sketch-teal-dark active:translate-y-1 active:shadow-none transition-all">
+            <MessageSquare className="w-6 h-6" />
+            CONVERSAR
           </button>
         </Link>
-        <div className="flex gap-2 w-full">
+        <div className="flex gap-3 w-full">
             <Link href={`/agents/edit?name=${agent.name}`} className="flex-1">
-                <button className="sketch-button bg-sketch-yellow w-full flex items-center justify-center py-2 h-full text-charcoal">
-                    <Settings2 className="w-5 h-5" />
+                <button className="sketch-button bg-sketch-yellow w-full flex items-center justify-center py-3 text-sketch-charcoal shadow-sketch hover:bg-yellow-400 active:translate-y-1 active:shadow-none transition-all">
+                    <Settings2 className="w-6 h-6" />
                 </button>
             </Link>
             <button 
                 onClick={() => { if (window.confirm(`Tem certeza que deseja excluir o agente ${agent.name}?`)) onDelete(agent.name); }} 
-                className="sketch-button bg-sketch-pink flex-1 flex items-center justify-center py-2 text-charcoal"
+                className="sketch-button bg-sketch-pink flex-1 flex items-center justify-center py-3 text-white shadow-sketch hover:bg-red-500 active:translate-y-1 active:shadow-none transition-all"
             >
-                <Trash2 className="w-5 h-5" />
+                <Trash2 className="w-6 h-6" />
             </button>
         </div>
       </div>
@@ -117,6 +121,7 @@ function SkeletonCard() {
 export default function Dashboard() {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [libraryOpen, setLibraryOpen] = useState(false);
 
   useEffect(() => {
     fetchAgents()
@@ -153,15 +158,27 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <Link href="/agents/new">
-          <button className="sketch-button bg-sketch-green flex items-center gap-3 px-8 py-4 text-lg font-black group">
-            <PlusSquare className="w-6 h-6 group-hover:rotate-90 transition-transform duration-500" />
-            <span>Instanciar Agente</span>
+        <div className="flex gap-4">
+          <button 
+            onClick={() => setLibraryOpen(true)}
+            className="sketch-button bg-sketch-blue flex items-center gap-3 px-8 py-4 text-lg font-black group shadow-sketch-lg hover:shadow-sketch-xl transition-all"
+          >
+            <Box className="w-6 h-6 group-hover:scale-110 transition-transform" />
+            <span>Biblioteca Universal</span>
           </button>
-        </Link>
+          
+          <Link href="/agents/new">
+            <button className="sketch-button bg-sketch-green flex items-center gap-3 px-8 py-4 text-lg font-black group">
+              <PlusSquare className="w-6 h-6 group-hover:rotate-90 transition-transform duration-500" />
+              <span>Instanciar Agente</span>
+            </button>
+          </Link>
+        </div>
+
+        <LibraryModal open={libraryOpen} onOpenChange={setLibraryOpen} />
       </div>
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-20 relative">
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-16 relative">
         <StatCard 
             title="Carga do Sistema"
             value="12%"
@@ -181,6 +198,55 @@ export default function Dashboard() {
             icon={<Database className="w-5 h-5" />}
         />
       </section>
+
+      {/* Universe Visualization */}
+      {!loading && agents.length > 0 && (
+        <section className="mb-20 animate-in">
+          <div className="flex items-center justify-between mb-8 px-2">
+            <div className="relative">
+                <h2 className="text-2xl font-black text-charcoal font-display uppercase tracking-widest flex items-center gap-4">
+                    Topologia de Rede
+                </h2>
+                <div className="h-2 w-full bg-sketch-blue/30 absolute -bottom-1 left-0 rounded-full"></div>
+            </div>
+            <div className="sketch-label !bg-sketch-blue/10 border-sketch-blue/40 text-sketch-blue-dark">
+              Visualização Neuronal Ativa
+            </div>
+          </div>
+          
+          <div className="h-[450px] w-full">
+            <UniverseGraph 
+              nodes={agents.map((agent, i) => ({
+                id: agent.name,
+                type: 'universe',
+                position: { x: 0, y: 0 }, // Dagre handles this
+                data: {
+                  label: agent.name,
+                  status: i === 0 ? "running" : "done",
+                  duration: `${Math.floor(Math.random() * 60)}ms`
+                }
+              }))}
+              edges={agents.slice(1).map((agent, i) => ({
+                id: `e${i}`,
+                source: agents[i].name,
+                target: agent.name,
+                type: 'handoff',
+                data: { active: i === 0 }
+              }))}
+            />
+          </div>
+          <div className="mt-4 flex gap-4 overflow-x-auto pb-2">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase text-sketch-charcoal-soft tracking-wider px-3 py-1.5 bg-white border-2 border-sketch-charcoal/20 rounded-md">
+              <span className="w-2 h-2 rounded-full bg-sketch-teal animate-pulse"></span>
+              Fluxo Ativo
+            </div>
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase text-sketch-charcoal-soft tracking-wider px-3 py-1.5 bg-white border-2 border-sketch-charcoal/20 rounded-md">
+              <span className="w-2 h-2 rounded-full bg-sketch-yellow"></span>
+              Aguardando
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Section Title */}
       <div className="flex items-center justify-between mb-12 px-2">

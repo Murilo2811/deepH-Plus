@@ -49,6 +49,7 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/api/crews/", s.handleCrewByName)
 	mux.HandleFunc("/api/run", s.handleRun)
 	mux.HandleFunc("/api/chat/stream", s.handleChatStream)
+	mux.HandleFunc("/api/standard-library", s.handleStandardLibrary)
 
 	// Fallback to static site
 	mux.Handle("/", http.FileServer(site.GetFS()))
@@ -148,6 +149,13 @@ func (s *Server) handleConfigKeys(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, `{"error": "method not allowed"}`, http.StatusMethodNotAllowed)
 }
 
+// agentWithSource wraps project.AgentConfig with a source field for JSON output.
+type agentWithSource struct {
+	project.AgentConfig
+	Source string `json:"source"`
+	Kit    string `json:"kit,omitempty"`
+}
+
 func (s *Server) handleAgents(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -157,7 +165,31 @@ func (s *Server) handleAgents(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, fmt.Sprintf(`{"error": "%v"}`, err), http.StatusInternalServerError)
 			return
 		}
-		json.NewEncoder(w).Encode(proj.Agents)
+
+		// Collect user agents with source tag
+		userNames := make(map[string]bool, len(proj.Agents))
+		result := make([]agentWithSource, 0, len(proj.Agents)+10)
+		for _, a := range proj.Agents {
+			userNames[a.Name] = true
+			result = append(result, agentWithSource{AgentConfig: a, Source: "user"})
+		}
+
+		// Append standard agents from catalog (skip if user already has one with the same name)
+		for _, sa := range catalog.StandardAgents() {
+			if userNames[sa.Name] {
+				continue
+			}
+			result = append(result, agentWithSource{
+				AgentConfig: project.AgentConfig{
+					Name:        sa.Name,
+					Description: sa.Description,
+				},
+				Source: "standard",
+				Kit:    sa.Kit,
+			})
+		}
+
+		json.NewEncoder(w).Encode(result)
 		return
 	}
 
@@ -278,9 +310,9 @@ func (s *Server) handleSkills(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	if r.Method == http.MethodGet {
-		skills := catalog.List()
+		skills := catalog.List() // already have Source:"standard"
 
-		// Add local skills
+		// Add local skills with source:"user"
 		dir := filepath.Join(s.workspace, "skills")
 		if entries, err := os.ReadDir(dir); err == nil {
 			for _, e := range entries {
@@ -300,6 +332,7 @@ func (s *Server) handleSkills(w http.ResponseWriter, r *http.Request) {
 							Description: parsed.Description,
 							Filename:    e.Name(),
 							Content:     string(b),
+							Source:      "user",
 						})
 					}
 				}
