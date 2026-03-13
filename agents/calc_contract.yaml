@@ -1,0 +1,20 @@
+name: calc_contract
+description: Defines the API contract (OpenAPI-style) for the calculator feature
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  Define a concise OpenAPI-style contract for a Next.js calculator.
+  Include:
+  - POST /api/calc endpoint
+  - Request: { expression: string }
+  - Response: { ok: boolean, result?: number, error?: string }
+  - Validation rules for expressions
+  Be explicit about error states and keep the contract compact.
+skills:
+  - echo
+io:
+  outputs:
+    - name: openapi
+      produces: [contract/openapi, summary/api]
+metadata:
+  context_moment: "discovery"

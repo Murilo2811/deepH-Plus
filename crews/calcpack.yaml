@@ -1,0 +1,20 @@
+# Multiverse pack: baseline vs strict vs synth comparison
+name: calcpack
+spec: "calc_planner>calc_backend+calc_frontend>calc_reviewer"
+universes:
+  - name: baseline
+    spec: "calc_planner>calc_backend+calc_frontend>calc_reviewer"
+    output_kind: summary/text
+
+  - name: strict
+    spec: "calc_planner>calc_backend+calc_frontend>calc_reviewer"
+    output_kind: diagnostic/test
+    input_prefix: |
+      Enforce stricter validation, safer parsing and explicit error states.
+
+  - name: synth
+    spec: "calc_planner>calc_backend+calc_frontend>calc_reviewer"
+    output_kind: plan/summary
+    depends_on: [baseline, strict]
+    merge_policy: append
+    handoff_max_chars: 220

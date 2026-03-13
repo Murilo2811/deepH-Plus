@@ -1,0 +1,25 @@
+name: calc_synth
+description: Reconciles all calculator universes (contract, backend, frontend, test) into a final plan
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  Reconcile upstream calculator universes into one final implementation recommendation.
+  You receive outputs from contract, backend, frontend and test universes.
+  Resolve conflicts and list final file-level action items.
+  Produce a compact, actionable summary.
+skills:
+  - echo
+io:
+  inputs:
+    - name: context
+      accepts: [contract/openapi, summary/api, frontend/page, backend/route, summary/text, message/agent]
+      merge_policy: append3
+      max_tokens: 220
+  outputs:
+    - name: result
+      produces: [plan/summary, summary/text]
+metadata:
+  context_moment: "synthesis"
+  type_weight_frontend_page: "4"
+  type_weight_backend_route: "4"
+  type_weight_contract_openapi: "6"

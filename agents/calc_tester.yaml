@@ -1,0 +1,25 @@
+name: calc_tester
+description: Generates test strategy and route tests for the calculator backend
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  Generate route-focused test plan and checklist for the calculator API.
+  Test coverage:
+  - Happy path: valid expressions (2+2, 10/5, 3*4-1)
+  - Edge cases: division by zero, empty expression
+  - Validation: invalid characters, nested parentheses
+  - Error responses: proper JSON error format
+  Prioritize happy path, validation errors and boundary cases.
+skills:
+  - file_read_range
+io:
+  inputs:
+    - name: context
+      accepts: [summary/api, backend/route, message/agent]
+      merge_policy: latest
+      max_tokens: 140
+  outputs:
+    - name: routes_tests
+      produces: [backend/route, test/integration, summary/text]
+metadata:
+  context_moment: "validate"

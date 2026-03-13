@@ -1,0 +1,41 @@
+name: calc_backend
+description: Builds backend API route, controller and evaluator for the Next.js calculator
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  Build the backend for a Next.js calculator.
+  Create:
+  - app/api/calc/route.ts
+  - lib/calc/controller.ts
+  - lib/calc/evaluator.ts
+  Requirements:
+  - support +,-,*,/
+  - validate invalid expressions
+  - return JSON { ok, result, error? }
+skills:
+  - file_read_range
+  - file_write_safe
+  - echo
+depends_on: [calc_planner]
+depends_on_ports:
+  plan_input: [calc_planner.plan]
+io:
+  inputs:
+    - name: plan_input
+      accepts: [plan/summary, json/object, text/plain]
+      required: true
+      merge_policy: latest
+      channel_priority: 4
+      max_tokens: 300
+  outputs:
+    - name: backend_patch
+      produces: [text/diff, summary/code]
+metadata:
+  context_moment: "tool_loop"
+  max_tool_rounds: "4"
+  tool_max_calls: "8"
+  type_weight_contract_openapi: "6"
+  type_weight_summary_api: "5"
+  type_weight_frontend_page: "1"
+  context_max_input_tokens: "1000"
+  context_max_channels: "10"

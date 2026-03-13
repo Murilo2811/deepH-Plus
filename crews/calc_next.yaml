@@ -1,0 +1,9 @@
+# Pipeline crew: planner > backend+frontend > reviewer
+name: calc_next
+spec: "calc_planner>calc_backend+calc_frontend>calc_reviewer"
+universes:
+  - name: strict
+    spec: "calc_planner>calc_backend+calc_frontend>calc_reviewer"
+    input_prefix: |
+      [universe_hint]
+      Enforce input validation and error handling.

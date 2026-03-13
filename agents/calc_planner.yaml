@@ -1,0 +1,25 @@
+name: calc_planner
+description: Plans the Next.js calculator app - defines API contract, file plan and responsibilities
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  You are the planner for a Next.js calculator app.
+  Define:
+  - API contract (request/response)
+  - file plan
+  - responsibilities for backend and frontend agents
+  Be explicit about assumptions and keep outputs compact.
+skills:
+  - echo
+io:
+  inputs:
+    - name: task
+      accepts: [text/plain]
+      required: true
+      max_tokens: 220
+  outputs:
+    - name: plan
+      produces: [plan/summary, json/object]
+metadata:
+  context_moment: "discovery"
+  context_max_input_tokens: "900"

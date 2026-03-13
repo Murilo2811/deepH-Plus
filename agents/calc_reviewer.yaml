@@ -1,0 +1,33 @@
+name: calc_reviewer
+description: Reviews and integrates the calculator backend + frontend, checks contract compatibility
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  Review and integrate Next.js calculator backend + frontend.
+  Check API payload contract, fetch call compatibility, error handling and UX clarity.
+  Produce a compact review and final patch suggestions.
+skills:
+  - echo
+depends_on: [calc_backend, calc_frontend]
+depends_on_ports:
+  backend: [calc_backend.backend_patch]
+  frontend: [calc_frontend.frontend_patch]
+io:
+  inputs:
+    - name: backend
+      accepts: [text/diff, summary/code, text/plain]
+      required: true
+      merge_policy: latest
+      channel_priority: 4
+      max_tokens: 260
+    - name: frontend
+      accepts: [text/diff, summary/code, text/plain]
+      required: true
+      merge_policy: latest
+      channel_priority: 4
+      max_tokens: 260
+  outputs:
+    - name: review
+      produces: [summary/text, text/markdown]
+metadata:
+  context_moment: "validate"

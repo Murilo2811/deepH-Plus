@@ -1,0 +1,38 @@
+# Multiverse crew with typed universes and DAG dependencies
+name: calc_multiverse
+spec: calc_contract
+universes:
+  - name: u_contract
+    spec: calc_contract
+    output_port: openapi
+    output_kind: contract/openapi
+
+  - name: u_backend
+    spec: calc_backend
+    depends_on: [u_contract]
+    input_port: context
+    output_port: api_summary
+    output_kind: summary/api
+    merge_policy: latest
+    handoff_max_chars: 260
+
+  - name: u_frontend
+    spec: calc_frontend
+    depends_on: [u_backend]
+    input_port: context
+    output_port: page
+    output_kind: frontend/page
+
+  - name: u_test
+    spec: calc_tester
+    depends_on: [u_backend]
+    input_port: context
+    output_port: routes_tests
+    output_kind: backend/route
+
+  - name: u_synth
+    spec: calc_synth
+    depends_on: [u_contract, u_backend, u_frontend, u_test]
+    input_port: context
+    output_port: result
+    output_kind: plan/summary

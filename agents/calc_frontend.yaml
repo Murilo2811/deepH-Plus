@@ -1,0 +1,33 @@
+name: calc_frontend
+description: Builds the Next.js calculator UI page with expression input, submit and result panel
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  Build a simple Next.js calculator UI in app/page.tsx.
+  Requirements:
+  - expression input
+  - submit button
+  - result panel
+  - error state
+  - fetch POST /api/calc
+skills:
+  - file_read_range
+  - file_write_safe
+  - echo
+depends_on: [calc_planner]
+depends_on_ports:
+  plan_input: [calc_planner.plan]
+io:
+  inputs:
+    - name: plan_input
+      accepts: [plan/summary, json/object, text/plain]
+      required: true
+      merge_policy: latest
+      channel_priority: 5
+      max_tokens: 260
+  outputs:
+    - name: frontend_patch
+      produces: [text/diff, summary/code]
+metadata:
+  context_moment: "tool_loop"
+  max_tool_rounds: "4"
