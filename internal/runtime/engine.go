@@ -891,6 +891,9 @@ func (e *Engine) lockKeyForSkillCall(agent project.AgentConfig, skillName string
 			return ""
 		}
 		return "file:" + filepath.Clean(pathVal)
+	case "shell_exec":
+		// Shell commands are not locked — each execution is independent.
+		return ""
 	case "http":
 		if !metadataBool(agent.Metadata, "lock_http_host_tools") {
 			return ""
@@ -1079,6 +1082,27 @@ func toolParametersSchema(cfg project.SkillConfig) map[string]any {
 				},
 			},
 			"required": []string{"url"},
+		}
+	case "shell_exec":
+		return map[string]any{
+			"type": "object",
+			"properties": map[string]any{
+				"command": map[string]any{
+					"type":        "string",
+					"description": "Binary to execute (e.g. \"git\", \"npm\"). Must be in the skill's allowed list.",
+				},
+				"args": map[string]any{
+					"type":        "array",
+					"items":       map[string]any{"type": "string"},
+					"description": "Arguments to pass to the command (e.g. [\"init\"] for git init)",
+				},
+				"cwd": map[string]any{
+					"type":        "string",
+					"description": "Working directory relative to workspace (e.g. \"calc-app\")",
+				},
+			},
+			"required":             []string{"command"},
+			"additionalProperties": false,
 		}
 	case "echo":
 		return map[string]any{

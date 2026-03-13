@@ -1,0 +1,6 @@
+name: shell_exec
+type: shell_exec
+description: Executes a whitelisted shell command relative to the workspace directory
+params:
+  allowed_commands: ["git", "npm", "npx", "node"]
+  timeout_ms: 60000

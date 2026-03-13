@@ -1,0 +1,6 @@
+name: shell_exec_npm
+type: shell_exec
+description: Runs npm and npx commands in the workspace (package management only)
+params:
+  allowed_commands: ["npm", "npx"]
+  timeout_ms: 120000

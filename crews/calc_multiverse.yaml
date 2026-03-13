@@ -53,3 +53,21 @@ universes:
     output_kind: summary/text
     merge_policy: latest
     handoff_max_chars: 300
+
+  # u_git_init inicializa o repositório git após todos os arquivos serem escritos
+  - name: u_git_init
+    spec: calc_git_init
+    depends_on: [u_writer]
+    input_port: context
+    output_port: git_result
+    output_kind: summary/text
+    handoff_max_chars: 200
+
+  # u_npm_install instala as dependências após o git estar inicializado
+  - name: u_npm_install
+    spec: calc_npm_install
+    depends_on: [u_git_init]
+    input_port: context
+    output_port: npm_result
+    output_kind: summary/text
+    handoff_max_chars: 200

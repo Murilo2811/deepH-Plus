@@ -404,6 +404,100 @@ func (s *HTTPSkill) Execute(ctx context.Context, exec SkillExecution) (map[strin
 	}, nil
 }
 
+// ShellExecSkill executes a whitelisted shell command inside (or relative to) the workspace.
+type ShellExecSkill struct {
+	cfg       project.SkillConfig
+	workspace string
+}
+
+func (s *ShellExecSkill) Name() string { return s.cfg.Name }
+func (s *ShellExecSkill) Description() string {
+	return coalesce(s.cfg.Description, "Executes a whitelisted shell command relative to the workspace")
+}
+func (s *ShellExecSkill) Execute(ctx context.Context, ex SkillExecution) (map[string]any, error) {
+	command := strings.TrimSpace(anyString(ex.Args["command"]))
+	if command == "" {
+		return nil, fmt.Errorf("shell_exec requires args.command (string)")
+	}
+
+	// Validate against whitelist defined in the skill YAML params.
+	if allowed := shellAllowedCommands(s.cfg.Params); len(allowed) > 0 {
+		if !shellIsAllowed(command, allowed) {
+			return nil, fmt.Errorf("shell_exec: command %q is not in the allowed list", command)
+		}
+	}
+
+	// Resolve working directory (must stay within workspace).
+	workDir := s.workspace
+	if cwdVal := strings.TrimSpace(anyString(ex.Args["cwd"])); cwdVal != "" {
+		_, fullCwd, err := resolveWorkspacePath(s.workspace, cwdVal)
+		if err != nil {
+			return nil, fmt.Errorf("shell_exec: invalid cwd: %w", err)
+		}
+		workDir = fullCwd
+	}
+
+	// Build argument list.
+	var cmdArgs []string
+	if raw, ok := ex.Args["args"].([]any); ok {
+		for _, a := range raw {
+			cmdArgs = append(cmdArgs, anyString(a))
+		}
+	}
+
+	cmd := exec.CommandContext(ctx, command, cmdArgs...)
+	cmd.Dir = workDir
+
+	out, err := cmd.CombinedOutput()
+	exitCode := 0
+	if err != nil {
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			exitCode = exitErr.ExitCode()
+			// Non-zero exit is not a Go error — return output so LLM can decide.
+		} else {
+			return nil, fmt.Errorf("shell_exec: %w", err)
+		}
+	}
+
+	return map[string]any{
+		"command":   command,
+		"args":      cmdArgs,
+		"cwd":       workDir,
+		"exit_code": exitCode,
+		"output":    string(out),
+		"success":   exitCode == 0,
+	}, nil
+}
+
+func shellAllowedCommands(params map[string]any) []string {
+	v, ok := params["allowed_commands"]
+	if !ok {
+		return nil
+	}
+	raw, ok := v.([]any)
+	if !ok {
+		return nil
+	}
+	result := make([]string, 0, len(raw))
+	for _, item := range raw {
+		if s := strings.TrimSpace(anyString(item)); s != "" {
+			result = append(result, s)
+		}
+	}
+	return result
+}
+
+func shellIsAllowed(command string, allowed []string) bool {
+	// Compare only the base name so "/usr/bin/git" matches "git".
+	base := strings.ToLower(filepath.Base(command))
+	for _, a := range allowed {
+		if strings.ToLower(strings.TrimSpace(a)) == base {
+			return true
+		}
+	}
+	return false
+}
+
 func newSkill(workspace string, sc project.SkillConfig) Skill {
 	timeout := time.Duration(sc.TimeoutMS) * time.Millisecond
 	if timeout <= 0 {
@@ -420,6 +514,8 @@ func newSkill(workspace string, sc project.SkillConfig) Skill {
 		return &FileWriteSafeSkill{cfg: sc, workspace: workspace}
 	case "file_write_dialog":
 		return &FileWriteDialogSkill{cfg: sc, workspace: workspace}
+	case "shell_exec":
+		return &ShellExecSkill{cfg: sc, workspace: workspace}
 	case "http":
 		return &HTTPSkill{cfg: sc, client: &http.Client{Timeout: timeout}}
 	default:

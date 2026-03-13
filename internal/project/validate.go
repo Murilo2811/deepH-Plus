@@ -25,6 +25,7 @@ var validSkillTypes = map[string]struct{}{
 	"file_read_range":   {},
 	"file_write_safe":   {},
 	"file_write_dialog": {},
+	"shell_exec":        {},
 	"http":              {},
 }
 
