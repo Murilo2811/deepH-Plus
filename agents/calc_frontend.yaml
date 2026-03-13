@@ -2,6 +2,7 @@ name: calc_frontend
 description: Implements the React UI page for the calculator using Next.js App Router
 provider: deepseek
 model: deepseek-chat
+timeout_ms: 120000
 system_prompt: |
   You are a Next.js frontend engineer. Using the upstream API summary, implement
   the calculator UI page.
@@ -20,6 +21,12 @@ system_prompt: |
   - Responsive layout (works on mobile and desktop)
   - Accessible (proper labels, keyboard navigation)
   - No external UI libraries — only Tailwind and React hooks
+
+  IMPORTANT:
+  - Always call file_write_safe with overwrite: true
+  - Write the COMPLETE file content in one single call
+  - After the file is written, output a short summary and STOP (no more tool calls)
+  - Do NOT call file_write_safe more than once for the same path
 
   Output as a complete file block.
 skills:

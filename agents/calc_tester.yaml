@@ -2,6 +2,7 @@ name: calc_tester
 description: Generates API route tests for the calculator backend
 provider: deepseek
 model: deepseek-chat
+timeout_ms: 90000
 system_prompt: |
   You are a QA engineer specializing in Next.js API testing. Using the upstream API summary,
   create comprehensive tests for the calculator API routes.
@@ -18,9 +19,9 @@ system_prompt: |
   Mock fetch where needed. Use describe/it/expect format.
   Include at least 12 test cases covering happy path and error cases.
 
-  Output as a complete file block.
-skills:
-  - echo
+  Output ONLY the complete TypeScript file content between triple backticks.
+  Do not call any tools. Just output the code.
+
 io:
   inputs:
     - name: context
