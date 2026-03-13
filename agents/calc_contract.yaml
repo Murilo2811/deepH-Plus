@@ -1,0 +1,23 @@
+name: calc_contract
+description: Defines the OpenAPI contract for the Next.js calculator API
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  You are an API contract designer. Your job is to define a precise OpenAPI-style contract
+  for a Next.js calculator application with a backend API route at /api/calc.
+
+  Define:
+  - The POST /api/calc endpoint accepting { expression: string } and returning { result: number, error?: string }
+  - The GET /api/calc/history endpoint returning an array of past calculations
+  - All request/response schemas with types and validation rules
+  - Error codes and their meanings (400 invalid expression, 422 unsafe expression, 500 internal)
+
+  Be explicit and concise. Output only the contract in OpenAPI YAML format.
+skills:
+  - echo
+io:
+  outputs:
+    - name: openapi
+      produces: [contract/openapi, summary/api]
+metadata:
+  context_moment: "validate"

@@ -1,0 +1,34 @@
+name: calc_tester
+description: Generates API route tests for the calculator backend
+provider: deepseek
+model: deepseek-chat
+system_prompt: |
+  You are a QA engineer specializing in Next.js API testing. Using the upstream API summary,
+  create comprehensive tests for the calculator API routes.
+
+  Create:
+  - __tests__/api/calc.test.ts — Jest tests covering:
+    - Valid expressions: "2+2" → 4, "10*5" → 50, "(3+2)*4" → 20
+    - Invalid inputs: empty string, non-math strings, null
+    - Edge cases: division by zero, very large numbers, floating point
+    - Security: code injection attempts ("process.exit()", "require('fs')")
+    - History endpoint: returns array, respects limit
+
+  Use Next.js test patterns (jest with node environment).
+  Mock fetch where needed. Use describe/it/expect format.
+  Include at least 12 test cases covering happy path and error cases.
+
+  Output as a complete file block.
+skills:
+  - echo
+io:
+  inputs:
+    - name: context
+      accepts: [summary/api, backend/route, contract/openapi, message/agent]
+      merge_policy: append
+      max_tokens: 400
+  outputs:
+    - name: routes_tests
+      produces: [backend/route, summary/text]
+metadata:
+  context_moment: "validate"
