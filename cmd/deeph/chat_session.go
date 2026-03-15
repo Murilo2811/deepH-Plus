@@ -87,7 +87,7 @@ func cmdChat(args []string) error {
 			continue
 		}
 		if strings.HasPrefix(line, "/") {
-			done, err := handleChatSlashCommand(line, abs, meta, entries, plan, tasks, sinkIdxs)
+			done, err := handleChatSlashCommand(line, entries, plan, sinkIdxs)
 			if err != nil {
 				fmt.Printf("error: %v\n", err)
 			}
@@ -374,7 +374,7 @@ func printCompactChatPlan(plan runtime.ExecutionPlan, sinkIdxs []int) {
 	fmt.Printf("[trace] spec=%q tasks=%d stages=%d parallel=%v sinks=%v\n", plan.Spec, len(plan.Tasks), len(plan.Stages), plan.Parallel, sinkIdxs)
 }
 
-func handleChatSlashCommand(line, workspace string, meta *chatSessionMeta, entries []chatSessionEntry, plan runtime.ExecutionPlan, tasks []runtime.Task, sinkIdxs []int) (done bool, err error) {
+func handleChatSlashCommand(line string, entries []chatSessionEntry, plan runtime.ExecutionPlan, sinkIdxs []int) (done bool, err error) {
 	cmd := strings.TrimSpace(line)
 	switch {
 	case cmd == "/exit", cmd == "/quit":

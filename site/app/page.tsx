@@ -18,9 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { StatCard } from "@/components/stat-card";
-import { UniverseGraph, type UniverseNodeData, type HandoffEdgeData } from "@/components/universe-graph";
 import { motion, AnimatePresence } from "framer-motion";
-import { type Node, type Edge } from "@xyflow/react";
 import { LibraryModal } from "@/components/library-modal";
 
 function AgentCard({ agent, index, onDelete }: { agent: Agent; index: number; onDelete: (name: string) => void }) {
@@ -199,54 +197,7 @@ export default function Dashboard() {
         />
       </section>
 
-      {/* Universe Visualization */}
-      {!loading && agents.length > 0 && (
-        <section className="mb-20 animate-in">
-          <div className="flex items-center justify-between mb-8 px-2">
-            <div className="relative">
-                <h2 className="text-2xl font-black text-charcoal font-display uppercase tracking-widest flex items-center gap-4">
-                    Topologia de Rede
-                </h2>
-                <div className="h-2 w-full bg-sketch-blue/30 absolute -bottom-1 left-0 rounded-full"></div>
-            </div>
-            <div className="sketch-label !bg-sketch-blue/10 border-sketch-blue/40 text-sketch-blue-dark">
-              Visualização Neuronal Ativa
-            </div>
-          </div>
-          
-          <div className="h-[450px] w-full">
-            <UniverseGraph 
-              nodes={agents.map((agent, i) => ({
-                id: agent.name,
-                type: 'universe',
-                position: { x: 0, y: 0 }, // Dagre handles this
-                data: {
-                  label: agent.name,
-                  status: i === 0 ? "running" : "done",
-                  duration: `${Math.floor(Math.random() * 60)}ms`
-                }
-              }))}
-              edges={agents.slice(1).map((agent, i) => ({
-                id: `e${i}`,
-                source: agents[i].name,
-                target: agent.name,
-                type: 'handoff',
-                data: { active: i === 0 }
-              }))}
-            />
-          </div>
-          <div className="mt-4 flex gap-4 overflow-x-auto pb-2">
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase text-sketch-charcoal-soft tracking-wider px-3 py-1.5 bg-white border-2 border-sketch-charcoal/20 rounded-md">
-              <span className="w-2 h-2 rounded-full bg-sketch-teal animate-pulse"></span>
-              Fluxo Ativo
-            </div>
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase text-sketch-charcoal-soft tracking-wider px-3 py-1.5 bg-white border-2 border-sketch-charcoal/20 rounded-md">
-              <span className="w-2 h-2 rounded-full bg-sketch-yellow"></span>
-              Aguardando
-            </div>
-          </div>
-        </section>
-      )}
+
 
       {/* Section Title */}
       <div className="flex items-center justify-between mb-12 px-2">

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Zap, MessageSquare, Settings, Plus, BookOpen, Play, Users, Wrench, LayoutGrid, Box } from "lucide-react";
+import { Zap, MessageSquare, Settings, Plus, BookOpen, Play, Users, Wrench, LayoutGrid, Box, GitBranch } from "lucide-react";
 import { LibraryModal } from "./library-modal";
 import { useState } from "react";
 
@@ -16,6 +16,7 @@ export function AppSidebar() {
         { href: "/chat",   icon: MessageSquare, label: "Chat" },
         { href: "/run",    icon: Play,          label: "Modo Equipe" },
         { href: "/crews",  icon: Users,         label: "Times" },
+        { href: "/universes", icon: GitBranch,  label: "Universos" },
         { href: "/skills", icon: Wrench,        label: "Skills" },
         { href: "/config", icon: Settings,      label: "Settings" },
         { href: "/help",   icon: BookOpen,      label: "Help Guide" },

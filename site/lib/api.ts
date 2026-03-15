@@ -174,18 +174,41 @@ export async function installKit(kitName: string, force = false): Promise<{ succ
     return res.json();
 }
 
+// ─── Universes ────────────────────────────────────────────────────────────────
+export interface Universe {
+    name: string;
+    spec: string;
+    depends_on?: string[];
+    input_port?: string;
+    output_port?: string;
+    output_kind?: string;
+    merge_policy?: string;
+    handoff_max_chars?: number;
+    input_prefix?: string;
+    input_suffix?: string;
+}
+
 // ─── Crews ────────────────────────────────────────────────────────────────────
 export interface Crew {
     name: string;
     description?: string;
     spec: string;
-    universes?: Array<{ name: string; spec: string;[key: string]: unknown }>;
+    universes?: Universe[];
     source?: "standard" | "user";
 }
 
 export async function fetchCrews(): Promise<Crew[]> {
     const res = await fetch(`${API_BASE}/api/crews`);
     if (!res.ok) return [];
+    return res.json();
+}
+
+export async function fetchCrewByName(name: string): Promise<Crew> {
+    const res = await fetch(`${API_BASE}/api/crews/${encodeURIComponent(name)}`);
+    if (!res.ok) {
+        const text = await res.text().catch(() => res.statusText);
+        throw new Error(`Failed to fetch crew: ${text}`);
+    }
     return res.json();
 }
 
