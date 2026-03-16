@@ -183,7 +183,7 @@ export default function SkillsPage() {
                                 return (
                                     <div
                                         key={skill.name}
-                                        className={`group relative rounded-xl border-2 transition-all cursor-pointer p-4 overflow-hidden ${
+                                        className={`group relative rounded-xl border-2 transition-all cursor-pointer p-4 overflow-hidden shrink-0 min-h-[5rem] ${
                                             editingSkillName === skill.name
                                                 ? "border-charcoal bg-sketch-yellow/40 shadow-none translate-y-0.5"
                                                 : "border-charcoal/30 bg-paper hover:border-charcoal hover:bg-pastel-yellow/20 hover:-translate-y-1 hover:shadow-sketch-sm"
@@ -195,10 +195,10 @@ export default function SkillsPage() {
                                             setSuccess("");
                                         }}
                                     >
-                                        <div className="flex justify-between items-start gap-4 relative z-10">
-                                            <div className="flex-1 min-w-0">
-                                                <div className="text-lg font-black font-display text-charcoal group-hover:text-sketch-blue-dark transition-colors">{skill.name}</div>
-                                                {skill.description && <div className="text-sm font-medium text-charcoal/70 mt-1.5 line-clamp-2 leading-snug">{skill.description}</div>}
+                                        <div className="flex justify-between items-start gap-4 relative z-10 w-full">
+                                            <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                                <div className="text-lg font-black font-display text-charcoal group-hover:text-sketch-blue-dark transition-colors leading-normal py-1 break-words">{skill.name}</div>
+                                                {skill.description && <div className="text-sm font-medium text-charcoal/70 mt-1 line-clamp-2 leading-snug">{skill.description}</div>}
                                             </div>
                                             <div className="flex items-end gap-3 shrink-0 flex-col">
                                                 <SourceBadge source={skill.source || "user"} />
