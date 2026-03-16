@@ -209,7 +209,7 @@ export default function CrewsPage() {
                     <h1 className="text-3xl md:text-4xl font-display font-bold uppercase tracking-tighter drop-shadow-md">
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/70">Times</span> & Crews
                     </h1>
-                    <p className="border border-border bg-card px-2 py-0.5 mt-2 font-medium tracking-widest text-[10px] uppercase inline-block">
+                    <p className="border border-sketch-charcoal/20 bg-white px-2 py-0.5 mt-2 font-medium tracking-widest text-[10px] uppercase inline-block">
                         Equipes de Agentes — YAML auto-salvo em <code className="font-mono">crews/</code>
                     </p>
                 </div>
@@ -241,14 +241,14 @@ export default function CrewsPage() {
                             <Plus className="w-4 h-4 text-primary" />
                             {editingCrewName ? `Editando: ${editingCrewName}` : "Criar Novo Time"}
                         </h2>
-                        <div className="flex bg-muted rounded border border-border p-0.5">
+                        <div className="flex bg-sketch-bg-off rounded border border-sketch-charcoal/20 p-0.5">
                             {(["visual", "yaml"] as const).map(m => (
                                 <button
                                     key={m}
                                     onClick={() => switchMode(m)}
                                     className={`px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest transition-colors ${editorMode === m
-                                        ? "bg-primary text-primary-foreground"
-                                        : "text-muted-foreground hover:text-foreground"
+                                        ? "bg-primary text-white"
+                                        : "text-sketch-charcoal-soft hover:text-sketch-charcoal"
                                         }`}
                                 >
                                     {m}
@@ -261,10 +261,10 @@ export default function CrewsPage() {
 
                     {editorMode === "yaml" ? (
                         <div className="flex-1 flex flex-col gap-2 min-h-[350px]">
-                            <div className="flex overflow-hidden border-2 border-border bg-card">
-                                <div className="py-3 px-2 bg-muted select-none border-r border-border min-w-[2.5rem] text-right">
+                            <div className="flex overflow-hidden border-2 border-sketch-charcoal/20 bg-white">
+                                <div className="py-3 px-2 bg-sketch-bg-off select-none border-r border-sketch-charcoal/20 min-w-[2.5rem] text-right">
                                     {editorYamlStr.split("\n").map((_, idx) => (
-                                        <div key={idx} className="text-muted-foreground text-[11px] font-mono leading-[1.625rem]">
+                                        <div key={idx} className="text-sketch-charcoal-soft text-[11px] font-mono leading-[1.625rem]">
                                             {idx + 1}
                                         </div>
                                     ))}
@@ -274,17 +274,17 @@ export default function CrewsPage() {
                                     onChange={e => { setEditorYamlStr(e.target.value); setEditorYamlError(""); }}
                                     spellCheck={false}
                                     readOnly={isReadOnly}
-                                    className={`flex-1 bg-transparent text-foreground p-3 font-mono text-xs leading-[1.625rem] resize-y focus:outline-none min-h-[350px] w-full ${isReadOnly ? "opacity-70" : ""}`}
+                                    className={`flex-1 bg-transparent text-sketch-charcoal p-3 font-mono text-xs leading-[1.625rem] resize-y focus:outline-none min-h-[350px] w-full ${isReadOnly ? "opacity-70" : ""}`}
                                     style={{ tabSize: 2 }}
                                 />
                             </div>
                             {isReadOnly && (
-                                <div className="text-xs font-bold text-accent-foreground bg-accent border-2 border-border p-2 flex items-center gap-2 mt-2 animate-in fade-in slide-in-from-top-2">
+                                <div className="text-xs font-bold text-sketch-charcoal bg-sketch-yellow-pale border-2 border-sketch-charcoal/20 p-2 flex items-center gap-2 mt-2 animate-in fade-in slide-in-from-top-2">
                                     <Shield className="w-4 h-4" />
                                     <span>Este time faz parte da Standard Library e é somente leitura.</span>
                                 </div>
                             )}
-                            <p className="text-[11px] text-muted-foreground text-center mt-1">
+                            <p className="text-[11px] text-sketch-charcoal-soft text-center mt-1">
                                 ✏️ Edite o YAML diretamente e clique em Salvar Time.
                             </p>
                         </div>
@@ -292,7 +292,7 @@ export default function CrewsPage() {
                         <>
                             {/* Name */}
                             <div>
-                                <label className="text-xs text-muted-foreground mb-1 block">Nome do Time</label>
+                                <label className="text-xs text-sketch-charcoal-soft mb-1 block">Nome do Time</label>
                                 <input
                                     value={name}
                                     onChange={e => setName(e.target.value.toLowerCase().replace(/\s+/g, "-"))}
@@ -304,7 +304,7 @@ export default function CrewsPage() {
 
                             {/* Description */}
                             <div>
-                                <label className="text-xs text-muted-foreground mb-1 block">Descrição (opcional)</label>
+                                <label className="text-xs text-sketch-charcoal-soft mb-1 block">Descrição (opcional)</label>
                                 <input
                                     value={description}
                                     onChange={e => setDescription(e.target.value)}
@@ -316,14 +316,14 @@ export default function CrewsPage() {
 
                             {/* Mode */}
                             <div>
-                                <label className="text-xs text-muted-foreground mb-1 block">Modo</label>
+                                <label className="text-xs text-sketch-charcoal-soft mb-1 block">Modo</label>
                                 <div className="flex gap-2">
                                     {(["sequential", "parallel"] as const).map(m => (
                                         <button
                                             key={m}
                                             onClick={() => setMode(m)}
                                             disabled={isReadOnly}
-                                            className={`flex-1 text-xs py-1.5 border-2 transition-all ${mode === m ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-foreground/50"} disabled:opacity-50`}
+                                            className={`flex-1 text-xs py-1.5 border-2 transition-all ${mode === m ? "border-primary bg-primary text-white" : "border-sketch-charcoal/20 text-sketch-charcoal-soft hover:border-sketch-charcoal/50"} disabled:opacity-50`}
                                         >
                                             {m === "sequential" ? "Sequencial (>)" : "Paralelo (+)"}
                                         </button>
@@ -333,10 +333,10 @@ export default function CrewsPage() {
 
                             {/* Agent Selector */}
                             <div>
-                                <label className="text-xs text-muted-foreground mb-2 block">Agentes</label>
+                                <label className="text-xs text-sketch-charcoal-soft mb-2 block">Agentes</label>
                                 <div className="flex flex-col gap-1 max-h-40 overflow-y-auto pr-1">
                                     {agents.length === 0 ? (
-                                        <p className="text-xs text-muted-foreground">Nenhum agente encontrado.</p>
+                                        <p className="text-xs text-sketch-charcoal-soft">Nenhum agente encontrado.</p>
                                     ) : agents.map(a => {
                                         const idx = selectedAgents.indexOf(a.name);
                                         const isSelected = idx >= 0;
@@ -345,15 +345,15 @@ export default function CrewsPage() {
                                                 <button
                                                     onClick={() => toggleAgent(a.name)}
                                                     disabled={isReadOnly}
-                                                    className={`flex-1 text-left px-3 py-1.5 border-2 text-xs transition-all ${isSelected ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-foreground/50"} disabled:opacity-50`}
+                                                    className={`flex-1 text-left px-3 py-1.5 border-2 text-xs transition-all ${isSelected ? "border-primary bg-primary text-white" : "border-sketch-charcoal/20 text-sketch-charcoal-soft hover:border-sketch-charcoal/50"} disabled:opacity-50`}
                                                 >
-                                                    {isSelected && <span className="mr-1 text-primary-foreground/70">{idx + 1}.</span>}
+                                                    {isSelected && <span className="mr-1 text-white/70">{idx + 1}.</span>}
                                                     {a.name}
                                                 </button>
                                                 {isSelected && mode === "sequential" && (
                                                     <div className="flex flex-col gap-0.5">
-                                                        <button onClick={() => moveAgent(idx, "up")} disabled={isReadOnly} className="text-muted-foreground hover:text-primary transition-colors disabled:opacity-30"><ArrowUp className="w-3 h-3" /></button>
-                                                        <button onClick={() => moveAgent(idx, "down")} disabled={isReadOnly} className="text-muted-foreground hover:text-primary transition-colors disabled:opacity-30"><ArrowDown className="w-3 h-3" /></button>
+                                                        <button onClick={() => moveAgent(idx, "up")} disabled={isReadOnly} className="text-sketch-charcoal-soft hover:text-primary transition-colors disabled:opacity-30"><ArrowUp className="w-3 h-3" /></button>
+                                                        <button onClick={() => moveAgent(idx, "down")} disabled={isReadOnly} className="text-sketch-charcoal-soft hover:text-primary transition-colors disabled:opacity-30"><ArrowDown className="w-3 h-3" /></button>
                                                     </div>
                                                 )}
                                             </div>
@@ -367,13 +367,13 @@ export default function CrewsPage() {
                                 <div>
                                     <button
                                         onClick={() => setYamlOpen(v => !v)}
-                                        className="text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors"
+                                        className="text-xs text-sketch-charcoal-soft flex items-center gap-1 hover:text-primary transition-colors"
                                     >
                                         {yamlOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                                         Preview YAML
                                     </button>
                                     {yamlOpen && (
-                                        <pre className="mt-2 text-xs text-foreground bg-muted border-2 border-border p-3 overflow-x-auto font-mono leading-relaxed">
+                                        <pre className="mt-2 text-xs text-sketch-charcoal bg-sketch-bg-off border-2 border-sketch-charcoal/20 p-3 overflow-x-auto font-mono leading-relaxed">
                                             {yaml}
                                         </pre>
                                     )}
@@ -400,7 +400,7 @@ export default function CrewsPage() {
                         <button
                             onClick={handleSave}
                             disabled={saving || isReadOnly || (editorMode === "visual" ? (!name.trim() || selectedAgents.length === 0) : !editorYamlStr.trim())}
-                            className="sketch-button flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground disabled:opacity-40 hover:bg-primary/90"
+                            className="sketch-button flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white disabled:opacity-40 hover:bg-primary/90"
                         >
                             <Save className="w-4 h-4" />
                             {saving ? "Salvando..." : editingCrewName ? "Atualizar Time" : "Salvar Time"}
@@ -416,9 +416,9 @@ export default function CrewsPage() {
                     </h2>
                     {crews.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
-                            <Users className="w-10 h-10 text-muted-foreground/20 mb-3" />
-                            <p className="text-sm text-muted-foreground">Nenhum time criado ainda.</p>
-                            <p className="text-xs text-muted-foreground mt-1">Crie seu primeiro time à esquerda.</p>
+                            <Users className="w-10 h-10 text-sketch-charcoal-soft/20 mb-3" />
+                            <p className="text-sm text-sketch-charcoal-soft">Nenhum time criado ainda.</p>
+                            <p className="text-xs text-sketch-charcoal-soft mt-1">Crie seu primeiro time à esquerda.</p>
                         </div>
                     ) : (
                         <div className="flex flex-col gap-2 overflow-y-auto max-h-[500px]">
@@ -427,7 +427,7 @@ export default function CrewsPage() {
                                     key={crew.name}
                                     className={`border-2 p-3 transition-all cursor-pointer ${editingCrewName === crew.name
                                         ? "border-primary bg-primary/5"
-                                        : "border-border hover:border-primary/50"
+                                        : "border-sketch-charcoal/20 hover:border-primary/50"
                                         }`}
                                     onClick={() => {
                                         const parts = crew.spec.includes(">")
@@ -449,7 +449,7 @@ export default function CrewsPage() {
                                                 <div className="text-sm font-bold truncate">{crew.name}</div>
                                                 <SourceBadge source={crew.source || "user"} />
                                             </div>
-                                            {crew.description && <div className="text-xs text-muted-foreground mt-0.5 truncate">{crew.description}</div>}
+                                            {crew.description && <div className="text-xs text-sketch-charcoal-soft mt-0.5 truncate">{crew.description}</div>}
                                         </div>
                                         <div className="flex items-center gap-1.5 shrink-0">
                                             <span className="text-xs text-secondary-foreground bg-secondary px-2 py-0.5">
@@ -466,13 +466,13 @@ export default function CrewsPage() {
                                                 onClick={(e) => handleDelete(crew.name, e)}
                                                 disabled={deleting === crew.name}
                                                 title="Excluir crew"
-                                                className="p-1 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all disabled:opacity-40"
+                                                className="p-1 text-sketch-charcoal-soft hover:text-red-500 hover:bg-red-500/10 transition-all disabled:opacity-40"
                                             >
                                                 <Trash2 className="w-3.5 h-3.5" />
                                             </button>
                                         </div>
                                     </div>
-                                    <code className="text-xs text-muted-foreground mt-1 block truncate">{crew.spec}</code>
+                                    <code className="text-xs text-sketch-charcoal-soft mt-1 block truncate">{crew.spec}</code>
                                 </div>
                             ))}
                         </div>
@@ -482,3 +482,7 @@ export default function CrewsPage() {
         </div>
     );
 }
+
+
+
+

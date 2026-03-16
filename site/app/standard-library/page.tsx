@@ -66,14 +66,14 @@ export default function StandardLibraryPage() {
                     <Library className="w-8 h-8 text-primary" />
                     Standard Library
                 </h1>
-                <p className="text-muted-foreground max-w-2xl">
+                <p className="text-sketch-charcoal-soft max-w-2xl">
                     Recursos nativos do deepH. Estes componentes são validados pela equipe deepH e estão sempre disponíveis como base para suas automações.
                 </p>
             </div>
 
             {/* Search */}
             <div className="relative max-w-md group">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sketch-charcoal-soft group-focus-within:text-primary transition-colors" />
                 <Input
                     placeholder="Buscar na biblioteca padrão..."
                     value={search}
@@ -85,7 +85,7 @@ export default function StandardLibraryPage() {
             {loading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[1, 2, 3].map(i => (
-                        <div key={i} className="h-48 bg-muted animate-pulse border-2 border-border" />
+                        <div key={i} className="h-48 bg-sketch-bg-off animate-pulse border-2 border-sketch-charcoal/20" />
                     ))}
                 </div>
             ) : (
@@ -93,7 +93,7 @@ export default function StandardLibraryPage() {
                     {/* Agents Section */}
                     {fAgents.length > 0 && (
                         <section className="flex flex-col gap-4">
-                            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                            <h2 className="text-sm font-semibold uppercase tracking-wider text-sketch-charcoal-soft flex items-center gap-2">
                                 <Sparkles className="w-4 h-4" /> Kits (Agentes)
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -112,7 +112,7 @@ export default function StandardLibraryPage() {
                     {/* Skills Section */}
                     {fSkills.length > 0 && (
                         <section className="flex flex-col gap-4">
-                            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                            <h2 className="text-sm font-semibold uppercase tracking-wider text-sketch-charcoal-soft flex items-center gap-2">
                                 <Box className="w-4 h-4" /> Skills
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -131,7 +131,7 @@ export default function StandardLibraryPage() {
                     {/* Crews Section */}
                     {fCrews.length > 0 && (
                         <section className="flex flex-col gap-4">
-                            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                            <h2 className="text-sm font-semibold uppercase tracking-wider text-sketch-charcoal-soft flex items-center gap-2">
                                 <Users className="w-4 h-4" /> Times (Crews)
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -163,7 +163,7 @@ function LibraryCard({ name, description, icon }: { name: string; description: s
     return (
         <div className="sketch-card group p-5 hover:border-primary/50 transition-all duration-300">
             <div className="flex items-start justify-between gap-3">
-                <div className="p-2.5 bg-primary/10 text-primary border-2 border-border group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+                <div className="p-2.5 bg-primary/10 text-primary border-2 border-sketch-charcoal/20 group-hover:bg-primary group-hover:text-white transition-all duration-300">
                     <Brain className="w-5 h-5" />
                 </div>
                 <SourceBadge source="standard" />
@@ -173,10 +173,14 @@ function LibraryCard({ name, description, icon }: { name: string; description: s
                     {name}
                     {icon}
                 </h3>
-                <p className="text-sm text-muted-foreground mt-2 line-clamp-2 leading-relaxed">
+                <p className="text-sm text-sketch-charcoal-soft mt-2 line-clamp-2 leading-relaxed">
                     {description || "Sem descrição disponível."}
                 </p>
             </div>
         </div>
     );
 }
+
+
+
+

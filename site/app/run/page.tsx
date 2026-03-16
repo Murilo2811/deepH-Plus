@@ -244,7 +244,7 @@ export default function RunPage() {
                                             className={`p-3 text-left transition-all sketch-card group ${selectedCrew === crew.name ? "bg-[var(--sketch-yellow)] border-[var(--sketch-charcoal)]" : "bg-white"}`}
                                         >
                                             <div className="flex items-center gap-2">
-                                                {selectedCrew === crew.name ? <CheckSquare className="w-4 h-4" /> : <UncheckedSquare className="w-4 h-4 text-muted-foreground group-hover:text-foreground" />}
+                                                {selectedCrew === crew.name ? <CheckSquare className="w-4 h-4" /> : <UncheckedSquare className="w-4 h-4 text-sketch-charcoal-soft group-hover:text-sketch-charcoal" />}
                                                 <span className="font-bold text-sm truncate">{crew.name}</span>
                                             </div>
                                         </button>
@@ -362,7 +362,7 @@ export default function RunPage() {
                                         {r.error ? (
                                             <p className="text-red-500 font-medium text-sm p-2">{r.error}</p>
                                         ) : (
-                                            <pre className="text-sm overflow-x-auto p-4 bg-muted border-2 border-border whitespace-pre-wrap font-mono leading-relaxed text-foreground">
+                                            <pre className="text-sm overflow-x-auto p-4 bg-sketch-bg-off border-2 border-sketch-charcoal/20 whitespace-pre-wrap font-mono leading-relaxed text-sketch-charcoal">
                                                 {r.text}
                                             </pre>
                                         )}
@@ -383,3 +383,7 @@ export default function RunPage() {
         </div>
     );
 }
+
+
+
+

@@ -72,7 +72,7 @@ export default function HelpPage() {
             <div className="glass-card rounded-2xl border border-primary/10 overflow-hidden">
                 <div className="px-4 py-3 border-b border-primary/10 flex items-center gap-2">
                     <BookOpen className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
+                    <span className="text-sm font-bold text-sketch-charcoal-soft uppercase tracking-widest">
                         Tutorial Completo — Guia para Iniciantes
                     </span>
                 </div>
@@ -84,7 +84,7 @@ export default function HelpPage() {
                 ) : (
                     <pre
                         ref={preRef}
-                        className="p-6 md:p-8 text-foreground text-sm leading-relaxed whitespace-pre-wrap break-words font-mono overflow-x-auto"
+                        className="p-6 md:p-8 text-sketch-charcoal text-sm leading-relaxed whitespace-pre-wrap break-words font-mono overflow-x-auto"
                         style={{ fontFamily: "'Fira Code', 'Cascadia Code', 'Consolas', monospace" }}
                     >
                         {tutorialText}
@@ -100,7 +100,7 @@ export default function HelpPage() {
                         Built with deepH Plus Engine
                     </span>
                 </div>
-                <p className="text-muted-foreground italic text-sm text-center">
+                <p className="text-sketch-charcoal-soft italic text-sm text-center">
                     &quot;Seus agentes, suas regras, seu computador.&quot; — v4.0
                 </p>
             </footer>
@@ -118,3 +118,7 @@ export default function HelpPage() {
         </div>
     );
 }
+
+
+
+
