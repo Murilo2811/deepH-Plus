@@ -62,30 +62,30 @@ export default function StandardLibraryPage() {
         <div className="flex-1 flex flex-col p-8 gap-8 overflow-y-auto custom-scrollbar">
             {/* Header */}
             <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight text-slate-100 flex items-center gap-3">
-                    <Library className="w-8 h-8 text-cyan" />
+                <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+                    <Library className="w-8 h-8 text-primary" />
                     Standard Library
                 </h1>
-                <p className="text-slate-400 max-w-2xl">
+                <p className="text-muted-foreground max-w-2xl">
                     Recursos nativos do deepH. Estes componentes são validados pela equipe deepH e estão sempre disponíveis como base para suas automações.
                 </p>
             </div>
 
             {/* Search */}
             <div className="relative max-w-md group">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-cyan transition-colors" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input
                     placeholder="Buscar na biblioteca padrão..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="pl-10 bg-background/50 border-white/10 focus:border-cyan/50 focus:ring-cyan/20 transition-all rounded-xl"
+                    className="sketch-input pl-10"
                 />
             </div>
 
             {loading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[1, 2, 3].map(i => (
-                        <div key={i} className="h-48 rounded-2xl bg-white/5 animate-pulse border border-white/5" />
+                        <div key={i} className="h-48 bg-muted animate-pulse border-2 border-border" />
                     ))}
                 </div>
             ) : (
@@ -93,7 +93,7 @@ export default function StandardLibraryPage() {
                     {/* Agents Section */}
                     {fAgents.length > 0 && (
                         <section className="flex flex-col gap-4">
-                            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+                            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                                 <Sparkles className="w-4 h-4" /> Kits (Agentes)
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -102,7 +102,7 @@ export default function StandardLibraryPage() {
                                         key={agent.name} 
                                         name={agent.name} 
                                         description={agent.description} 
-                                        icon={<Shield className="w-4 h-4 text-cyan" />}
+                                        icon={<Shield className="w-4 h-4 text-primary" />}
                                     />
                                 ))}
                             </div>
@@ -112,7 +112,7 @@ export default function StandardLibraryPage() {
                     {/* Skills Section */}
                     {fSkills.length > 0 && (
                         <section className="flex flex-col gap-4">
-                            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+                            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                                 <Box className="w-4 h-4" /> Skills
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -121,7 +121,7 @@ export default function StandardLibraryPage() {
                                         key={skill.name} 
                                         name={skill.name} 
                                         description={skill.description} 
-                                        icon={<Shield className="w-4 h-4 text-cyan" />}
+                                        icon={<Shield className="w-4 h-4 text-primary" />}
                                     />
                                 ))}
                             </div>
@@ -131,7 +131,7 @@ export default function StandardLibraryPage() {
                     {/* Crews Section */}
                     {fCrews.length > 0 && (
                         <section className="flex flex-col gap-4">
-                            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+                            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                                 <Users className="w-4 h-4" /> Times (Crews)
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -140,7 +140,7 @@ export default function StandardLibraryPage() {
                                         key={crew.name} 
                                         name={crew.name} 
                                         description={crew.description} 
-                                        icon={<Shield className="w-4 h-4 text-cyan" />}
+                                        icon={<Shield className="w-4 h-4 text-primary" />}
                                     />
                                 ))}
                             </div>
@@ -161,19 +161,19 @@ export default function StandardLibraryPage() {
 
 function LibraryCard({ name, description, icon }: { name: string; description: string; icon: React.ReactNode }) {
     return (
-        <div className="group rounded-2xl border border-white/5 bg-background-elevated/30 p-5 hover:border-cyan/30 hover:bg-white/5 transition-all duration-300">
+        <div className="sketch-card group p-5 hover:border-primary/50 transition-all duration-300">
             <div className="flex items-start justify-between gap-3">
-                <div className="p-2.5 rounded-xl bg-cyan/10 text-cyan border border-cyan/20 group-hover:bg-cyan group-hover:text-background transition-all duration-300">
+                <div className="p-2.5 bg-primary/10 text-primary border-2 border-border group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
                     <Brain className="w-5 h-5" />
                 </div>
                 <SourceBadge source="standard" />
             </div>
             <div className="mt-4">
-                <h3 className="text-slate-100 font-semibold flex items-center gap-2">
+                <h3 className="font-semibold flex items-center gap-2">
                     {name}
                     {icon}
                 </h3>
-                <p className="text-sm text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                <p className="text-sm text-muted-foreground mt-2 line-clamp-2 leading-relaxed">
                     {description || "Sem descrição disponível."}
                 </p>
             </div>
