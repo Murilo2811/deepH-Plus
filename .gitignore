@@ -40,3 +40,4 @@ site/out/
 .vscode/
 .idea/
 
+*.exe

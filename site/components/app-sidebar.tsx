@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Zap, MessageSquare, Settings, Plus, BookOpen, Play, Users, Wrench, LayoutGrid, Box, GitBranch } from "lucide-react";
+import { Zap, MessageSquare, Settings, Plus, BookOpen, Play, Users, Wrench, LayoutGrid, Box, GitBranch, Terminal } from "lucide-react";
 import { LibraryModal } from "./library-modal";
 import { useState } from "react";
 
@@ -19,6 +19,7 @@ export function AppSidebar() {
         { href: "/universes", icon: GitBranch,  label: "Universos" },
         { href: "/skills", icon: Wrench,        label: "Skills" },
         { href: "/config", icon: Settings,      label: "Settings" },
+        { href: "/terminal", icon: Terminal,     label: "Terminal" },
         { href: "/help",   icon: BookOpen,      label: "Help Guide" },
     ];
 

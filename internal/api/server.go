@@ -50,6 +50,7 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/api/run", s.handleRun)
 	mux.HandleFunc("/api/chat/stream", s.handleChatStream)
 	mux.HandleFunc("/api/standard-library", s.handleStandardLibrary)
+	mux.HandleFunc("/api/terminal/ws", s.handleTerminalWS)
 
 	// Fallback to static site
 	mux.Handle("/", http.FileServer(site.GetFS()))
