@@ -27,17 +27,15 @@ keys.json
 *.log
 run.json
 run_mock.json
-test_dialog.ps1
 pdf_pages/
 *.pdf
 
 # Build artifacts
-deeph.exe
+*.exe
+*.exe~
 site/out/
 
 # Editor / OS
 .DS_Store
 .vscode/
 .idea/
-
-*.exe
