@@ -1,0 +1,29 @@
+<svg width="512" height="512" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>deepH Logo</title>
+  <defs>
+    <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="gradBlue">
+      <stop stop-color="#1E3A8A" offset="0%"></stop>
+      <stop stop-color="#0F172A" offset="100%"></stop>
+    </linearGradient>
+    <filter x="-5.0%" y="-5.0%" width="110.0%" height="110.0%" filterUnits="objectBoundingBox" id="filter-1">
+      <feOffset dx="0" dy="10" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+      <feGaussianBlur stdDeviation="15" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+      <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+    </filter>
+  </defs>
+  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="deepH-Icon">
+      <rect id="Background" fill="url(#gradBlue)" x="0" y="0" width="512" height="512" rx="112"></rect>
+      
+      <!-- Styled H -->
+      <g id="H-Shape" transform="translate(144.000000, 128.000000)" fill="#FFFFFF">
+        <path d="M0,0 L64,0 L64,256 L0,256 L0,0 Z" id="Left-Bar"></path>
+        <path d="M160,0 L224,0 L224,256 L160,256 L160,0 Z" id="Right-Bar"></path>
+        <path d="M64,96 L160,96 L160,160 L64,160 L64,96 Z" id="Middle-Bar"></path>
+      </g>
+      
+      <!-- Decal/Hexagon highlight -->
+      <polygon id="Hexagon-Glow" stroke="#94A3B8" stroke-width="4" opacity="0.300000012" points="256 32 464 144 464 368 256 480 48 368 48 144"></polygon>
+    </g>
+  </g>
+</svg>

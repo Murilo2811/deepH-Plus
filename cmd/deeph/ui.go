@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os/exec"
 	"path/filepath"
+	"time"
 
 	"deeph/internal/api"
 )
@@ -28,6 +29,9 @@ func cmdUi(args []string) error {
 
 	if !*noBrowser {
 		go func() {
+			if err := api.WaitForReady(addr, 10*time.Second); err != nil {
+				fmt.Printf("Warning: could not verify server is ready: %v\n", err)
+			}
 			// fallback simples para dev Windows (no futuro pode ter cross-platform)
 			exec.Command("rundll32", "url.dll,FileProtocolHandler", "http://"+addr).Start()
 		}()

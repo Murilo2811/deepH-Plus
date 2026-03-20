@@ -11,6 +11,7 @@ import (
 type Server struct {
 	workspace string
 	addr      string
+	termPool  *TerminalPool
 }
 
 // NewServer creates a new Server bound to the given workspace and listen address.
@@ -18,6 +19,7 @@ func NewServer(workspace string, addr string) *Server {
 	return &Server{
 		workspace: workspace,
 		addr:      addr,
+		termPool:  NewTerminalPool(),
 	}
 }
 
@@ -52,6 +54,10 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/api/run", s.handleRun)
 	mux.HandleFunc("/api/chat/stream", s.handleChatStream)
 	mux.HandleFunc("/api/standard-library", s.handleStandardLibrary)
+
+	// Terminals REST
+	mux.HandleFunc("/api/terminals", s.handleTerminals)
+	mux.HandleFunc("/api/terminals/", s.handleTerminalByID)
 
 	// Terminal WebSocket
 	mux.HandleFunc("/api/terminal/ws", s.handleTerminalWS)

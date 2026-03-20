@@ -50,6 +50,8 @@ func run(args []string) error {
 		return cmdKit(args[1:])
 	case "ui":
 		return cmdUi(args[1:])
+	case "shortcut":
+		return cmdShortcut(args[1:])
 	case "coach":
 		return cmdCoach(args[1:])
 	case "command":
@@ -68,6 +70,7 @@ func printUsage() {
 	fmt.Println("  deeph init [--workspace DIR]")
 	fmt.Println("  deeph validate [--workspace DIR]")
 	fmt.Println("  deeph ui [--workspace DIR] [--port N] [--no-browser]")
+	fmt.Println("  deeph shortcut")
 	fmt.Println(`  deeph trace [--workspace DIR] [--json] [--multiverse N] "<agent|a+b|a>b|a+b>c|@crew|crew:name>" [input]`)
 	fmt.Println(`  deeph run [--workspace DIR] [--trace] [--coach=false] [--multiverse N] [--judge-agent SPEC] [--judge-max-output-chars N] "<agent|a+b|a>b|a+b>c|@crew|crew:name>" [input]`)
 	fmt.Println(`  deeph chat [--workspace DIR] [--session ID] [--history-turns N] [--history-tokens N] [--trace] [--coach=false] "<agent|a+b|a>b|a+b>c>"`)

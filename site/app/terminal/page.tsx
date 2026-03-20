@@ -1,4 +1,4 @@
-import { TerminalView } from "@/components/terminal-view";
+import { TerminalManager } from "@/components/terminal-manager";
 
 export const metadata = {
     title: "Terminal — deepH Plus",
@@ -8,7 +8,7 @@ export const metadata = {
 export default function TerminalPage() {
     return (
         <div className="flex flex-col h-full w-full overflow-hidden">
-            <TerminalView />
+            <TerminalManager />
         </div>
     );
 }
