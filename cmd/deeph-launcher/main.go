@@ -25,7 +25,7 @@ func main() {
 	addr := "localhost:7730"
 
 	// 2. Check if server is already running
-	if resp, err := http.Get("http://" + addr + "/api/health"); err == nil && resp.StatusCode == 200 {
+	if resp, err := http.Get("http://" + addr + "/api/config"); err == nil && resp.StatusCode == 200 {
 		resp.Body.Close()
 		fmt.Println("Server already running, opening browser...")
 		exec.Command("rundll32", "url.dll,FileProtocolHandler", "http://"+addr).Start()
