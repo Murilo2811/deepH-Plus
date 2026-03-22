@@ -28,7 +28,7 @@ func main() {
 	if resp, err := http.Get("http://" + addr + "/api/config"); err == nil && resp.StatusCode == 200 {
 		resp.Body.Close()
 		fmt.Println("Server already running, opening browser...")
-		exec.Command("rundll32", "url.dll,FileProtocolHandler", "http://"+addr).Start()
+		exec.Command("cmd", "/c", "start", "http://"+addr).Start()
 		return
 	}
 
@@ -49,7 +49,7 @@ func main() {
 	}
 
 	// 4. Open browser
-	exec.Command("rundll32", "url.dll,FileProtocolHandler", "http://"+addr).Start()
+	exec.Command("cmd", "/c", "start", "http://"+addr).Start()
 
 	// 5. Block forever (no terminal window visible)
 	select {}
